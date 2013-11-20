@@ -440,6 +440,16 @@
 			$.siteexport().run();
 			return false;
 		});
+		
+		$('form#siteexport #depthType:input').change(function(event){
+			event.stopPropagation();
+			if ( parseInt($(this).val()) == 2 ) {
+				$('div#depthContainer').show();
+			} else {
+				$('div#depthContainer').hide();
+			}
+		});
+		
 
 		$('form#siteexport #pdfExport:input').change(function(event){
 			event.stopPropagation();

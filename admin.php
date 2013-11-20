@@ -58,16 +58,16 @@ class admin_plugin_siteexport extends DokuWiki_Admin_Plugin {
             $this->pdfExport = true;
         }
 
-        if ( $functions =& plugin_load('renderer', 'nodetailsxhtml' ) ) {
+        // if ( $functions =& plugin_load('renderer', 'nodetailsxhtml' ) ) {
             $this->usenumberedheading = true;
-        }
+        // }
 
         if ( $functions =& plugin_load('cron', 'siteexport' ) ) {
             $this->cronEnabled = $functions->canWriteSettings();
         }
         
         if ( $functions =& plugin_load('helper', 'translation' ) ) {
-            $this->cronEnabled = true;
+            $this->translationAvailable = true;
         }
     }
 
@@ -96,7 +96,7 @@ class admin_plugin_siteexport extends DokuWiki_Admin_Plugin {
         $form->addElement(form_makeListboxField('depthType', array( "0.0" => $this->getLang('depth.pageOnly'), "1.0" => $this->getLang('depth.allSubNameSpaces'), "2.0" => $this->getLang('depth.specifiedDepth') ), (empty($_REQUEST['depthType']) ? $this->getLang('depth.allSubNameSpaces') : $_REQUEST['depthType']), $this->getLang('depthType') . ':', 'depthType', null, array_merge(array('class' => 'edit'))));
 
         $form->addElement(form_makeTag('br'));
-        $form->addElement(form_makeOpenTag("div", array('style' => 'display:' . ($_REQUEST['depthType'] == "3" ? "block" : "none") . ';', 'id' => 'depthContainer')));
+        $form->addElement(form_makeOpenTag("div", array('style' => 'display:' . ($_REQUEST['depthType'] == "2" ? "block" : "none") . ';', 'id' => 'depthContainer')));
         $form->addElement(form_makeTextField('depth', $this->getConf('depth'), $this->getLang('depth') . ':', 'depth'));
         $form->addElement(form_makeCloseTag("div"));
 
@@ -142,7 +142,7 @@ class admin_plugin_siteexport extends DokuWiki_Admin_Plugin {
         }
 
         $form->addElement(form_makeTag('br'));
-        $form->addElement(form_makeCheckboxField('usenumberedheading', 1, $this->getLang('usenumberedheading') . ':', 'usenumberedheading', null, $this->usenumberedheading ? array() : array_merge(array('disabled' => 'disabled')) ));
+        $form->addElement(form_makeCheckboxField('usenumberedheading', 1, $this->getLang('usenumberedheading') . ':', 'usenumberedheading', null, $this->usenumberedheading && $this->pdfExport ? array() : array_merge(array('disabled' => 'disabled')) ));
         $form->addElement(form_makeTag('br'));
         
         if ( !$this->usenumberedheading ) {
