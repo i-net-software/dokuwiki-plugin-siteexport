@@ -1,0 +1,45 @@
+<?php
+/**
+ * english language file
+ */
+ 
+// settings must be present and set appropriately for the language
+$lang['encoding']   = 'utf-8';
+$lang['direction']  = 'ltr';
+ 
+// for admin plugins, the menu prompt to be displayed in the admin menu
+// if set here, the plugin doesn't need to override the getMenuText() method
+$lang['menu'] = 'Site Export'; 
+ 
+// custom language strings for the plugin
+$lang['absolutePath'] = 'Absolute Pfad exportieren'; 
+$lang['template'] = 'Export Vorlage' ; 
+$lang['exportBody'] = 'Nur den Seiteninhalt exportieren (export_body)'; 
+$lang['addParams'] = 'Parameter in Links exportieren (z.B. "do")'; 
+$lang['startingNamespace'] = 'Namensraum Eisntellungen'; 
+$lang['selectYourOptions'] = 'W채hlen Sie Ihre Optionen aus'; 
+$lang['helpCreationOptions'] = 'W채hlen Sie zus채tzlich eine Hilfe-Erstellungs Option'; 
+$lang['eclipseDocZip'] = 'Eclipse Hilfe erstellen'; 
+$lang['JavaHelpDocZip'] = 'Java Hilfe erstellen'; 
+$lang['TOCMapWithoutTranslation'] = '횥bersetzungs-Wurzel entfernen'; 
+
+$lang['useTocFile'] = 'Die TOC Datei des Startnamensraumes verwenden'; 
+$lang['emptyTocElem'] = 'Leere Namensr채ume im TOC anzeigen'; 
+$lang['startProcess'] = 'Starten des Exports'; 
+$lang['directDownloadLink'] = 'Link f체r den direkten Download'; 
+
+$lang['start'] = 'starten'; 
+$lang['status'] = 'Status'; 
+$lang['ns'] = 'Namensraum f체r den Export';
+$lang['ns'] = 'Start Namensraum f체r den Export (Elternelement)';
+
+
+$lang['search'] = 'Suche';
+$lang['toc'] = '냕ersicht';
+
+$lang['js'] = array(
+    'helpCreationOptions' => $lang['helpCreationOptions'], 
+    'disablePluginsOption' => $lang['disablePluginsOption']
+);
+
+//Setup VIM: ex: et ts=4 enc=utf-8 :

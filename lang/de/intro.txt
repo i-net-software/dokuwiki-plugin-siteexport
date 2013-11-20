@@ -1,0 +1,3 @@
+====== Site Export Manager ======
+
+Hier kšnnen Sie vollstŠndige Seiten Ihres Wikis in eine Stand-Alone version exportieren.

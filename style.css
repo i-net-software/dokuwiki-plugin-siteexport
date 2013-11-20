@@ -1,0 +1,133 @@
+#siteexport__throbber {
+    visibility: hidden;
+}
+
+#siteexport {
+    margin: 1em auto 1em auto;
+    vertical-align: middle;
+    width: 80%;
+    text-align: left;
+}
+
+#siteexport fieldset {
+	text-align: left;
+}
+
+#siteexport fieldset label input, #siteexport fieldset label select {
+	float: right;
+	text-align: left;
+	width: 50%;
+}
+
+#siteexport fieldset label input[type=checkbox] {
+	width: auto;
+}
+
+#siteexport fieldset.hideOptions > *
+{
+	display: none;
+}
+
+#siteexport fieldset legend, #siteexport fieldset.hideOptions .forceVisible
+{
+	display: block !important;
+} 
+
+#siteexport fieldset legend
+{
+	cursor: pointer;
+}
+
+#siteexport fieldset legend:hover
+{
+	color: __existing__;
+	text-decoration: underline;
+}
+
+#siteexport fieldset br {
+	clear: both;
+}
+
+#siteexport fieldset p {
+	margin-top: 0px;
+	color: #a9a9a9;
+}
+
+#siteexport__errorlog {
+	overflow: auto;
+	max-height: 200px;
+}
+
+#siteexport__errorlog p {
+	color: #a00;
+	margin: 0px;
+	padding: 0px 5px;
+	overflow: hidden;
+}
+
+#siteexport__errorlog p:nth-child(odd) {
+	background-color: #FFEDED;
+}
+
+#siteexport__errorlog p:nth-child(even) {
+	background-color: #FFD4D4;
+}
+
+#siteexport__cronList {
+	margin: 40px 0px 20px;
+}
+
+#siteexport__customActions {
+	margin: 0px;
+	padding: 0px;
+}
+
+#siteexport__cronList li, #siteexport__customActions li {
+	list-style: none;
+	
+	border-bottom: 1px solid #ccc;
+	float: left;
+	clear: both;
+	
+	width: 100%;
+	margin: 0px;
+	padding: 0px;
+}
+
+#siteexport__customActions li input {
+	margin: 2px 1%;
+	width: 45%;
+}
+
+#siteexport__cronList li:last-child, #siteexport__customActions li:last-child {
+	border-bottom: none;
+}
+	
+#siteexport__cronList li:nth-child(odd), #siteexport__customActions li:nth-child(odd) {
+	background-color: #eee;
+}
+
+#siteexport__cronList li:nth-child(even), #siteexport__customActions li:nth-child(even) {
+	background-color: #f0f0f0;
+}
+
+#siteexport__cronList li button, siteexport__customActions li button {
+	float: right;
+}
+
+div.sitetoc ul li div.li > a
+{
+	display: block;
+	margin-bottom: 5px !important;
+	margin-top: 15px !important;
+}
+
+#siteexport .siteexport__throbber,
+#siteexport .siteexport__throbber img {
+	display: block;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+
+// Setup VIM: ex: et ts=4 enc=utf-8 :
