@@ -105,7 +105,7 @@ If you do not want the export to be structured like your DokuWiki is, you can cr
 
 This is great for having all the chapters of a documentation in their own file and exporting them into PDF as a single file.
 
-See [Table Of Contents definition](#Table Of Contents definition)
+See [Table Of Contents definition](#table-of-contents-definition)
 
 ###Disable (JS/CSS) Plugins while export
 The checkboxes stand for each plugin. By checking it the plugin will be disabled temporarily and therefore not generate any CSS or JS output.
