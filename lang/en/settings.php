@@ -2,6 +2,13 @@
 /**
  * english language file
  */
+$lang['depth'] = 'Default Export Depth';
+$lang['skipacl'] = 'Try to export non-public pages';
+$lang['zipfilename'] = 'Wiki Path and name for exported ZIP file';
+$lang['exclude'] = 'Pattern to exclude resources';
+$lang['max_execution_time'] = 'Maximum script execution time';
+$lang['cachetime'] = 'Cache time for export';
+
 $lang['debugFile'] = 'Debug File';
 
 $lang['debugLevel'] = 'Debug Level';
