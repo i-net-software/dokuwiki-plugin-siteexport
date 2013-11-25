@@ -71,8 +71,8 @@ class siteexport_zipfilewriter
             }
 
             if ( !$this->pdfGenerator->createPDFFromFile($FILE, $NAME) ) {
-                $this->functions->debug->message("Create PDF from File '$FILE' with name '$NAME' went wrong and is not being added!", null, 4);
-                return;
+                $this->functions->debug->runtimeException("Create PDF from File '$FILE' with name '$NAME' went wrong and is not being added!");
+                return false;
             }
         }
 

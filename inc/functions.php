@@ -532,6 +532,7 @@ class siteexport_functions extends DokuWiki_Plugin
      **/
     function basic_authentication() {
         if (!isset($_SERVER['PHP_AUTH_USER'])) {
+        	$this->debug->message("Needs Authentication.", null, 2);
             header('WWW-Authenticate: Basic realm="Siteexport Authentication"');
             header('HTTP/1.0 401 Unauthorized');
             print 'Unauthorized'; // print has to stay here

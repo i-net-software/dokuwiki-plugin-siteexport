@@ -71,6 +71,7 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
         }
         
         $this->__init_functions();
+        $this->functions->debug->isAJAX = true;
         
         switch( $event->data ) {
             case '__siteexport_getsitelist': $this->ajax_siteexport_getsitelist( $event ); break;
@@ -96,6 +97,7 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
 
         $this->functions->debug->message("========================================", null, 1);
         $this->functions->debug->message("Starting export from URL call", null, 1);
+        $this->functions->debug->message("----------------------------------------", null, 1);
 
         $event->preventDefault();
         $event->stopPropagation();
@@ -130,6 +132,14 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
 	            // Skip over the amount of urls that have been exported already
 	            if ( empty($_REQUEST['startcounter']) || $counter >= intval($_REQUEST['startcounter']) ) {
 	                $status = $this->__siteexport_add_site($site['id']);
+
+			        if ( $status === false ) {
+				        $this->functions->debug->message("----------------------------------------", null, 1);
+				        $this->functions->debug->message("Errors during export from URL call", null, 1);
+				        $this->functions->debug->message("========================================", null, 1);
+						print $this->functions->debug->runtimeErrors;
+        			    exit(0); // We need to stop
+			        }
 	            }
 			}
 
@@ -141,6 +151,7 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
             }
         }
 
+        $this->functions->debug->message("----------------------------------------", null, 1);
         $this->functions->debug->message("Finishing export from URL call", null, 1);
         $this->functions->debug->message("========================================", null, 1);
 
@@ -165,7 +176,6 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
     public function __init_functions()
     {
         $this->functions = new siteexport_functions();
-        $this->functions->debug->isAJAX = true;
         $this->filewriter = new siteexport_zipfilewriter($this->functions);
 
         // Check for PDF Capabilities
@@ -311,10 +321,17 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
 
         $this->functions->debug->message("========================================", null, 1);
         $this->functions->debug->message("Starting export from AJAX call", null, 1);
+        $this->functions->debug->message("----------------------------------------", null, 1);
 
         $status = $this->__siteexport_add_site($_REQUEST['site']);
-        if ( $status === false ) { return; }
+        if ( $status === false ) {
+	        $this->functions->debug->message("----------------------------------------", null, 1);
+	        $this->functions->debug->message("Errors during export from AJAX call", null, 1);
+	        $this->functions->debug->message("========================================", null, 1);
+        	return;
+        }
 
+        $this->functions->debug->message("----------------------------------------", null, 1);
         $this->functions->debug->message("Finishing export from AJAX call", null, 1);
         $this->functions->debug->message("========================================", null, 1);
 
@@ -457,6 +474,7 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
 
         $this->functions->debug->message("========================================", null, 2);
         $this->functions->debug->message("Adding Site: '$ID'", null, 2);
+        $this->functions->debug->message("----------------------------------------", null, 1);
 
         $request = $this->functions->settings->additionalParameters;
         unset($request['diPlu']); // This will not be needed for the first request.
@@ -499,8 +517,9 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
         // fetch URL and save it in temp file
         $tmpFile = $this->__getHTTPFile($url);
         if ( $tmpFile === false ) {
-        	return $this->functions->debug->message("Creating temporary download file failed for '$url'. See log for more information.");
-        	return $this->functions->debug->runtimeException("Creating temporary download file failed for '$url'. See log for more information.");
+        	// return $this->functions->debug->message("Creating temporary download file failed for '$url'. See log for more information.");
+        	$this->functions->debug->runtimeException("Creating temporary download file failed for '$url'. See log for more information.");
+        	return false;
         }
 
         // If a Filename was given that does not comply to the original name, use this one!
@@ -534,7 +553,7 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
 
         require_once( DOKU_INC . 'inc/HTTPClient.php');
 
-        $http = new HTTPProxy($this->functions->debug);
+        $http = new HTTPProxy($this->functions->debug, $this->functions->settings);
         $http->max_bodysize = $conf['fetchsize'];
         // $http->user = $_SERVER['PHP_AUTH_USER']; // Must not be set, or the files will be authenticated and have the edit thingies
         // $http->pass = $_SERVER['PHP_AUTH_PW']; // Must not be set, or the files will be authenticated and have the edit thingies
@@ -568,9 +587,9 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
             // Parse URI PATH and add "html"
             $this->functions->debug->message("========================================", null, 1);
             $this->functions->debug->message("Starting to recurse file '$URL'", null , 1);
-            $this->functions->debug->message("========================================", null, 1);
+			$this->functions->debug->message("----------------------------------------", null, 1);
             $this->__getInternalLinks($getData);
-            $this->functions->debug->message("========================================", null, 1);
+			$this->functions->debug->message("----------------------------------------", null, 1);
             $this->functions->debug->message("Finished to recurse file '$URL'", null , 1);
             $this->functions->debug->message("========================================", null, 1);
         }
@@ -979,19 +998,21 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
             $FILENAMEID = $this->functions->settings->origZipFile;
         }
 
+        if ( !$this->functions->settings->isCLI )
+        {
+            $INFO = pageinfo();
+            if ( $INFO['perm'] < AUTH_DELETE && !$this->functions->settings->isAuthed ) {
+                list ( $USER, $PASS) = $this->functions->basic_authentication();
+                $this->functions->settings->isAuthed = auth_login($USER, $PASS);
+                $this->functions->debug->message("Login With:", array( 'User' => $USER, 'Password' => '*****', 'isAuthed' => $this->functions->settings->isAuthed));
+				$INFO = pageinfo();
+            }
+        }
+
+
         if ( !file_exists(mediaFN($FILENAMEID)) ) {
             $returnValue = true;
         } else {
-
-            if ( !$this->functions->settings->isCLI )
-            {
-                $INFO = pageinfo();
-                if ( $INFO['perm'] < AUTH_DELETE && !$this->functions->settings->isAuthed ) {
-                    list ( $USER, $PASS) = $this->functions->basic_authentication();
-                    auth_login($USER, $PASS);
-                    $this->functions->settings->isAuthed = true;
-                }
-            }
 
             require_once( DOKU_INC . 'inc/media.php');
             if ( !media_delete($FILENAMEID, $INFO['perm']) ) {
