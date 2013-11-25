@@ -425,7 +425,7 @@
 			}
 			
 			return __siteexport;
-		}
+		};
 		
 		$.siteexport().generate();
 		$('#siteexport :input').each(function(index, element){
