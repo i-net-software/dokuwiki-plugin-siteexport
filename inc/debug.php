@@ -139,11 +139,11 @@ class siteexport_debug
 			header("Status: 500 Internal Server Error", true, 500);
         }
 
-        if ( $this->firstRE ) {
-            print 'Runtime Error' . "\n";
-        }
-
         if ( !$this->isAJAX ) {
+	        if ( $this->firstRE ) {
+	            print 'Runtime Error' . "\n";
+	        }
+	
             print '<b>'.$message.'</b><br />' . "\n";
             if ( $this->firstRE ) {
                 print '<b>If this error persists, please contact the server administrator.</b><br />' . "\n";
@@ -151,9 +151,9 @@ class siteexport_debug
         } else {
             if ( !$wasDebug ) {
                 $this->message('Runtime Error: ' . $message, null, 4);
+            } else {
+	            print 'Runtime Error: ' . $message . "\n";
             }
-
-            print 'Runtime Error: ' . $message . "\n";
         }
 
         $this->firstRE = false;
