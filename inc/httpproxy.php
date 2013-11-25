@@ -47,7 +47,7 @@ class HTTPProxy extends DokuHTTPClient {
 				$this->_debug("Trying other Authentication (auth.php):", auth_setup() && $this->authenticate(true) ? 'authenticated' : 'not authenticated'); // Try again.
 			}
 
-			$this->_debug("Using Authentication:", array('user' => $this->user, 'password' => $this->pass));
+			$this->_debug("Using Authentication:", array('user' => $this->user, 'password' => '*****'));
 			
 		} else {
 			$this->cookies = $this->settings->cookie;
