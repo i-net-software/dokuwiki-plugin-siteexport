@@ -817,7 +817,7 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
                 $DATA['PARAMS'] = "";
                 $newAdditionalParameters = array();
 
-                $this->functions->debug->message("This is fetch.php file", array($DATA, $ID), 2);
+                $this->functions->debug->message("This is fetch.php file", array($DATA, $ID, $PARAMS), 2);
                 break;
 
                 // default Handling for Pages
@@ -1101,7 +1101,7 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
             }
 
             if ( !empty( $PARAMS) ) {
-                $PARAMS .= '&amp;';
+                $PARAMS .= '&';
             }
 
             $PARAMS .= "$key=$value";

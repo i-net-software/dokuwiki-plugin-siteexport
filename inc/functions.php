@@ -523,7 +523,8 @@ class siteexport_functions extends DokuWiki_Plugin
                 }
             }
 
-            $removeArray = implode( ($this->settings->fileType == 'pdf' ? "&" : "&amp;"), $removeArray);
+            //$removeArray = implode( ($this->settings->fileType == 'pdf' ? "&" : "&amp;"), $removeArray);
+            $removeArray = implode( "&", $removeArray); // The &amp; made problems with the HTTPClient / Apache. It should not be a problem to have &
         }
     }
 
