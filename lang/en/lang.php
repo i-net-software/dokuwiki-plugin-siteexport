@@ -61,9 +61,4 @@ $lang['addCustomOption'] = 'add Option';
 $lang['search'] = 'Search';
 $lang['toc'] = 'Table of Contents';
 
-$lang['js'] = array(
-    'helpCreationOptions' => $lang['helpCreationOptions'], 
-    'disablePluginsOption' => $lang['disablePluginsOption']
-);
-
 //Setup VIM: ex: et ts=4 enc=utf-8 :

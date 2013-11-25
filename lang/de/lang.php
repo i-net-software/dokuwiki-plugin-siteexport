@@ -37,9 +37,4 @@ $lang['ns'] = 'Start Namensraum fÃ¼r den Export (Elternelement)';
 $lang['search'] = 'Suche';
 $lang['toc'] = '†bersicht';
 
-$lang['js'] = array(
-    'helpCreationOptions' => $lang['helpCreationOptions'], 
-    'disablePluginsOption' => $lang['disablePluginsOption']
-);
-
 //Setup VIM: ex: et ts=4 enc=utf-8 :
