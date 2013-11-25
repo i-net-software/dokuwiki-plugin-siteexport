@@ -26,6 +26,7 @@ class settings_plugin_siteexport_settings extends DokuWiki_Plugin
     var $hasValidCacheFile = false;
     
     var $useTOCFile = false;
+    var $cookie = null;
     
     function settings_plugin_siteexport_settings($functions) {
         global $ID;

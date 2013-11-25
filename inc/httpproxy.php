@@ -23,23 +23,79 @@ require_once( DOKU_INC . 'inc/HTTPClient.php');
 class HTTPProxy extends DokuHTTPClient {
 	
     var $debugClass = null;
+    var $setttings = null;
     
     /**
      * Constructor.
      */
-    function __construct($debug){
+    function __construct($debug, $settings){
         global $conf;
 
         // call parent constructor
         $this->debugClass = $debug;
+        $this->settings = $settings;
         parent::__construct();
         
         $this->timeout = 60; //max. 25 sec
         $this->headers['If-Modified-Since'] = substr(gmdate('r', 0), 0, -5).'GMT';
         $this->status = -1;
         $this->debug = true;
+
+		if ( $this->settings->cookie == null ) {
+			$this->_debug("Has to re-authenticate request.");
+			if ( !$this->authenticate() ) {
+				$this->_debug("Trying other Authentication (auth.php):", auth_setup() && $this->authenticate(true) ? 'authenticated' : 'not authenticated'); // Try again.
+			}
+
+			$this->_debug("Using Authentication:", array('user' => $this->user, 'password' => $this->pass));
+			
+		} else {
+			$this->cookies = $this->settings->cookie;
+		}
+
+		$this->headers['X-Real-Ip'] = clientIP(true);
+		$this->headers['Accept-Encoding'] = $_SERVER['HTTP_ACCEPT_ENCODING'];
+		$this->headers['Accept-Charset'] = $_SERVER['HTTP_ACCEPT_CHARSET'];
+		$this->agent = $_SERVER['HTTP_USER_AGENT'];
+	}
+	
+	/**
+	 * Authenticate using currently logged in user
+	 */
+	private function authenticate($secondAttempt=false) {
+		
+		global $auth, $INPUT;
+		
+		// Ok, this is evil. We read the login information of the current user and forward it to the HTTPClient
+		list($this->user, $sticky, $this->pass) = auth_getCookie();
+
+		// Logged in in second attempt is now in Session.	
+		if ( $secondAttempt && !isset($this->user) && $INPUT->str('u') && $INPUT->str('p') ) {
+
+			// We hacked directly into the login mechanism which provides the login information without encryption via $INPUT
+			$this->user = $INPUT->str('u');
+			$this->pass = $INPUT->str('p');
+			$sticky = $INPUT->str('r');
+		} else {
+			$secret = auth_cookiesalt(!$sticky, true); //bind non-sticky to session
+			$this->pass = auth_decrypt($this->pass, $secret);
+		}
+		
+		return isset($this->user);
 	}
 
+	/**
+	 * Remeber HTTPClient Cookie after successfull authentication
+	 */	
+	function sendRequest($url,$data='',$method='GET') {
+		
+		$returnCode = parent::sendRequest($url,$data,$method);
+		if ( $this->settings->cookie == null ) {
+			$this->settings->cookie = $this->cookies;
+		}
+		
+		return $returnCode;
+	}
 	
 	 /**
 	 * print debug info to file if exists
@@ -50,7 +106,7 @@ class HTTPProxy extends DokuHTTPClient {
 			return;
 		}
 
-		$this->debugClass->message($info, $var, 1);
+		$this->debugClass->message("[HTTPClient] " . $info, $var, 1);
 	}
 }
 
