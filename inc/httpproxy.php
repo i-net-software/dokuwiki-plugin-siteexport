@@ -78,10 +78,26 @@ class HTTPProxy extends DokuHTTPClient {
 			$sticky = $INPUT->str('r');
 		} else {
 			$secret = auth_cookiesalt(!$sticky, true); //bind non-sticky to session
-			$this->pass = auth_decrypt($this->pass, $secret);
+			$this->pass = $this->auth_decrypt($this->pass, $secret);
 		}
 		
 		return isset($this->user);
+	}
+
+	/**
+	 * Auth Decryption has changed from Weatherwax to Binky
+	 */	
+	private function auth_decrypt($pass, $secret) {
+
+		if ( function_exists('auth_decrypt') ) {
+			// Binky
+			return auth_decrypt($pass, $secret);
+		} else if ( function_exists('PMA_blowfish_decrypt') ) {
+			// Weatherwax
+			return PMA_blowfish_decrypt($pass, $secret);
+		} else {
+			$this->debugClass->runtimeException("No decryption method found");
+		}
 	}
 
 	/**
