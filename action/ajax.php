@@ -609,7 +609,7 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
         $CALLBACK = array($this, '__fetchAndReplaceLink');
         $DATA = preg_replace_callback("/$PATTERN/i", $CALLBACK, $DATA);
 
-        $PATTERNCSS = '(url\s*?)\([^\)]*\)';
+        $PATTERNCSS = '(url\s*?)\(([^\)]*)\)';
         $DATA = preg_replace_callback("/$PATTERNCSS/i", $CALLBACK, $DATA);
     }
 
@@ -668,11 +668,14 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
 
         // Handle rewrites other than 1
         if ( !preg_match('$^/?lib/$', $DATA[2]) ) {
+		    $this->functions->debug->message("Did not match '$^/?lib/$' userewrite == ", $conf['userewrite'], 1);
             if ( $conf['userewrite'] == 2 ) {
                 $DATA[2] = $this->__getInternalRewriteURL($DATA[2]);
             } elseif ( $conf['userewrite'] == 0 ) {
                 $this->__getParamsAndDataRewritten($DATA, $PARAMS);
             }
+        } else {
+	    	$this->functions->debug->message("This file must be inside lib ...", null, 2);
         }
 
         $this->functions->debug->message("URL before rewriting option", array($DATA, $PARAMS), 2);
