@@ -147,15 +147,16 @@ class preload_plugin_siteexport_controller extends Doku_Plugin_Controller {
 		$toDisable = !$pluginsDisabledInverse ? array_diff($currentPluginsDisabled, array_diff($allPlugin, $oldPluginsEnabled)) : array_diff(array_diff($allPlugin, $currentPluginsDisabled), array_diff($allPlugin, $oldPluginsEnabled));
 		
 	    foreach ( $toDisable as $plugin ) {
+	    
 			if ( !in_array($plugin, $allPlugin) ) { continue; }
-			$this->list_enabled = array_diff($this->list_enabled, array($plugin));
+			$this->list_enabled = array_diff($this->tmp_plugins, array($plugin));
 			$this->list_disabled[] = $plugin;
 		}
 
 	    foreach($this->list_enabled as $plugin ) {
 	    	// check for CSS or JS
 	    	if ( !file_exists(DOKU_PLUGIN."$plugin/script.js") && !file_exists(DOKU_PLUGIN."$plugin/style.css") ) {
-	    		unset($this->list_enabled[$plugin]);
+	    		unset($this->tmp_plugins[$plugin]);
 				$this->list_disabled[] = $plugin;
 	    	}
 	    }
