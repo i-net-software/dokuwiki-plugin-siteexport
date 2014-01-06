@@ -6,7 +6,7 @@ if(!defined('DOKU_INC')) define('DOKU_INC',fullpath(dirname(__FILE__).'/../../..
 class preload_plugin_siteexport {
 
 	function __register_template() {
-
+	
 		if ( !empty($_REQUEST['q']) ) {
 
 			require_once( DOKU_INC . 'inc/JSON.php');
@@ -24,10 +24,27 @@ class preload_plugin_siteexport {
 		$tplDir = DOKU_INC.'lib/tpl/'.$tempREQUEST['template'].'/';
 
 		if ( !file_exists($tplDir) ) { return; }
-
+		
+		// Set hint for Dokuwiki_Started event
 		if (!defined('SITEEXPORT_TPL'))		define('SITEEXPORT_TPL', $tempREQUEST['template']);
-		if (!defined('DOKU_TPL'))			define('DOKU_TPL', (empty($tempREQUEST['base']) ? '/' : $tempREQUEST['base']) . 'lib/tpl/'.$tempREQUEST['template'].'/');
+
+		// define baseURL
+		// This should be DEPRECATED - as it is in init.php which suggest tpl_basedir and tpl_incdir
+		/* **************************************************************************************** */
+		if(!defined('DOKU_REL')) define('DOKU_REL',getBaseURL(false));
+		if(!defined('DOKU_URL')) define('DOKU_URL',getBaseURL(true));
+		if(!defined('DOKU_BASE')){
+			if($conf['canonical']){
+				define('DOKU_BASE',DOKU_URL);
+			}else{
+				define('DOKU_BASE',DOKU_REL);
+			}
+		}
+
+		// This should be DEPRECATED - as it is in init.php which suggest tpl_basedir and tpl_incdir
+		if (!defined('DOKU_TPL'))			define('DOKU_TPL', (empty($tempREQUEST['base']) ? DOKU_BASE : $tempREQUEST['base']) . 'lib/tpl/'.$tempREQUEST['template'].'/');
 		if (!defined('DOKU_TPLINC'))		define('DOKU_TPLINC', $tplDir);
+		/* **************************************************************************************** */
 	}
 
 	function __temporary_disable_plugins() {
