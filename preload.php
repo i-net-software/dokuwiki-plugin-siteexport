@@ -143,6 +143,10 @@ class preload_plugin_siteexport_controller extends Doku_Plugin_Controller {
 		$currentPluginsDisabled = empty($_REQUEST['diPlu']) ? array() : $_REQUEST['diPlu'];
 		$pluginsDisabledInverse = !empty($_REQUEST['diInv']);
 
+		if ( !$this->list_enabled ) {
+			$this->list_enabled = array();
+		}
+
 		// All plugins that are not already disabled are to be disabled
 		$toDisable = !$pluginsDisabledInverse ? array_diff($currentPluginsDisabled, array_diff($allPlugin, $oldPluginsEnabled)) : array_diff(array_diff($allPlugin, $currentPluginsDisabled), array_diff($allPlugin, $oldPluginsEnabled));
 		
@@ -161,7 +165,7 @@ class preload_plugin_siteexport_controller extends Doku_Plugin_Controller {
 	    	}
 	    }
 	    
-	    return parent::getList($type='',$all=false);
+	    return parent::getList($type,$all);
 	}
 }
 
