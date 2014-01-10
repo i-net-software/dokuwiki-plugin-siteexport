@@ -149,10 +149,24 @@ class renderer_plugin_siteexport_pdf extends Doku_Renderer_xhtml {
 
             // write the header
             $this->doc .= DOKU_LF.'<h'.$level;
+            $class = array();
             if ($INFO['perm'] > AUTH_READ &&
                 $level <= $conf['maxseclevel']) {
-                $this->doc .= ' class="' . $this->startSectionEdit($pos, 'section', $text) . '"';
+                $class[] = $this->startSectionEdit($pos, 'section', $text);
             }
+            
+            if ( !empty($headingNumber) ) {
+	            $class[] = 'level' . trim($headingNumber);
+	            if ( $headingNumber[0] != '1' ) {
+		            $class[] = 'notfirst';
+	            } else {
+		            $class[] = 'first';
+	            }
+            }
+        
+			if ( !empty($class) ) {
+				$this->doc .= ' class="' . implode(' ', $class) . '"';
+			}
         
             $this->doc .= '><a name="'.$hid.'" id="'.$hid.'">';
             $this->doc .= $this->_xmlEntities($headingNumber . $text);
