@@ -45,16 +45,16 @@ if ( intval($_REQUEST['pdfExport']) == 1 && file_exists(DOKU_PLUGIN . 'dw2pdf/mp
             fwrite($fp, $html);
             fclose($fp);
 
-            $mpdf->debug = true;
+            $mpdf->debug = false;
             $mpdf->list_indent_first_level = 1; // Indents the first level of lists.
-            $mpdf->basepath = $this->functions->settings->depth;
+            //$mpdf->SetBasePath("/");
             $mpdf->usepre = false;
             $mpdf->margin_bottom_collapse = true;
             $mpdf->SetDisplayMode('fullpage');
             $mpdf->restoreBlockPageBreaks = true;
             $this->img_dpi = 300;
 
-            // $mpdf->setBasePath(empty($this->functions->settings->depth) ? './' : $this->functions->settings->depth);
+            $mpdf->setBasePath(empty($this->functions->settings->depth) ? './' : $this->functions->settings->depth);
             $mpdf->SetAutoFont(AUTOFONT_ALL);
 
             // Temp dir
