@@ -137,7 +137,7 @@ class syntax_plugin_siteexport_toc extends DokuWiki_Syntax_Plugin {
 		if ($mode == 'xhtml' || $mode == 'odt') {
 
 		    // TOC Title
-			if ( $data['start'] === true ) {
+			if ( isset($data['start']) ) {
 			    
 			    if ( is_Array($data['options']) ) {
                     foreach( $data['options'] as $opt ) {
