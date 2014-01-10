@@ -540,6 +540,10 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
         return $status;
     }
 
+    function __preg_quote($input) {
+	    return preg_quote($input, '/');
+    }
+     
     /**
      * Download the file via HTTP URL + recurse if this is not an image
      * The file will be saved as temporary file. The filename is the result.
@@ -547,9 +551,18 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
     function __getHTTPFile($URL, $RECURSE=false, $newAdditionalParameters=null) {
         global $conf;
 
-        $EXCLUDE = str_replace('/', '\/', ($this->getConf('exclude')));
+        $EXCLUDE = $this->getConf('exclude');
+        if ( !empty($EXCLUDE) ) {
+	        $PATTERN = "/(" . implode('|', explode(' ', preg_quote($EXCLUDE, '/'))) . ")/i";
 
-        if ( !empty($EXCLUDE) && preg_match("/(".preg_quote($EXCLUDE,"/").")/i", $URL) ) { return false; }
+	        $this->functions->debug->message("Checking for exclude: ", array(
+	        	"pattern" => $PATTERN,
+	        	"file" => $URL,
+	        	"matches" => preg_match($PATTERN, $URL) ? 'match' : 'no match'
+	        ), 2);
+	
+			if ( preg_match($PATTERN, $URL) ) { return false; }
+        }
 
         require_once( DOKU_INC . 'inc/HTTPClient.php');
 
@@ -629,6 +642,9 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
         $newDepth = $this->functions->settings->depth;
         $hadBase = false;
 
+		// Clean data[2], remote ' and "
+		$DATA[2] = preg_replace("/^\s*?['\"]?(.*?)['\"]?\s*?$/", '\1', trim($DATA[2]));
+
         $this->functions->debug->message("Starting Link Replacement", $DATA, 2);
 
         // $DATA[2] = urldecode($DATA[2]); // Leads to problems because it does not re-encode the url
@@ -671,9 +687,10 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
 
         $this->functions->debug->message("URL before rewriting option for others than 1", array($DATA, $PARAMS, $hadBase), 1);
 
-        // Handle rewrites other than 1
-        if ( !preg_match('$^/?lib/$', $DATA[2]) ) {
-		    $this->functions->debug->message("Did not match '$^/?lib/$' userewrite == ", $conf['userewrite'], 1);
+        // Handle rewrites other than 1 - just for non-lib-files
+        // if ( !preg_match('$^/?lib/$', $DATA[2]) ) {
+        if ( !preg_match('$^(' . DOKU_BASE . ')?lib/$', $DATA[2]) ) {
+		    $this->functions->debug->message("Did not match '$^(" . DOKU_BASE . ")?lib/$' userewrite == ", $conf['userewrite'], 2);
             if ( $conf['userewrite'] == 2 ) {
                 $DATA[2] = $this->__getInternalRewriteURL($DATA[2]);
             } elseif ( $conf['userewrite'] == 0 ) {
