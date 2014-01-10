@@ -140,8 +140,8 @@ class preload_plugin_siteexport_controller extends Doku_Plugin_Controller {
 		
 		$allPlugin = parent::getList(null, true);
 		$oldPluginsEnabled = parent::getList(null, false);
-		$currentPluginsDisabled = empty($_REQUEST['diPlu']) ? array() : $_REQUEST['diPlu'];
-		$pluginsDisabledInverse = !empty($_REQUEST['diInv']);
+		$currentPluginsDisabled = empty($_REQUEST['diPlu']) ? ( empty($_REQUEST['disableplugin']) ? array() : $_REQUEST['disableplugin']) : $_REQUEST['diPlu'];
+		$pluginsDisabledInverse = !empty($_REQUEST['diInv']) || !empty($_REQUEST['disableall']);
 
 		if ( !$this->list_enabled ) {
 			$this->list_enabled = array();
