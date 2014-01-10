@@ -28,6 +28,8 @@ class settings_plugin_siteexport_settings extends DokuWiki_Plugin
     var $useTOCFile = false;
     var $cookie = null;
     
+    var $ignoreNon200 = true;
+    
     function settings_plugin_siteexport_settings($functions) {
         global $ID;
         
@@ -44,6 +46,8 @@ class settings_plugin_siteexport_settings extends DokuWiki_Plugin
         
         // Load Variables
         $this->origZipFile = $this->getConf('zipfilename');
+        
+        $this->ignoreNon200 = $this->getConf('ignoreNon200');
 
         // ID
         $this->downloadZipFile = $functions->getSpecialExportFileName($this->origZipFile, $this->pattern);

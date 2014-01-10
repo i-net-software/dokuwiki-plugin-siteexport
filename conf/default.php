@@ -6,6 +6,7 @@ $conf['zipfilename'] = 'wiki:siteexport.zip';
 $conf['exclude'] = '(/lib/images|/lib/plugins)';
 $conf['max_execution_time'] = 20;
 $conf['PDFHeaderPagebreak'] = "1";
+$conf['ignoreNon200'] = true;
 
 $conf['debugLevel'] = 5;
 $conf['debugFile'] = "";

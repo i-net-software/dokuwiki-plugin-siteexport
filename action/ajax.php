@@ -565,6 +565,11 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
         $getData = $http->get($URL);
 
         if( $getData === false ) {
+        
+        	if ( $this->functions->settings->ignoreNon200 ) {
+	        	return null;
+        	}
+        
             $this->functions->debug->message("Sending request failed with error, HTTP status was '{$http->status}'.", $URL, 4);
             return false;
         }
