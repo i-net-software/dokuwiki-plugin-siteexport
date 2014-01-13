@@ -64,6 +64,9 @@ if ( intval($_REQUEST['pdfExport']) == 1 && file_exists(DOKU_PLUGIN . 'dw2pdf/mp
             $mpdf->WriteHTML($html);
             $mpdf->Output($filename, "F");
 
+            $this->functions->debug->message("Used images:", $mpdf->images, 1);
+            $this->functions->debug->message("Failed images:", $mpdf->failedimages, 1);
+
             return true;
         }
 
