@@ -454,6 +454,7 @@
 		$('form#siteexport #pdfExport:input').change(function(event){
 			event.stopPropagation();
 			$('form#siteexport #renderer').find('option[value=siteexport_pdf]').prop('selected', this.checked);
+			$('form#siteexport #renderer').prop('disabled', this.checked);
 		});
 		
 		$('form#siteexport #disableall:input').change(function(event){
