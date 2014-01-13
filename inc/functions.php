@@ -462,6 +462,7 @@ class siteexport_functions extends DokuWiki_Plugin
         unset($removeArray['siteexport']);
         unset($removeArray['DokuWiki']);
         unset($removeArray['cronOverwriteExisting']);
+        unset($removeArray['disableCache']);
 
         if ( $removeArray['renderer'] == 'xhtml' ) {
             $removeArray['do'] = 'export_' . $removeArray['renderer'];
