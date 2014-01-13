@@ -34,7 +34,7 @@ class preload_plugin_siteexport {
 		if(!defined('DOKU_REL')) define('DOKU_REL',getBaseURL(false));
 		if(!defined('DOKU_URL')) define('DOKU_URL',getBaseURL(true));
 		if(!defined('DOKU_BASE')){
-			if($conf['canonical']){
+			if( isset($conf['canonical']) ){
 				define('DOKU_BASE',DOKU_URL);
 			}else{
 				define('DOKU_BASE',DOKU_REL);
