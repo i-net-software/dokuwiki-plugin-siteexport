@@ -17,7 +17,9 @@ $lang['pdfExport'] = 'PDF Export';
 $lang['usenumberedheading'] = 'Numbered Headings'; 
 $lang['template'] = 'Export Template' ; 
 $lang['exportBody'] = 'Export Body only'; 
-$lang['addParams'] = 'Export all parameters (e.g. "do")'; 
+$lang['addParams'] = 'Export all parameters (e.g. "do")';
+$lang['disableCache'] = 'Disable cache for current request';
+
 $lang['startingNamespace'] = 'Enter your starting Namespace'; 
 $lang['selectYourOptions'] = 'Select your Options'; 
 $lang['helpCreationOptions'] = 'Select one of the Help Creation Options (optional)'; 

@@ -113,6 +113,8 @@ class admin_plugin_siteexport extends DokuWiki_Admin_Plugin {
         $form->addElement(form_makeTag('br'));
         $form->addElement(form_makeCheckboxField('exportBody', 1, $this->getLang('exportBody') . ':', 'exportBody'));
         $form->addElement(form_makeTag('br'));
+        $form->addElement(form_makeCheckboxField('disableCache', 1, $this->getLang('disableCache') . ':', 'disableCache'));
+        $form->addElement(form_makeTag('br'));
         $form->addElement(form_makeCheckboxField('addParams', 1, $this->getLang('addParams') . ':', 'addParams', null, array_merge(array('checked' => ($conf['userewrite'] != 1 ? 'checked' : '' ) ))));
         $form->addElement(form_makeTag('br'));
         $form->addElement(form_makeTag('br'));

@@ -15,7 +15,9 @@ $lang['menu'] = 'Site Export';
 $lang['absolutePath'] = 'Absolute Pfad exportieren'; 
 $lang['template'] = 'Export Vorlage' ; 
 $lang['exportBody'] = 'Nur den Seiteninhalt exportieren (export_body)'; 
-$lang['addParams'] = 'Parameter in Links exportieren (z.B. "do")'; 
+$lang['addParams'] = 'Parameter in Links exportieren (z.B. "do")';
+$lang['disableCache'] = 'Cache f�r aktuelle Anfrage abschalten';
+
 $lang['startingNamespace'] = 'Namensraum Eisntellungen'; 
 $lang['selectYourOptions'] = 'Wählen Sie Ihre Optionen aus'; 
 $lang['helpCreationOptions'] = 'Wählen Sie zusätzlich eine Hilfe-Erstellungs Option'; 

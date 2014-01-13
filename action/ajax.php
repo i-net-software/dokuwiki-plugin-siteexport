@@ -1056,7 +1056,7 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
             if ( count($data > 0) ) {
 
                 // 30 Minuten Cache Zeit
-                $cache = $this->getConf('cachetime');
+                $cache = $this->functions->settings->cachetime;
                 foreach ( $data as $media ) {
 
                     //decide if has to be deleted needed:

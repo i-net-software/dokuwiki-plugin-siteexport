@@ -149,7 +149,7 @@ class siteexport_zipfilewriter
         $mtime = @filemtime($cacheFile); // 0 if not exists
 
         // Check if the file is expired - if so, just create a new one.
-        if ( $mtime == 0 || $mtime < time()-$this->functions->settings->getConf('cachetime') )
+        if ( $mtime == 0 || $mtime < time()-$this->functions->settings->cachetime )
         {
             @unlink($cacheFile);
             @unlink($this->functions->settings->zipFile);

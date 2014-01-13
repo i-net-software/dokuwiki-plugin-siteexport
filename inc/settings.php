@@ -23,6 +23,7 @@ class settings_plugin_siteexport_settings extends DokuWiki_Plugin
     
     var $TOCMapWithoutTranslation = false;
     
+    var $cachetime = 0;
     var $hasValidCacheFile = false;
     
     var $useTOCFile = false;
@@ -43,6 +44,11 @@ class settings_plugin_siteexport_settings extends DokuWiki_Plugin
         }
         
         $this->isCLI = (!$_SERVER['REMOTE_ADDR'] && 'cli' == php_sapi_name());
+        
+        $this->cachetime = $this->getConf('cachetime');
+        if ( !empty( $_REQUEST['disableCache'] ) ) {
+	        $this->cachetime = intval($_REQUEST['disableCache']) == 1 ? 0 : $this->cachetime;
+        }
         
         // Load Variables
         $this->origZipFile = $this->getConf('zipfilename');
