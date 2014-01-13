@@ -9,16 +9,14 @@ class siteexport_functions extends DokuWiki_Plugin
     public $debug = null;
     public $settings = null;
 
-    public function siteexport_functions($init=true)
+    public function siteexport_functions($init=true, $isAJAX=false)
     {
         if ( $init )
         {
             $this->debug = new siteexport_debug();
-            $this->settings = new settings_plugin_siteexport_settings($this);
+            $this->debug->isAJAX = $isAJAX;
 
-            $this->debug->setDebugLevel($this->settings->getConf('debugLevel'));
-            $this->debug->setDebugFile ($this->settings->getConf('debugFile'));
-            
+            $this->settings = new settings_plugin_siteexport_settings($this);
             $this->debug->message("Settings completed: zipFile", $this->settings->zipFile, 1);
         }
     }
@@ -468,6 +466,24 @@ class siteexport_functions extends DokuWiki_Plugin
             $removeArray['do'] = 'export_' . $removeArray['renderer'];
             unset($removeArray['renderer']);
         }
+        
+        // Keep custom options
+        if ( is_array($removeArray['customoptionname']) && is_array($removeArray['customoptionvalue']) && count($removeArray['customoptionname']) == count($removeArray['customoptionvalue']) )
+        {
+            for( $index=0; $index<count($removeArray['customoptionname']); $index++)
+            {
+                $removeArray[$removeArray['customoptionname'][$index]] = $removeArray['customoptionvalue'][$index];
+            }
+	        unset($removeArray['customoptionname']);
+	        unset($removeArray['customoptionvalue']);
+
+			
+	        if ( !empty( $removeArray['debug'] ) && intval($removeArray['debug']) >= 0 && intval($removeArray['debug']) <= 5) {
+		        $this->debug->setDebugLevel(intval($removeArray['debug']));
+	        }
+	        
+			unset($removeArray['debug']);
+        }
 
         if ( $advanced ) {
             if ( $removeArray['renderer'] != 'xhtml' && !empty($removeArray['renderer']) ) {
@@ -496,16 +512,6 @@ class siteexport_functions extends DokuWiki_Plugin
             unset($removeArray['startcounter']);
             unset($removeArray['pattern']);
             unset($removeArray['TOCMapWithoutTranslation']);
-
-            // Keep custom options
-            if ( is_array($removeArray['customOptions']) )
-            {
-                foreach( $removeArray['customOptions'] as $key => $value )
-                {
-                    $removeArray[$key] = $value;
-                }
-            }
-            unset($removeArray['customOptions']);
         }
 
         if ( $isString && is_array($removeArray) ) {

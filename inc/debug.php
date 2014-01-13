@@ -132,6 +132,7 @@ class siteexport_debug
     function runtimeException($message, $wasDebug=false) {
 
         if ( empty($message) ) { return; }
+        
         if ( !$this->isAJAX ) {
             ob_start();
         } else if ( !headers_sent() ) {

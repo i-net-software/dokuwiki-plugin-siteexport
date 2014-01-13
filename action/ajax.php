@@ -70,8 +70,7 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
             return;
         }
         
-        $this->__init_functions();
-        $this->functions->debug->isAJAX = true;
+        $this->__init_functions(true);
         
         switch( $event->data ) {
             case '__siteexport_getsitelist': $this->ajax_siteexport_getsitelist( $event ); break;
@@ -173,9 +172,9 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
         }
     }
 
-    public function __init_functions()
+    public function __init_functions($isAJAX=false)
     {
-        $this->functions = new siteexport_functions();
+        $this->functions = new siteexport_functions(true, $isAJAX);
         $this->filewriter = new siteexport_zipfilewriter($this->functions);
 
         // Check for PDF Capabilities
