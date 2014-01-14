@@ -129,5 +129,21 @@ div.sitetoc ul li div.li > a
 	margin-right: auto;
 }
 
+#dokuwiki__pagetools ul li a.siteexport_addpage::before {
+	content: url(images/pagetools.png);
+}
+
+#dokuwiki__pagetools:hover ul li a.siteexport_addpage,
+#dokuwiki__pagetools ul li a.siteexport_addpage:focus,
+#dokuwiki__pagetools ul li a.siteexport_addpage:active {
+	background-image: url(images/pagetools.png);
+}
+
+#dokuwiki__pagetools ul li a.siteexport_addpage:hover,
+#dokuwiki__pagetools ul li a.siteexport_addpage:active,
+#dokuwiki__pagetools ul li a.siteexport_addpage:focus {
+	background-position: right -32px;
+}
+
 
 // Setup VIM: ex: et ts=4 enc=utf-8 :
