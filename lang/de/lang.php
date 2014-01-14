@@ -16,11 +16,11 @@ $lang['absolutePath'] = 'Absolute Pfad exportieren';
 $lang['template'] = 'Export Vorlage' ; 
 $lang['exportBody'] = 'Nur den Seiteninhalt exportieren (export_body)'; 
 $lang['addParams'] = 'Parameter in Links exportieren (z.B. "do")';
-$lang['disableCache'] = 'Cache f�r aktuelle Anfrage abschalten';
+$lang['disableCache'] = 'Cache für aktuelle Anfrage abschalten';
 
-$lang['startingNamespace'] = 'Namensraum Eisntellungen'; 
+$lang['startingNamespace'] = 'Namensraum Einstellungen'; 
 $lang['selectYourOptions'] = 'Wählen Sie Ihre Optionen aus'; 
-$lang['helpCreationOptions'] = 'Wählen Sie zusätzlich eine Hilfe-Erstellungs Option'; 
+$lang['helpCreationOptions'] = 'Wählen Sie zus√§tzlich eine Hilfe-Erstellungs Option'; 
 $lang['eclipseDocZip'] = 'Eclipse Hilfe erstellen'; 
 $lang['JavaHelpDocZip'] = 'Java Hilfe erstellen'; 
 $lang['TOCMapWithoutTranslation'] = 'Übersetzungs-Wurzel entfernen'; 
@@ -37,6 +37,6 @@ $lang['ns'] = 'Start Namensraum für den Export (Elternelement)';
 
 
 $lang['search'] = 'Suche';
-$lang['toc'] = '�bersicht';
+$lang['toc'] = 'Übersicht';
 
 //Setup VIM: ex: et ts=4 enc=utf-8 :
