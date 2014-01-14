@@ -20,7 +20,7 @@ $lang['disableCache'] = 'Cache für aktuelle Anfrage abschalten';
 
 $lang['startingNamespace'] = 'Namensraum Einstellungen'; 
 $lang['selectYourOptions'] = 'Wählen Sie Ihre Optionen aus'; 
-$lang['helpCreationOptions'] = 'Wählen Sie zus√§tzlich eine Hilfe-Erstellungs Option'; 
+$lang['helpCreationOptions'] = 'Wählen Sie zusätzlich eine Hilfe-Erstellungs Option'; 
 $lang['eclipseDocZip'] = 'Eclipse Hilfe erstellen'; 
 $lang['JavaHelpDocZip'] = 'Java Hilfe erstellen'; 
 $lang['TOCMapWithoutTranslation'] = 'Übersetzungs-Wurzel entfernen'; 
