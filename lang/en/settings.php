@@ -9,6 +9,8 @@ $lang['exclude'] = 'Pattern to exclude resources';
 $lang['max_execution_time'] = 'Maximum script execution time';
 $lang['cachetime'] = 'Cache time for export';
 
+$lang['allowallusers'] = 'Allow all users to export pages';
+$lang['ignoreNon200'] = 'Ignore non-200 status';
 $lang['debugFile'] = 'Debug File';
 
 $lang['debugLevel'] = 'Debug Level';

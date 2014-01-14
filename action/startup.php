@@ -31,6 +31,8 @@ class action_plugin_siteexport_startup extends DokuWiki_Action_Plugin {
 	function register(&$controller) {
 		$controller->register_hook('DOKUWIKI_STARTED', 'AFTER', $this, 'siteexport_check_template');
 		$controller->register_hook('ACTION_ACT_PREPROCESS', 'BEFORE', $this, 'siteexport_check_export');
+		$controller->register_hook('TEMPLATE_PAGETOOLS_DISPLAY', 'BEFORE', $this, 'siteexport_add_page_export');
+		$controller->register_hook('TPL_ACT_UNKNOWN', 'BEFORE',  $this, 'siteexport_addpage');
 	}
 	
 	/**
@@ -51,6 +53,30 @@ class action_plugin_siteexport_startup extends DokuWiki_Action_Plugin {
 	    {
 	        $event->data = 'show';
 	        $conf['renderer_xhtml'] = 'siteexport_pdf';
+	    } if ( $event->data == 'siteexport_addpage' && ($this->getConf('allowallusers') || auth_isadmin() || auth_ismanager() ) ) {
+		    $event->preventDefault();
 	    }
+	}
+	
+	function siteexport_addpage(&$event)
+	{
+		if ( $event->data != 'siteexport_addpage' || ! ($this->getConf('allowallusers') || auth_isadmin() || auth_ismanager()) ) { return; }
+        if ( ! $functions=& plugin_load('helper', 'siteexport') ) {
+            msg("Can't initialize");
+            return false;
+        }
+        
+        $functions->__siteexport_addpage();
+	    $event->preventDefault();
+	}
+	
+	function siteexport_add_page_export(&$event)
+	{
+		global $ID;
+		
+		if ( ($this->getConf('allowallusers') || auth_isadmin() || auth_ismanager()) ) {
+			$event->data['items'][] = '<li>' . tpl_link(wl($ID, array('do' => 'siteexport_addpage')), '<span>Export Page</span>',
+												'class="action siteexport_addpage" title="Add page"', 1) . '</li>';
+		}
 	}
 }
