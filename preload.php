@@ -141,7 +141,21 @@ class preload_plugin_siteexport_controller extends Doku_Plugin_Controller {
 	public function __construct() {
 		parent::__construct();
 		
-		$disabledPlugins = empty($_REQUEST['disableplugin']) ? array() : $_REQUEST['disableplugin'];
+		$disabledPlugins = array();
+		
+		// support of old syntax
+		if ( is_array($_REQUEST['diPlu']) ) {
+			$disabledPlugins = $_REQUEST['diPlu'];
+		}
+
+		if ( !empty($_REQUEST['diInv']) ) {
+			// Invert disabled plugins!
+			$disabledPlugins = array_diff(array_keys($this->tmp_plugins), $_REQUEST['diPlu']);
+		}
+		
+		// if this is defined, it overrides the settings made above. obviously.
+		$disabledPlugins = empty($_REQUEST['disableplugin']) ? $disabledPlugins : $_REQUEST['disableplugin'];
+
 		foreach( $disabledPlugins as $plugin ) {
 			$this->disable($plugin);
 		}
