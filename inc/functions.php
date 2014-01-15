@@ -191,10 +191,34 @@ class siteexport_functions extends DokuWiki_Plugin
     function wl($id='',$more='',$abs=false,$sep='&amp;', $IDexists=true, $overrideRewrite=false, $hadBase=false){
         global $conf;
 
-        $this->debug->message("Starting to build WL-URL for '$id'", null, 1);
+        $this->debug->message("Starting to build WL-URL for '$id'", $more, 1);
 
         if(is_array($more)){
-            $more = buildURLparams($more,$sep);
+        
+        	$intermediateMore = '';
+        	foreach( $more as $key => $value) {
+        	
+        		if ( strlen($intermediateMore) > 0 ) {
+	        		$intermediateMore .= $sep;
+        		}
+        	
+	        	if ( !is_array($value) ) {
+		        	$intermediateMore .= rawurlencode($key) . '=';
+		        	$intermediateMore .= rawurlencode($value);
+		        	continue;
+	        	}
+	        	
+	        	foreach( $value as $val ) {
+	        		if ( strlen($intermediateMore) > 0 ) {
+		        		$intermediateMore .= $sep;
+	        		}
+	        	
+		        	$intermediateMore .= rawurlencode($key) . '[]=';
+		        	$intermediateMore .= rawurlencode($val);
+	        	}
+        	}
+        
+            $more = $intermediateMore;
         }else{
             $more = str_replace(',',$sep,$more);
         }
