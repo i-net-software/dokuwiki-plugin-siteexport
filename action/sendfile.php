@@ -35,7 +35,7 @@ class action_plugin_siteexport_sendfile extends DokuWiki_Action_Plugin {
      * Redirect File to real File
      */
     function siteexport_sendfile(&$event, $args) {
-        global $MEDIA, $conf;
+        global $conf;
 
         if ( empty($_REQUEST['siteexport']) /* || $event->data['orig'] != $this->getConf('zipfilename') */ ) {
             return;
@@ -44,7 +44,7 @@ class action_plugin_siteexport_sendfile extends DokuWiki_Action_Plugin {
         $functions = new siteexport_functions();
         $functions->settings->pattern = $_REQUEST['siteexport'];
 
-        // Try injecting another name ...
+        // Try injecting another name ... can't do, because sendFile sets this right after me and right before sending the actual data.
         // header('Content-Disposition: attachment; filename="'. basename($functions->settings->zipFile) .'";');
         
         // Try getting the cached file ...
