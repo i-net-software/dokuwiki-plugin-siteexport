@@ -54,7 +54,7 @@ class preload_plugin_siteexport {
 			return;
 		}
 
-		// check for css and js as well ...
+		// check for css and js  ... only disable in that case.
 		if ( !preg_match("/(js|css)\.php$/", $_SERVER['SCRIPT_NAME']) ) {
 			return;
 		}
@@ -73,7 +73,6 @@ class preload_plugin_siteexport {
 
 	function __disablePlugins() {
 		global $plugin_controller_class, $plugin_controller;
-		
 		$plugin_controller_class = 'preload_plugin_siteexport_controller';	
 	}
 
@@ -136,37 +135,28 @@ OUTPUT;
 // return a custom plugin list
 class preload_plugin_siteexport_controller extends Doku_Plugin_Controller {
 
-	function getList($type='',$all=false){
+	/**
+	 * Setup disabling
+	 */
+	public function __construct() {
+		parent::__construct();
 		
-		$allPlugin = parent::getList(null, true);
-		$oldPluginsEnabled = parent::getList(null, false);
-		$currentPluginsDisabled = empty($_REQUEST['diPlu']) ? ( empty($_REQUEST['disableplugin']) ? array() : $_REQUEST['disableplugin']) : $_REQUEST['diPlu'];
-		$pluginsDisabledInverse = !empty($_REQUEST['diInv']) || !empty($_REQUEST['disableall']);
-
-		if ( !$this->list_enabled ) {
-			$this->list_enabled = array();
+		$disabledPlugins = empty($_REQUEST['disableplugin']) ? array() : $_REQUEST['disableplugin'];
+		foreach( $disabledPlugins as $plugin ) {
+			$this->disable($plugin);
 		}
-
-		// All plugins that are not already disabled are to be disabled
-		$toDisable = !$pluginsDisabledInverse ? array_diff($currentPluginsDisabled, array_diff($allPlugin, $oldPluginsEnabled)) : array_diff(array_diff($allPlugin, $currentPluginsDisabled), array_diff($allPlugin, $oldPluginsEnabled));
-		
-	    foreach ( $toDisable as $plugin ) {
-	    
-			if ( !in_array($plugin, $allPlugin) ) { continue; }
-			$this->list_enabled = array_diff($this->tmp_plugins, array($plugin));
-			$this->list_disabled[] = $plugin;
-		}
-
-	    foreach($this->list_enabled as $plugin ) {
-	    	// check for CSS or JS
-	    	if ( !file_exists(DOKU_PLUGIN."$plugin/script.js") && !file_exists(DOKU_PLUGIN."$plugin/style.css") ) {
-	    		unset($this->tmp_plugins[$plugin]);
-				$this->list_disabled[] = $plugin;
-	    	}
-	    }
-	    
-	    return parent::getList($type,$all);
 	}
+
+   /**
+    * Disable the plugin
+    *
+    * @param string $plugin name of plugin
+    * @return bool; true allways.
+    */
+   public function disable($plugin) {
+	   $this->tmp_plugins[$plugin] = 0;
+	   return true;
+   }
 }
 
 
