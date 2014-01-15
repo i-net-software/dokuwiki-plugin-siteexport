@@ -56,9 +56,9 @@ class helper_plugin_siteexport extends DokuWiki_Plugin {
 	    global $plugin_controller;
 	    
 	    $allPlugins = array();
-	    foreach($plugin_controller->getList(null,true) as $plugin ) {
+	    foreach($plugin_controller->getList(null,true) as $plugin ) { // All plugins
 	    	// check for CSS or JS
-	    	if ( !file_exists(DOKU_PLUGIN."$plugin/script.js") && !file_exists(DOKU_PLUGIN."$p/style.css") ) { continue; }
+	    	if ( !file_exists(DOKU_PLUGIN."$plugin/script.js") && !file_exists(DOKU_PLUGIN."$plugin/style.css") && !file_exists(DOKU_PLUGIN."$plugin/print.css") ) { continue; }
 	    	$allPlugins[] = $plugin;
 	    }
 	    
