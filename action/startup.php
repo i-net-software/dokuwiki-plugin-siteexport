@@ -29,6 +29,7 @@ class action_plugin_siteexport_startup extends DokuWiki_Action_Plugin {
 	* Register Plugin in DW
 	**/
 	function register(&$controller) {
+		$controller->register_hook('INIT_LANG_LOAD', 'BEFORE', $this, 'siteexport_check_template');
 		$controller->register_hook('DOKUWIKI_STARTED', 'AFTER', $this, 'siteexport_check_template');
 		$controller->register_hook('ACTION_ACT_PREPROCESS', 'BEFORE', $this, 'siteexport_check_export');
 		$controller->register_hook('TEMPLATE_PAGETOOLS_DISPLAY', 'BEFORE', $this, 'siteexport_add_page_export');

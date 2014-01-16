@@ -7,6 +7,8 @@ class preload_plugin_siteexport {
 
 	function __register_template() {
 	
+		global $conf;
+	
 		if ( !empty($_REQUEST['q']) ) {
 
 			require_once( DOKU_INC . 'inc/JSON.php');
@@ -15,6 +17,13 @@ class preload_plugin_siteexport {
 
 		} else if ( !empty( $_REQUEST['template'] ) ) {
 			$tempREQUEST = $_REQUEST;
+		} else if ( preg_match("/(js|css)\.php$/", $_SERVER['SCRIPT_NAME']) && isset($_SERVER['HTTP_REFERER']) ) {
+			// this is a css or script, nothing before matched and we have a referrer.
+			// lets asume we came from the dokuwiki page.
+
+			// Parse the Referrer URL
+			$url = parse_url($_SERVER['HTTP_REFERER']);
+			parse_str($url['query'], $tempREQUEST);
 		} else {
 			return;
 		}
