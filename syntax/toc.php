@@ -17,6 +17,7 @@ class syntax_plugin_siteexport_toc extends DokuWiki_Syntax_Plugin {
 
 	var $insideToc = false;
 	var $savedToc = array();
+	var $options = array();
 
 	var $mergedPages = array();
 	var $includedPages = array();
@@ -58,8 +59,8 @@ class syntax_plugin_siteexport_toc extends DokuWiki_Syntax_Plugin {
 
 				$this->insideToc = true;
 
-				$options = explode(' ', substr($match, 5, -1));
-				return array('start' => true, 'pos' => $pos, 'options' => $options);
+				$this->options = explode(' ', substr($match, 5, -1));
+				return array('start' => true, 'pos' => $pos, 'options' => $this->options);
 				break;
 
 			case DOKU_LEXER_SPECIAL:
@@ -114,6 +115,7 @@ class syntax_plugin_siteexport_toc extends DokuWiki_Syntax_Plugin {
 			case DOKU_LEXER_UNMATCHED:
 
 				$handler->_addCall('cdata',array($match), $pos);
+
 				return false;
 				break;
 			case DOKU_LEXER_EXIT:
@@ -146,6 +148,7 @@ class syntax_plugin_siteexport_toc extends DokuWiki_Syntax_Plugin {
     						case 'notoc' : $renderer->meta['sitetoc']['noTOC'] = true; break;
     						case 'merge' : $renderer->meta['sitetoc']['mergeDoc'] = true; break;
     						case 'nohead' : $renderer->meta['sitetoc']['noTocHeader'] = true; break;
+    						case 'mergeheader' : $renderer->meta['sitetoc']['mergeHeader'] = true; break;
     					}
     				}
 			    }
@@ -181,6 +184,8 @@ class syntax_plugin_siteexport_toc extends DokuWiki_Syntax_Plugin {
 				// If there is some data to be merged
 				if ( count($this->mergedPages) > 0) {
 				
+					$renderer->doc = ''; // Start fresh!
+					
 					$renderer->section_open("1 mergedsite");
 
 					// Prepare lookup Array
@@ -188,10 +193,36 @@ class syntax_plugin_siteexport_toc extends DokuWiki_Syntax_Plugin {
 						$this->includedPages[] = array_shift(explode('#', $tocItem));
 					}
 
-					// Print merged pages
+					// Load the instructions
+					$instr = array();
 					foreach ( $this->mergedPages as $tocItem ) {
-						$this->_render_output($renderer,$tocItem, $mode);
+						$file    = wikiFN($tocItem);
+						$instructions = p_cached_instructions($file, false); 
+
+						// Convert Link instructions
+						$instructions = $this->_convertInstructions($instructions, $addID, $renderer);
+						
+						if ( $renderer->meta['sitetoc']['mergeHeader'] && !empty($instr) ) {
+							// Merge
+							$instr = $this->_mergeWithHeaders($instr, $instructions, 1);
+							// print_r($instr);
+							
+						} else {
+							// Concat
+							$instr = array_merge($instr, $instructions);
+						}
 					}
+				
+					//page was empty
+					if (empty($instr)) {
+						return;
+					}
+					
+					$this->_cleanInstructions($instr, '/section_(close|open)/');
+					$this->_cleanInstructions($instr, '/listu_(close|open)/');
+					$this->_cleanInstructions($instr, '/listo_(close|open)/');
+					
+					$this->_render_output($renderer, $mode, $instr);
 
 					$renderer->section_close();
 				}
@@ -209,16 +240,16 @@ class syntax_plugin_siteexport_toc extends DokuWiki_Syntax_Plugin {
 
 				$NAME = empty($NAME) ? p_get_first_heading($SID,true) : $NAME;
 				$LNID = "$ID#" . sectionID($SID, $check);
-			}
-
-			// Print normal internal link (XHTML odt)
-			$renderer->internallink($LNID, $NAME, null);
-			
-			// Display Description underneath
-			if ( $renderer->meta['sitetoc']['showDescription'] === true ) {
-				// $renderer->p_open();
-				$renderer->cdata(p_get_metadata($SID, 'description abstract', true));
-				// $renderer->p_close();
+			} else {
+				// // print normal internal link (XHTML odt)
+				$renderer->internallink($LNID, $NAME, null);
+				
+				// Display Description underneath
+				if ( $renderer->meta['sitetoc']['showDescription'] === true ) {
+					// $renderer->p_open();
+					$renderer->cdata(p_get_metadata($SID, 'description abstract', true));
+					// $renderer->p_close();
+				}
 			}
 			
 			// Render Metadata
@@ -275,27 +306,14 @@ class syntax_plugin_siteexport_toc extends DokuWiki_Syntax_Plugin {
 	/*
 	 * Render the output of one page
 	 */
-	function _render_output($renderer, $addID, $mode) {
+	function _render_output($renderer, $mode, $instr) {
 		global $ID;
 
-		//get data(in instructions format) from $file (dont use cache: false)
-		$file    = wikiFN($addID);
-		$instr   = p_cached_instructions($file, false);
-
-		//page was empty
-		if (empty($instr)) {
-			return;
-		}
-
-		// Convert Link instructions
-		$instr   = $this->_convertInstructions($instr, $addID, $renderer);
-
-
 		// Section IDs
-		$check = null;
-		$addID = sectionID($addID, $check);	//not possible to use a:b:c for id
+		// $addID = sectionID($addID, $check);	//not possible to use a:b:c for id
 
 		if ( $mode == 'xhtml' ) {
+		
 			//--------RENDER
 			//renderer information(TOC build / Cache used)
 			$info = array();
@@ -304,16 +322,13 @@ class syntax_plugin_siteexport_toc extends DokuWiki_Syntax_Plugin {
 			//Remove TOC`s, section edit buttons and tags
 			$content = $this->_cleanXHTML($content);
 
-
 			// embed the included page
 			$renderer->doc .= '<div class="include">';
 			//add an anchor to find start of a inserted page
-			$renderer->doc .= "<a name='$addID' id='$addID'>";
+			// $renderer->doc .= "<a name='$addID' id='$addID'>";
 			$renderer->doc .= $content;
 			$renderer->doc .= '</div>';
 		} else if ( $mode == 'odt') {
-
-			$renderer->doc .= '<text:bookmark text:name="'.$addID.'"/>';
 
 			// Loop through the instructions
 			foreach ( $instr as $instruction ) {
@@ -322,7 +337,6 @@ class syntax_plugin_siteexport_toc extends DokuWiki_Syntax_Plugin {
 			}
 		}
 	}
-
 
 	/*
 	 * Corrects relative internal links and media and
@@ -350,7 +364,6 @@ class syntax_plugin_siteexport_toc extends DokuWiki_Syntax_Plugin {
 		else
 		return $instr;
 	}
-
 
 	/*
 	 * Convert link of given instruction
@@ -392,6 +405,126 @@ class syntax_plugin_siteexport_toc extends DokuWiki_Syntax_Plugin {
 		// Resolvemedia returns the absolute path to media by reference
 		$exists = false;
 		resolve_mediaid(getNS($id),$instr[1][0],$exists);
+	}
+	
+	function _mergeWithHeaders($existing, $newInstructions, $level = 1) {
+	
+		$returnInstructions = array();
+		$preparedInstructions = array();
+		$existingStart = $existingEnd = 0;
+		$firstRun = true;
+		
+		while ( $this->_findNextHeaderSection($existing, $level, $existingStart, $existingEnd) ) {
+		
+			if ( $firstRun ) {
+				$returnInstructions = array_merge($returnInstructions, array_slice($existing, 0, $existingStart));
+				$firstRun = false;
+			}
+			
+			$currentSlice = array_slice($existing, $existingStart, $existingEnd - $existingStart);
+			
+			// Find matching part with headername
+			$newStart = $newEnd = 0;
+			if ( $this->_findNextHeaderSection($newInstructions, $level, $newStart, $newEnd, $currentSlice[0][1][0]) ) {
+				
+				$newSlice = array_slice($newInstructions, $newStart, $newEnd - $newStart);				
+				if ( $newSlice[0][0] == 'header' )
+					array_shift($newSlice); // Remove Heading
+				
+				// merge found parts on next level.
+				$returnedInstructions = $this->_mergeWithHeaders($currentSlice, $newSlice, $level+1);
+				
+				// Put them at the end!
+				$preparedInstructions = array_merge($preparedInstructions, $returnedInstructions);
+				
+				// Remove from input
+				array_splice($newInstructions, $newStart, $newEnd - $newStart);
+			} else {
+				$preparedInstructions = array_merge($preparedInstructions, $currentSlice);
+			}
+			
+			$existingStart = $existingEnd;
+		}
+		
+		// Append the rest
+		$returnInstructions = array_merge($returnInstructions, array_slice($existing, $existingStart));
+
+		// Check for section close inconsistencies and put one at the very end ...		
+		$section_postpend = array();
+		if ( array_slice($newInstructions, -1)[0][0] == 'section_close' && array_slice($newInstructions, -2)[0][0] == 'section_close' ) {
+			$section_postpend = array_splice($newInstructions, -1);
+		}		
+		if ( array_slice($returnInstructions, -1)[0][0] == 'section_close' && array_slice($returnInstructions, -2)[0][0] == 'section_close' ) {
+			$section_postpend = array_merge($section_postpend, array_splice($returnInstructions, -1));
+		}		
+
+		// What if there are headings left inside the $newInstructions?????
+		// Find matching part with headername
+		$newStart = $newEnd = 0;
+		$section_prepend = array();
+		if ( $this->_findNextHeaderSection($newInstructions, $level, $newStart, $newEnd) ) {
+			// If there are header in here, build a prepend and have the rest at the end
+			$section_prepend = array_splice($newInstructions, 0, $newStart);
+		} else {
+			// If not, prepend all of it.
+			$section_prepend = $newInstructions;
+			$newInstructions = array();
+		}
+
+		$returnInstructions = array_merge($returnInstructions, $section_prepend, $preparedInstructions, $newInstructions, $section_postpend);
+		
+		return $returnInstructions;
+	}
+	
+	function _findNextHeaderSection($section, $level, &$start, &$end, $headerName = null) {
+		
+		$inCount = count($section);
+		$currentSlice = -1;
+		
+		// Find Level 1 Header that matches.
+		for( $i=$start ; $i < $inCount ; $i++ ) {
+
+			$instruction = $section[$i];
+			$end = $i; // Or it will be lost and a section close will be missing.
+
+			// First Level Header
+			if ( $instruction[0] == 'header' && $instruction[1][1] == $level ) {
+				
+				if ( $currentSlice > 0 ) {
+					return true;
+				}
+				
+				if ( $headerName == null || ( $headerName == $instruction[1][0] ) ) {
+					// Begin of new slice ...
+					$start = $currentSlice = $i;
+				}
+			}
+		}
+		
+		// Nothing found
+		$end = $i; // Or it will be lost and a section close will be missing.
+		return $currentSlice > 0;
+	}
+		
+	function _cleanInstructions(&$instructions, $tag) {
+		
+		$inCount = count($instructions);
+		for( $i=0 ; $i < $inCount ; $i++ ) {
+			
+			// Last instruction
+			if ( $i == $inCount-1 ) {
+				break;
+			}
+						
+			if ( preg_match($tag, $instructions[$i][0]) && preg_match($tag, $instructions[$i+1][0]) && $instructions[$i][0] != $instructions[$i+1][0] ) {
+				
+				// found different tags, but both match the expression and follow each other - so they can be elliminated
+				array_splice($instructions, $i, 2);
+				$inCount -= 2;
+				$i--;
+			}
+			
+		}
 	}
 
 	/**
