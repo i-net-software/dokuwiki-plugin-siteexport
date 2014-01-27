@@ -67,7 +67,7 @@ class action_plugin_siteexport_aggregate extends DokuWiki_Action_Plugin {
 	        'type' => 'mediapopup',
 	        'title' => $this->getLang('toolbarButton'),
 	        'icon' => '../../plugins/siteexport/images/toolbar.png',
-	        'url' => 'lib/plugins/siteexport/inc/siteexportmanager.php?ns=',
+	        'url' => 'lib/plugins/siteexport/exe/siteexportmanager.php?ns=',
 	        'options' => 'width=750,height=500,left=20,top=20,scrollbars=yes,resizable=yes',
 	        'block' => false,
 	    );

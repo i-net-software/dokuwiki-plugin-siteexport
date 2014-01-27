@@ -43,7 +43,7 @@ define('DOKU_SITEEXPORT_MANAGER',1);
 
     // do not display the manager if user does not have read access
     if($AUTH < AUTH_READ) {
-        http_status(403);
+       	http_status(403);
         die($lang['accessdenied']);
     }
 
