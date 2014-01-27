@@ -35,7 +35,6 @@ $lang['status'] = 'Status';
 $lang['ns'] = 'Namensraum für den Export';
 $lang['ns'] = 'Start Namensraum für den Export (Elternelement)';
 
-
 $lang['search'] = 'Suche';
 $lang['toc'] = 'Übersicht';
 

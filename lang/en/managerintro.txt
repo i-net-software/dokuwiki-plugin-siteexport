@@ -1,0 +1,5 @@
+====== Site Export Manager ======
+
+Configure a ''%%{{siteAGGREGATOR}}%%'' element with these options.
+
+When done, press the button at the end of the page and the options will be put into the page.

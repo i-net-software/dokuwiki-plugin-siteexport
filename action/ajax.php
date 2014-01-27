@@ -87,7 +87,10 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
         global $ID;
 
         // Check if the 'do' was siteexport
-        if ( $event->data != 'siteexport' ) { return false; }
+	    $command = is_array($event->data) ? array_keys($event->data)[0] : $event->data;
+        if ( $command != 'siteexport' ) { return false; }
+		$event->data = act_clean($event->data);
+
         if ( headers_sent() ) {
             msg("The siteexport function has to be called prior to any header output.", -1);
         }

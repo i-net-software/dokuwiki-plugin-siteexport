@@ -63,4 +63,10 @@ $lang['addCustomOption'] = 'add Option';
 $lang['search'] = 'Search';
 $lang['toc'] = 'Table of Contents';
 
+
+$lang['AggregateSubmitLabel'] = 'Download';
+$lang['AggragateExportPages'] = 'Starting page for merger:';
+$lang['toolbarButton'] = 'Insert Siteexporter';
+$lang['useOptionsInEditor'] = 'Use these options and insert {{siteAggregator}} element';
+
 //Setup VIM: ex: et ts=4 enc=utf-8 :

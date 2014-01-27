@@ -50,12 +50,16 @@ class action_plugin_siteexport_startup extends DokuWiki_Action_Plugin {
 	function siteexport_check_export(&$event)
 	{
 	    global $conf;
-	    if ( $event->data == 'export_siteexport_pdf')
+	    $command = is_array($event->data) ? array_keys($event->data)[0] : $event->data;
+	    if ( $command == 'export_siteexport_pdf')
 	    {
 	        $event->data = 'show';
 	        $conf['renderer_xhtml'] = 'siteexport_pdf';
-	    } if ( $event->data == 'siteexport_addpage' && ($this->getConf('allowallusers') || auth_isadmin() || auth_ismanager() ) ) {
-		    $event->preventDefault();
+	    } 
+	    
+	    if ( $command == 'siteexport_addpage' && ($this->getConf('allowallusers') || auth_isadmin() || auth_ismanager() ) )
+	    {
+			$event->preventDefault();
 	    }
 	}
 	

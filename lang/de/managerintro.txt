@@ -1,0 +1,3 @@
+====== Site Export Manager ======
+
+Konfiguration eines a ''%%{{siteAGGREGATOR}}%%'' elements mit den folgenden Optionen.

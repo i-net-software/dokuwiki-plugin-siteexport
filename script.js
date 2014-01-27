@@ -2,14 +2,13 @@
 (function($){
 	$(function(){
 			
-	
 		if ( !$('form#siteexport').size() ) {
 			return;
 		}
 		
 		var siteexportadmin = function() {
 		};
-		
+
 		var hasErrors = function(data, status) {
 			return (status != 'undefined' && status != 200);
 /*			return data.match(new RegExp("((runtime|fatal) error|[error])", "i"))
@@ -21,10 +20,12 @@
 			_.url = DOKU_BASE + 'lib/exe/ajax.php';
 			_.suspendGenerate = false;
 			_.allElements = 'form#siteexport :input:not([readonly]):not([disabled]):not([type=submit]):not(button)';
+			_.isManager = $('div#siteexport__manager').size() > 0;
+			_.forbidden_options = [ 'call', 'sectok' ];
 
 			_.generate = function() {
 				
-				if ( _.suspendGenerate ) { return; }
+				if ( _.suspendGenerate || _.isManager ) { return; }
 				
 				this.resetDataForNewRequest();
 
@@ -46,6 +47,19 @@
 			
 				this.resetDataForNewRequest();
 			
+				if ( _.isManager && opener ) {
+				
+					var settings = $.param(_.cleanSettings()).split('&').join(' ');
+					if ( settings.length > 0 ) settings = ' ' + settings;
+					
+					edid = String.prototype.match.call(document.location, /&edid=([^&]+)/);
+					opener.insertTags(edid ? edid[1] : 'wiki__text', '{{siteexportAGGREGATOR' + settings + '}}','','');
+
+					window.close();
+					opener.focus();
+					return;
+				}
+
 				_.throbber(true);
 				$.post( _.url, _.settings('__siteexport_getsitelist'), function(data, textStatus, jqXHR) {
 					data = data.split("\n");
@@ -136,47 +150,19 @@
 			};
 			
 			_.settings = function(call) {
-				var settings = {};
-				settings.call = call;
-				$.extend(settings, this.readValues());
+				var settings = $(_.allElements).serializeArray();
+				if (call)settings.push({ name: 'call', value: call});
 				return settings;
 			};
 			
-			_.putValue = function(object, name, value) {
+			_.cleanSettings = function(call) {
 				
-				if ( name.indexOf('[]') > 0 ) {
-					name = name.substr(0, name.indexOf('[]'));
-					if ( typeof object[name] == 'undefined' ) {
-						object[name] = [];
-					}
+				return _.settings(call).filter(function(element){
 					
-					object[name].push(value);
-				} else {
-					object[name] = value;
-				}
-			};
-			
-			_.readValues = function() {
-			
-				var options = {};
-				$(_.allElements).each(function(index, input) {
-				
-					switch(this.type) {
-						case 'checkbox': if (this.checked) { _.putValue( options, this.name, $(this).val() ); } break;
-						case 'select-one': 
-						case 'select': {
-							if ( $(this).val() != $(this.options[this.selectedIndex]).text() ) {
-								_.putValue( options, this.name, parseInt($(this).val()));
- 							} else {
-								 _.putValue( options, this.name, $(this).val());
-							}
-							break;
-						}
-						default: _.putValue( options, this.name, $(this).val() );
-					}
+					if ( element.value == NS || element.value == JSINFO.id || element.value == JSINFO.namespace ) { element.name = null; }
+					if ( !isNaN(element.value) ) element.value = parseInt(element.value);
+					return element.name && _.forbidden_options.indexOf(element.name) < 0 && (element.value.length > 0 || (!isNaN(element.value) && element.value > 0));
 				});
-				
-				return options;
 			};
 			
 			/**
@@ -358,7 +344,6 @@
 						_.updateValue($('#siteexport :input[name='+node+']'), value);
 					}
 				}
-				
 				
 				// Custom Options
 				for ( var index in values['customoptionname'] ) {

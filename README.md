@@ -153,23 +153,25 @@ The structure is basically a list of links:
 
 The &lt;toc&gt; tag support several options:
 
-<table >
-	<tr >
-		<th > Option </th><th > Behavior </th>
-	</tr>
-	<tr >
-		<td > <span style="color:#0033FF; ">notoc</span> </td>
-		<td > hide the user defined TOC in the document </td>
-	</tr>
-	<tr >
-		<td > <span style="color:#0033FF; ">description</span> </td>
-		<td > display the description abstract below of the linked page below the link (usefull together with:<br>
-<code>~~META:description abstract=This is my abstract.~~</code> </td>
-	</tr>
-	<tr >
-		<td > <span style="color:#0033FF; ">merge</span> </td>
-		<td > this will merge all the defined documents from the TOC into the current document. </td>
-	</tr>
-</table>
+Option | Behavior
+---- | ----
+notoc | hide the user defined TOC in the document
+description | display the description abstract below of the linked page below the link (usefull together with:`~~META:description abstract=This is my abstract.~~`
+merge | this will merge all the defined documents from the TOC into the current document.
+mergeheader | this will, as addition to merge, merge all headers starting with the first document (new headers of later documents will be appended at the end, the will not be sorted alphabetically)
 
 You have to define the options like this: <code>&lt;toc notoc merge&gt;</code>
+
+##Siteexport Aggregator
+There is the additional syntax: aggregator. This allows an in-page selection of an ordered list of pages in the current namespace and sub-namespaces. Once selected and submitted, that page will be generated with the options provided - and merged back up the list (it actually starts merging top down). (What?!)
+
+The Syntax is (and can be used multiple times per document):
+
+<pre>
+{{siteAGGREGATOR [options]}}
+</pre>
+
+ * This will actually create a `<toc>` internally, using the options `merge` and `mergeheader`
+ * Without options it will generate a dropdown-list of all pages in the namespace (except the current) one
+ * The list will be ordered by a meta key `mergecompare` which has to be added via the META plugin.
+ * You can create an element with predefined options using the editor button.

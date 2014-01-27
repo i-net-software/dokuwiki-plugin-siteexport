@@ -2,11 +2,16 @@
     visibility: hidden;
 }
 
-#siteexport {
+#siteexport, #siteexport__manager {
     margin: 1em auto 1em auto;
     vertical-align: middle;
     width: 80%;
     text-align: left;
+}
+
+#siteexport__manager {
+	margin-top: 0px;
+	padding-top: 1em;
 }
 
 #siteexport fieldset {

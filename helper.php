@@ -9,6 +9,19 @@
 // must be run within Dokuwiki
 if(!defined('DOKU_INC')) die();
 
+    
+class helper_plugin_siteexport_page_remove {
+    private $newerThanPage;
+
+    function __construct($newerThanPage) {
+            $this->newerThanPage = $newerThanPage;
+    }
+
+    function _page_remove($elem) {
+    	return $elem[2] >= $this->newerThanPage;
+    }
+}
+
 class helper_plugin_siteexport extends DokuWiki_Plugin {
 
 	/**
@@ -64,6 +77,48 @@ class helper_plugin_siteexport extends DokuWiki_Plugin {
 	    
     	return array($allPlugins, $plugin_controller->getList());
 	}
+    
+    private function _page_sort($a, $b)
+    {
+	    if ( $a[2] == $b[2] ) {
+		    return 0;
+	    }
+	    
+	    return $a[2] > $b[2] ? -1 : 1;
+    }
+    
+    function __getOrderedListOfPagesForID($ID, $newerThanPage=null)
+	{
+		global $conf;
+		require_once(dirname(__FILE__)."/inc/functions.php");
+		$functions = new siteexport_functions(false);
+
+        $sites = $values = array();
+        $page = null;
+		search($sites, $conf['datadir'], 'search_allpages', array(), $functions->getNamespaceFromID($ID, $page));
+        
+        foreach( $sites as $site ) {
+        	
+        	if ( $ID == $site['id'] ) continue;
+        	$sortIdentifier = intval(p_get_metadata($site['id'], 'mergecompare'));
+        	
+        	if ( $site['id'] == $newerThanPage ) {
+        		// If the ID matches a given page we use the sortidentifier for filtering
+	        	$newerThanPage = $sortIdentifier;
+        	}
+        	
+            array_push($values, array($site['id'], $functions->getSiteTitle($site['id']), $sortIdentifier));
+        }
+        
+        if ( $newerThanPage != null ) {
+        	// filter using the newerThanPage indicator
+	        $values = array_filter($values, array(new helper_plugin_siteexport_page_remove($newerThanPage), '_page_remove'));
+        }
+        
+        usort($values, array($this, '_page_sort'));
+
+        return $values;
+	}
 	
 	function __siteexport_addpage() {
 		
@@ -96,7 +151,7 @@ class helper_plugin_siteexport extends DokuWiki_Plugin {
         }
 
         $regenerateScript = '';
-        print $this->locale_xhtml('intro');
+        print $this->locale_xhtml(( defined('DOKU_SITEEXPORT_MANAGER') ? 'manager' : '') . 'intro');
 
         $form = new Doku_Form('siteexport', null, 'post');
         $form->startFieldset( $this->getLang('startingNamespace') );
@@ -218,48 +273,59 @@ class helper_plugin_siteexport extends DokuWiki_Plugin {
         
         $form->endFieldset();
         $form->addElement(form_makeTag('br'));
+
+		if ( !defined('DOKU_SITEEXPORT_MANAGER') ) {
+			
         
-        $form->startFieldset( $this->getLang('startProcess') );
+	        $form->startFieldset( $this->getLang('startProcess') );
+	        $form->addElement(form_makeTextField('copyurl', "", $this->getLang('directDownloadLink') . ':', 'copyurl', null, array('readonly' => 'readonly') ));
+	        $form->addElement(form_makeTag('br'));
+	        $form->addElement(form_makeTextField('wgeturl', "", $this->getLang('wgetURLLink') . ':', 'wgeturl', null, array('readonly' => 'readonly') ));
+	        $form->addElement(form_makeTag('br'));
+	        $form->addElement(form_makeTextField('curlurl', "", $this->getLang('curlURLLink') . ':', 'curlurl', null, array('readonly' => 'readonly') ));
+	        $form->addElement(form_makeTag('br', array('class'=>'clear')));
+	        $form->addElement(form_makeButton('submit', 'siteexport', $this->getLang('start') , array('style' => 'float:right;')));
+	        $form->endFieldset();
+	        $form->addElement(form_makeTag('br'));
+	
+	        $form->endFieldset();
+			$form->addElement(form_makeTag('br'));
 
-        $form->addElement(form_makeTextField('copyurl', "", $this->getLang('directDownloadLink') . ':', 'copyurl', null, array('readonly' => 'readonly') ));
-        $form->addElement(form_makeTag('br'));
-        $form->addElement(form_makeTextField('wgeturl', "", $this->getLang('wgetURLLink') . ':', 'wgeturl', null, array('readonly' => 'readonly') ));
-        $form->addElement(form_makeTag('br'));
-        $form->addElement(form_makeTextField('curlurl', "", $this->getLang('curlURLLink') . ':', 'curlurl', null, array('readonly' => 'readonly') ));
-        $form->addElement(form_makeTag('br', array('class'=>'clear')));
-        $form->addElement(form_makeButton('submit', 'siteexport', $this->getLang('start') , array('style' => 'float:right;')));
+	        $form->startFieldset( $this->getLang('status') );
+	        $form->addElement(form_makeOpenTag('span', array('id' => 'siteexport__out')));
+	
+	        $form->addElement(form_makeCloseTag('span'));
+	        $form->addElement(form_makeOpenTag('span', array('class' => 'siteexport__throbber')));
+	        $form->addElement(form_makeTag('img', array('src' => DOKU_BASE.'lib/images/loading.gif', 'id' => 'siteexport__throbber')));
+	        $form->addElement(form_makeCloseTag('span'));
+	        $form->endFieldset();
+	        $form->addElement(form_makeTag('br'));
+	
+	        if ( $cronEnabled )
+	        {
+	            $form->startFieldset( $this->getLang('cronSaveProcess') );
+	            $form->addElement(form_makeOpenTag('p'));
+	            $form->addElement( $this->getLang('cronDescription') );
+	            $form->addElement(form_makeCloseTag('p'));
+	
+	            $form->addElement(form_makeCheckboxField("cronOverwriteExisting", 1, $this->getLang('canOverwriteExisting'), "cronOverwriteExisting"));
+	            $form->addElement(form_makeTag('br', array('class'=>'clear')));
+	            $form->addElement(form_makeButton('submit', 'cronDeleteAction', $this->getLang('cronDeleteAction') , array('id' => 'cronDeleteAction', 'style' => 'float:left;display:none') ));
+	            $form->addElement(form_makeButton('submit', 'cronSaveAction', $this->getLang('cronSaveAction') , array('id' => 'cronSaveAction', 'style' => 'float:right;') ));
+	            $form->addElement(form_makeTag('br', array('class'=>'clear')));
+	            
+	            $form->addElement(form_makeOpenTag('a', array('href' => '#cronactions', 'alt' => 'show cron jobs', 'id' => 'showcronjobs', 'target' => '_blank', 'style' => 'float:right;')));
+	            $form->addElement('show all cron jobs');
+	            $form->addElement(form_makeCloseTag('a'));
+	        }
+	
+		} else {
+	        $form->startFieldset( $this->getLang('startProcess') );
+	        $form->addElement(form_makeButton('submit', 'siteexport', $this->getLang('useOptionsInEditor') , array('style' => 'width:100%;')));
+		}
+
         $form->endFieldset();
         $form->addElement(form_makeTag('br'));
-
-        $form->startFieldset( $this->getLang('status') );
-        $form->addElement(form_makeOpenTag('span', array('id' => 'siteexport__out')));
-
-        $form->addElement(form_makeCloseTag('span'));
-        $form->addElement(form_makeOpenTag('span', array('class' => 'siteexport__throbber')));
-        $form->addElement(form_makeTag('img', array('src' => DOKU_BASE.'lib/images/loading.gif', 'id' => 'siteexport__throbber')));
-        $form->addElement(form_makeCloseTag('span'));
-        $form->endFieldset();
-        $form->addElement(form_makeTag('br'));
-
-        if ( $cronEnabled )
-        {
-            $form->startFieldset( $this->getLang('cronSaveProcess') );
-            $form->addElement(form_makeOpenTag('p'));
-            $form->addElement( $this->getLang('cronDescription') );
-            $form->addElement(form_makeCloseTag('p'));
-
-            $form->addElement(form_makeCheckboxField("cronOverwriteExisting", 1, $this->getLang('canOverwriteExisting'), "cronOverwriteExisting"));
-            $form->addElement(form_makeTag('br', array('class'=>'clear')));
-            $form->addElement(form_makeButton('submit', 'cronDeleteAction', $this->getLang('cronDeleteAction') , array('id' => 'cronDeleteAction', 'style' => 'float:left;display:none') ));
-            $form->addElement(form_makeButton('submit', 'cronSaveAction', $this->getLang('cronSaveAction') , array('id' => 'cronSaveAction', 'style' => 'float:right;') ));
-            $form->addElement(form_makeTag('br', array('class'=>'clear')));
-            
-            $form->addElement(form_makeOpenTag('a', array('href' => '#cronactions', 'alt' => 'show cron jobs', 'id' => 'showcronjobs', 'target' => '_blank', 'style' => 'float:right;')));
-            $form->addElement('show all cron jobs');
-            $form->addElement(form_makeCloseTag('a'));
-                        
-            $form->endFieldset();
-        }
 
         $form->printForm();
 	}
