@@ -168,7 +168,7 @@ There is the additional syntax: aggregator. This allows an in-page selection of 
 The Syntax is (and can be used multiple times per document):
 
 <pre>
-{{siteAGGREGATOR [options]}}
+{{siteexportAGGREGATOR [options]}}
 </pre>
 
  * This will actually create a `<toc>` internally, using the options `merge` and `mergeheader`
