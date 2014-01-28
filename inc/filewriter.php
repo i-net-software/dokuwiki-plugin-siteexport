@@ -179,6 +179,37 @@ class siteexport_zipfilewriter
         $this->functions->debug->message("CacheFile exists: ", $cacheFile, 2);
         return $this->functions->settings->hasValidCacheFile = true;
     }
+    
+    public function getOnlyFileInZip(&$filename = null, &$headerFileName = null) {
+    
+    	if ( is_null($filename) ) $filename = $this->functions->settings->zipFile;
+	    
+	    $zip = new ZipArchive();
+	    if ( !$zip->open($filename) ) {
+		    return false;
+	    }
+
+		if ( $zip->numFiles != 1 ) {
+			return false;
+		}
+		
+		$stat = $zip->statIndex( 0 );
+		if ( substr($stat['name'], -3) != 'pdf' ) {
+			return false;
+		}
+		
+		// Extract single file.
+		$folder = dirname($filename);
+		
+		$headerFileName = utf8_basename($stat['name']);
+		$zip->extractTo($folder, $stat['name']);
+		$zip->close();
+		
+		sleep(1);
+		$filename .= '.' . cleanID($headerFileName); // Wee need the other file for cache reasons.
+		@rename($folder.'/'.$headerFileName, $filename);
+	    return true;
+    }
 }
 
 ?>

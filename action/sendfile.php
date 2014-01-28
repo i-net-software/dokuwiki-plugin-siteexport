@@ -43,6 +43,7 @@ class action_plugin_siteexport_sendfile extends DokuWiki_Action_Plugin {
 
         $functions = new siteexport_functions();
         $functions->settings->pattern = $_REQUEST['siteexport'];
+        $filewriter = new siteexport_zipfilewriter($functions);
 
         // Try injecting another name ... can't do, because sendFile sets this right after me and right before sending the actual data.
         // header('Content-Disposition: attachment; filename="'. basename($functions->settings->zipFile) .'";');
@@ -51,7 +52,9 @@ class action_plugin_siteexport_sendfile extends DokuWiki_Action_Plugin {
         $event->data['file'] = $functions->getCacheFileNameForPattern();
         
         $functions->debug->message("fetching cached file from pattern '{$functions->settings->pattern}' with name '{$event->data['file']}'", null, 2);
+
         $functions->checkIfCacheFileExistsForFileWithPattern($event->data['file'], $_REQUEST['siteexport']);
+        $filewriter->getOnlyFileInZip($event->data['file'], $event->data['orig']);
     }
 
     function siteexport_sendfile_not_found(&$event, $args)
