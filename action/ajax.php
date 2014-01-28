@@ -1027,18 +1027,6 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
             $FILENAMEID = $this->functions->settings->origZipFile;
         }
 
-        if ( !$this->functions->settings->isCLI )
-        {
-            $INFO = pageinfo();
-            if ( $INFO['perm'] < AUTH_DELETE && !$this->functions->settings->isAuthed ) {
-                list ( $USER, $PASS) = $this->functions->basic_authentication();
-                $this->functions->settings->isAuthed = auth_login($USER, $PASS);
-                $this->functions->debug->message("Login With:", array( 'User' => $USER, 'Password' => '*****', 'isAuthed' => $this->functions->settings->isAuthed));
-				$INFO = pageinfo();
-            }
-        }
-
-
         if ( !file_exists(mediaFN($FILENAMEID)) ) {
             $returnValue = true;
         } else {

@@ -82,21 +82,6 @@ class settings_plugin_siteexport_settings extends DokuWiki_Plugin
         // Strip params that should be forwarded
         $this->additionalParameters = $_REQUEST;
         $functions->removeWikiVariables($this->additionalParameters, true);
-
-        $tmpID = $ID;
-        $ID = $this->origZipFile;
-
-        $INFO = pageinfo();
-        if ( !$this->isCLI )
-        {
-            // Workaround for the cron which cannot authenticate but has access to everything.
-            if ( $INFO['perm'] < AUTH_DELETE ) {
-                list ( $USER, $PASS) = $functions->basic_authentication();
-                auth_login($USER, $PASS);
-            }
-        }
-
-        $ID = $tmpID;
     }
 }
 
