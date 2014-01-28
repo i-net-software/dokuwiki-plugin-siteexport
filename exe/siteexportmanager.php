@@ -4,7 +4,8 @@
  *
  * based up on the mediamanager popup
  *
- * @author   Gerry Weissbach / i-net software <gweissbach@inetsoftware.de>
+ * @author     i-net software <tools@inetsoftware.de>
+ * @author     Gerry Weissbach <gweissbach@inetsoftware.de>
  * @license  GPL 2 (http://www.gnu.org/licenses/gpl.html)
  */
 if(!defined('DOKU_INC')) define('DOKU_INC',dirname(__FILE__).'/../../../../');

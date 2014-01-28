@@ -2,7 +2,8 @@
 /**
  * Render Plugin for XHTML  without details link for internal images.
  *
- * @author i-net software <tools@inetsoftware.de>
+ * @author     i-net software <tools@inetsoftware.de>
+ * @author     Gerry Weissbach <gweissbach@inetsoftware.de>
  */
 
 if(!defined('DOKU_INC')) die();

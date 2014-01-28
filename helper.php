@@ -3,7 +3,8 @@
  * Translation Plugin: Simple multilanguage plugin
  *
  * @license    GPL 2 (http://www.gnu.org/licenses/gpl.html)
- * @author     Andreas Gohr <andi@splitbrain.org>
+ * @author     i-net software <tools@inetsoftware.de>
+ * @author     Gerry Weissbach <gweissbach@inetsoftware.de>
  */
 
 // must be run within Dokuwiki

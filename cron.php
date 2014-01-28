@@ -6,7 +6,8 @@ if(!defined('DOKU_PLUGIN')) define('DOKU_PLUGIN',DOKU_INC.'lib/plugins/');
  * The Cron Class is just an initial wrapper which tries to create a blank cron.conf.php file
  * It can also add/edit/delete Cron Jobs that are being configured at the GUI
  *
- * @author gamma
+ * @author     i-net software <tools@inetsoftware.de>
+ * @author     Gerry Weissbach <gweissbach@inetsoftware.de>
  *
  */
 class cron_plugin_siteexport {
