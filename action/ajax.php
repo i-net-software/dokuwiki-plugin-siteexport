@@ -524,15 +524,19 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
         	return false;
         }
 
+        $dirname = dirname($fileName);
         // If a Filename was given that does not comply to the original name, use this one!
-        if ( !empty($tmpFile[1]) && !strstr($fileName, $tmpFile[1]) ) {
+		if ( $this->filewriter->canDoPDF() ) {
 
-            $dParts = explode('/', $fileName);
-            array_pop($dParts);
-            $dParts[] = $tmpFile[1];
-
-            $fileName = implode('/', $dParts);
-            $this->fileChecked[$url] = $fileName;
+			$this->functions->debug->message("Will replace old filename '{$fileName}' with {$tmpFile[2]}", null, 1);
+        	$extension = array_pop(explode('.', $fileName));
+			$fileName = $dirname . '/' .  $this->functions->getSiteTitle($ID) . '.' . $extension;
+			$this->fileChecked[$url] = $fileName;
+        } else if ( !empty($tmpFile[1]) && !strstr($DATA[2], $tmpFile[1]) ) {
+        
+			$this->functions->debug->message("Will replace old filename '{$fileName}' with {$tmpFile[1]}", null, 1);
+			$fileName = $dirname . '/' . $tmpFile[1];
+			$this->fileChecked[$url] = $fileName;
         }
 
         // Add to zip
@@ -603,6 +607,8 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
             return false;
         }
 
+        $this->functions->debug->message("Headers received", $http->resp_headers, 2);
+
         if ( !$RECURSE ) {
             // Parse URI PATH and add "html"
             $this->functions->debug->message("========================================", null, 1);
@@ -616,7 +622,7 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
 
         fwrite($fp,$getData);
         fclose($fp);
-
+        
         return array($tmpFile, preg_replace("/.*?filename=\"?(.*?)\"?;?$/", "$1", $http->resp_headers['content-disposition']));
     }
 
@@ -973,15 +979,11 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
         }
 
         $this->functions->debug->message("The fetched file looks good.", $tmpFile, 1);
+        $dirname = dirname($DATA[2]);
 
         // If a Filename was given that does not comply to the original name, us this one!
         if ( !empty($tmpFile[1]) && !strstr($DATA[2], $tmpFile[1]) ) {
-
-            $dParts = explode('/', $DATA[2]);
-            array_pop($dParts);
-            $dParts[] = $tmpFile[1];
-
-            $DATA[2] = implode('/', $dParts);
+			$DATA[2] = $dirname . '/' . $tmpFile[1];
         }
 
         // Add to zip
