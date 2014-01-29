@@ -50,7 +50,8 @@ class action_plugin_siteexport_startup extends DokuWiki_Action_Plugin {
 	function siteexport_check_export(&$event)
 	{
 	    global $conf;
-	    $command = is_array($event->data) ? array_keys($event->data)[0] : $event->data;
+	    $command = $event->data;
+	    if ($tmp = array_keys($event->data)) { $command = $tmp[0]; }
 	    if ( $command == 'export_siteexport_pdf')
 	    {
 	        $event->data = 'show';
