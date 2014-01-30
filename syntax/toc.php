@@ -451,10 +451,30 @@ class syntax_plugin_siteexport_toc extends DokuWiki_Syntax_Plugin {
 
 		// Check for section close inconsistencies and put one at the very end ...		
 		$section_postpend = array();
-		if ( array_slice($newInstructions, -1)[0][0] == 'section_close' && array_slice($newInstructions, -2)[0][0] == 'section_close' ) {
+		if ( 
+		    ( 
+			($tmp = array_slice($newInstructions, -1))
+			&& ($tmp[0][0] == 'section_close')
+		    )
+		    && 
+		    (
+			($tmp = array_slice($newInstructions, -2))
+			&& ($tmp[0][0] == 'section_close' )
+		    )
+		) {
 			$section_postpend = array_splice($newInstructions, -1);
 		}		
-		if ( array_slice($returnInstructions, -1)[0][0] == 'section_close' && array_slice($returnInstructions, -2)[0][0] == 'section_close' ) {
+		if (
+		    ( 
+			($tmp = array_slice($returnInstructions, -1))
+			&& ($tmp[0][0] == 'section_close')
+		    )
+		    && 
+		    (
+			($tmp = array_slice($returnInstructions, -2))
+			&& ($tmp[0][0] == 'section_close' )
+		    )
+		) {
 			$section_postpend = array_merge($section_postpend, array_splice($returnInstructions, -1));
 		}		
 
