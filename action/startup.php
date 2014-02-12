@@ -34,6 +34,7 @@ class action_plugin_siteexport_startup extends DokuWiki_Action_Plugin {
 		$controller->register_hook('ACTION_ACT_PREPROCESS', 'BEFORE', $this, 'siteexport_check_export');
 		$controller->register_hook('TEMPLATE_PAGETOOLS_DISPLAY', 'BEFORE', $this, 'siteexport_add_page_export');
 		$controller->register_hook('TPL_ACT_UNKNOWN', 'BEFORE',  $this, 'siteexport_addpage');
+	        $controller->register_hook('TPL_METAHEADER_OUTPUT', 'BEFORE', $this, 'siteexport_metaheaders');
 	}
 	
 	/**
@@ -84,5 +85,21 @@ class action_plugin_siteexport_startup extends DokuWiki_Action_Plugin {
 			$event->data['items'][] = '<li>' . tpl_link(wl($ID, array('do' => 'siteexport_addpage')), '<span>Export Page</span>',
 												'class="action siteexport_addpage" title="Add page"', 1) . '</li>';
 		}
+	}
+	
+	function siteexport_metaheaders(&$event)
+	{
+		if ( defined('SITEEXPORT_TPL') ) {
+			
+			$head =& $event->data;
+			
+			foreach( $head['script'] as &$script ) {
+				if ( !empty($script['src']) && strstr($script['src'], 'js.php') ) {
+					$script['src'] .= '&template=' . SITEEXPORT_TPL;
+				}
+			}
+		}
+		
+		return true;
 	}
 }
