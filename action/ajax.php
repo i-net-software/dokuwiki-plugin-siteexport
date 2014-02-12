@@ -87,8 +87,7 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
         global $ID;
 
         // Check if the 'do' was siteexport
-        $command = $event->data;
-        if ( $tmp = array_keys($event->data) ) { $command = $tmp[0]; }
+	    $command = is_array($event->data) ? array_keys($event->data)[0] : $event->data;
         if ( $command != 'siteexport' ) { return false; }
 		$event->data = act_clean($event->data);
 
