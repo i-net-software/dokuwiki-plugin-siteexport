@@ -1,0 +1,5 @@
+====== Site Export Beheerder ======
+
+Configureer een "%%{{siteAggregator}}%%" element met deze instellingen.
+
+Druk op knop aan het einde van de pagina om de instellingen toe te voegen aan de pagina.
