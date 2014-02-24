@@ -197,6 +197,7 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
         $event->stopPropagation();
 
         // Retrieve Information for download URL
+        $this->functions->debug->message("Prepared URL and POST from Request:", $_REQUEST, 2);
         $url = $this->functions->prepare_POSTData($_REQUEST);
         $combined = $this->functions->urlToPathAndParams($url);
         list($path, $query) = explode('?', $combined, 2);
@@ -385,6 +386,8 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
         }
 
         $opts = array( 'depth' => $depth, 'skipacl' => $this->getConf('skipacl'), 'query' => $query);
+        $this->functions->debug->message("Options", $opts, 2);
+        
         $data = array();
         require_once (DOKU_INC.'inc/search.php');
 
