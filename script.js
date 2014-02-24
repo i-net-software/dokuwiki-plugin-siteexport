@@ -83,9 +83,16 @@
 			_.addSite = function(site) {
 		
 				var settings = _.settings('__siteexport_addsite');
-				settings.site = site;
-				settings.pattern = this.pattern;
-				settings.base = DOKU_BASE;
+				settings.push({
+					name: 'site',
+					value: site
+				},{
+					name: 'pattern',
+					value: this.pattern
+				},{
+					name: 'base',
+					value: DOKU_BASE
+				});
 
 				_.throbber(true);
 				$.post( _.url, settings, function(data, textStatus, jqXHR) {
