@@ -484,7 +484,6 @@ class siteexport_functions extends DokuWiki_Plugin
         unset($removeArray['siteexport']);
         unset($removeArray['DokuWiki']);
         unset($removeArray['cronOverwriteExisting']);
-        unset($removeArray['disableCache']);
 
         if ( $removeArray['renderer'] == 'xhtml' ) {
             $removeArray['do'] = 'export_' . $removeArray['renderer'];
@@ -505,8 +504,6 @@ class siteexport_functions extends DokuWiki_Plugin
 	        if ( !empty( $removeArray['debug'] ) && intval($removeArray['debug']) >= 0 && intval($removeArray['debug']) <= 5) {
 		        $this->debug->setDebugLevel(intval($removeArray['debug']));
 	        }
-	        
-			unset($removeArray['debug']);
         }
 
         if ( $advanced ) {
@@ -536,6 +533,8 @@ class siteexport_functions extends DokuWiki_Plugin
             unset($removeArray['startcounter']);
             unset($removeArray['pattern']);
             unset($removeArray['TOCMapWithoutTranslation']);
+			unset($removeArray['disableCache']);
+			unset($removeArray['debug']);
         }
 
         if ( $isString && is_array($removeArray) ) {
