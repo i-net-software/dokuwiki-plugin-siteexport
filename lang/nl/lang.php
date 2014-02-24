@@ -5,6 +5,7 @@
  * 
  * @author Rene <wllywlnt@yahoo.com>
  */
+<<<<<<< HEAD
 $lang['encoding']              = 'utf-8';
 $lang['direction']             = 'Ltr';
 $lang['menu']                  = 'Site Export';
@@ -34,3 +35,24 @@ $lang['ens']                   = 'Ouder Namespace om te exporteren ';
 $lang['disablePluginsOption']  = 'Schakel (JS/CSS) Plugins uit tijdens het exporteren';
 $lang['depthType']             = 'Export Type';
 $lang['depth.pageOnly']        = 'Alleen deze pagina';
+=======
+$lang['depth.allSubNameSpaces'] = 'alle sub namespaces';
+$lang['depth.specifiedDepth']  = 'Opgegeven diepte';
+$lang['depth']                 = 'Diepte';
+$lang['renderer']              = 'Render Engine';
+$lang['exportLinkedPages']     = 'Geëxporteerde gelinkte pagina\'s ';
+$lang['canOverwriteExisting']  = 'Overschrijf bestaande Cron Job';
+$lang['cronSaveProcess']       = 'Opslaan als Cron Job';
+$lang['cronDescription']       = 'Hiermee zijn op cron gebaseerde bewerkingen te maken. Deze worden uitgevoerd in overeenstemming met de server instelling (benodigd is command line toegang tot het cron programma)';
+$lang['cronSaveAction']        = 'Sla op als Cron Job';
+$lang['cronDeleteAction']      = 'Verwijder Cron Job';
+$lang['customOptions']         = 'Aangepaste instellingen';
+$lang['customOptionsDescription'] = 'U kunt verder aangepaste instellingen toevoegen waarmee rekening wordt gehouden bij het exporteren';
+$lang['addCustomOption']       = 'Voeg een optie toe';
+$lang['search']                = 'Zoeken';
+$lang['toc']                   = 'Inhouds opgave ';
+$lang['AggregateSubmitLabel']  = 'Download';
+$lang['AggragateExportPages']  = 'Startpagina voor samenvoegen:';
+$lang['toolbarButton']         = 'Voeg Siteexporter toe';
+$lang['useOptionsInEditor']    = 'Gebruik deze opties en voeg het {{siteAggregator}}element toe';
+>>>>>>> c11d5b6fcbb42ab43c08e3b9702a757c93a8998e
