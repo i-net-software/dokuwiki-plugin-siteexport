@@ -14,17 +14,7 @@ require_once(DOKU_PLUGIN.'action.php');
 
 class action_plugin_siteexport_aggregate extends DokuWiki_Action_Plugin {
 
-	/**
-	 * for backward compatability
-	 * @see inc/DokuWiki_Plugin#getInfo()
-	 */
-    function getInfo(){
-        if ( method_exists(parent, 'getInfo')) {
-            $info = parent::getInfo();
-        }
-        return is_array($info) ? $info : confToHash(dirname(__FILE__).'/../plugin.info.txt');
-    }
-	
+
     /**
 	* Register Plugin in DW
 	**/

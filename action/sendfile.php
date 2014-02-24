@@ -18,12 +18,6 @@ require_once(DOKU_PLUGIN.'siteexport/inc/functions.php');
 
 class action_plugin_siteexport_sendfile extends DokuWiki_Action_Plugin {
 
-    function getInfo(){
-        return array_merge(confToHash(dirname(__FILE__).'/../info.txt'), array(
-				'name' => 'i-net Download (Send File Action Component)',
-        ));
-    }
-
     function register(&$controller) {
         // Download of a file
         

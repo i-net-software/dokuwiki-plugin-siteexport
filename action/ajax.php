@@ -39,17 +39,6 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
     private $namespace = '';
 
     /**
-     * for backward compatability
-     * @see inc/DokuWiki_Plugin#getInfo()
-     */
-    function getInfo(){
-        if ( method_exists(parent, 'getInfo')) {
-            $info = parent::getInfo();
-        }
-        return is_array($info) ? $info : confToHash(dirname(__FILE__).'/../plugin.info.txt');
-    }
-
-    /**
      * Register Plugin in DW
      **/
     function register(&$controller) {
@@ -479,7 +468,7 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
 
         $this->functions->debug->message("========================================", null, 2);
         $this->functions->debug->message("Adding Site: '$ID'", null, 2);
-        $this->functions->debug->message("----------------------------------------", null, 1);
+        $this->functions->debug->message("----------------------------------------", $_REQUEST, 2);
 
         $request = $this->functions->settings->additionalParameters;
         unset($request['diPlu']); // This will not be needed for the first request.
