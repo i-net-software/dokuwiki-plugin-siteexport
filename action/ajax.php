@@ -523,15 +523,14 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
 			$this->functions->debug->message("Will replace old filename '{$fileName}' with {$tmpFile[2]}", null, 1);
         	$extension = array_pop(explode('.', $fileName));
 			$fileName = $dirname . '/' .  $this->functions->getSiteTitle($ID) . '.' . $extension;
-			$this->fileChecked[$url] = $fileName;
         } else if ( !empty($tmpFile[1]) && !strstr($DATA[2], $tmpFile[1]) ) {
         
 			$this->functions->debug->message("Will replace old filename '{$fileName}' with {$tmpFile[1]}", null, 1);
 			$fileName = $dirname . '/' . $tmpFile[1];
-			$this->fileChecked[$url] = $fileName;
         }
 
         // Add to zip
+		$this->fileChecked[$url] = $fileName;
         $status = $this->filewriter->__addFileToZip($tmpFile[0], $fileName);
         @unlink($tmpFile[0]);
 
@@ -938,7 +937,6 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
 
         // 2010-10-23 - What if this is a fetch.php? than we produced an error.
         //        $this->fileChecked[] = $DATA[2];
-        $this->fileChecked[$url] = $DATA[2]; // 2010-09-03 - One URL to one FileName
 
         // get tempFile and save it
         $origDepth = $this->functions->settings->depth;
@@ -974,7 +972,8 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
         $dirname = dirname($DATA[2]);
 
         // If a Filename was given that does not comply to the original name, us this one!
-        if ( !empty($tmpFile[1]) && !strstr($DATA[2], $tmpFile[1]) ) {
+        // 2014-02-28 But only if we are on PDF Mode. Does this produce any other Problems?
+        if ( $this->filewriter->canDoPDF() && !empty($tmpFile[1]) && !strstr($DATA[2], $tmpFile[1]) ) {
 			$DATA[2] = $dirname . '/' . $tmpFile[1];
         }
 
@@ -997,7 +996,7 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
 
         // depth is set, skip this one
         if ( is_null( $DEPTH ) ) $DEPTH = $this->functions->settings->depth;
-        $DATA[2] .= ( !empty( $DATA['PARAMS']) ? '?' . $DATA['PARAMS'] : '' ) . ( !empty( $DATA['ANCHOR'] ) ? '#' . $DATA['ANCHOR'] : '' );
+        $DATA[2] .= ( !empty( $DATA['PARAMS']) && $this->functions->settings->addParams? '?' . $DATA['PARAMS'] : '' ) . ( !empty( $DATA['ANCHOR'] ) ? '#' . $DATA['ANCHOR'] : '' );
 
         $newURL = $DATA[1] == 'url' ? $DATA[1] . '(' . $DEPTH . $DATA[2] . ')' : $DATA[1] . '="' . $DEPTH . $DATA[2] . '"';
         $this->functions->debug->message("Re-created URL: '$newURL'", null, 2);
