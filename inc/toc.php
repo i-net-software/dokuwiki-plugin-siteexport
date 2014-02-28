@@ -87,10 +87,6 @@ class siteexport_toc
             // only add an url once
             if ( in_array($elem['url'], $CHECKDATA) ) { continue; }
 
-            if ( empty( $elem['name'] ) ) {
-                $elem['name'] = $this->functions->getSiteTitle($elem['id']);
-            }
-
 			// if not there, no map ids will be generated
             $elem['mapID'] = intval($elem['exists']) == 1 ? $this->getMapID($elem, $check) : array();
 
@@ -102,6 +98,10 @@ class siteexport_toc
                 $startPageID = $elem['mapID'][0];
             }
             
+            if ( empty( $elem['name'] ) || $elem['name'] == NoNs($elem['id']) ) {
+	            $elem['name'] = $this->functions->getSiteTitle($elem['id']);
+            }
+
             // Go on building mapXML
             $this->shortenByTranslation($elem['mapURL'], true); // true to already remove all language stuff - false if not
             foreach ( $elem['mapID'] as $VIEWID ) {
@@ -110,6 +110,7 @@ class siteexport_toc
 
             $elem['tocNS'] = getNS(cleanID($elem['url']));
             $elem['tocNS'] = explode('/', $this->shortenByTranslation($elem['tocNS'], true));
+            $this->functions->debug->message("This will be the TOC elements data:", $elem, 1);
 
             $this->__buildTOCTree($DATA, $elem['tocNS'], $elem);
         }
