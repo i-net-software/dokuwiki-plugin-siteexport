@@ -38,4 +38,7 @@ $lang['ns'] = 'Start Namensraum für den Export (Elternelement)';
 $lang['search'] = 'Suche';
 $lang['toc'] = 'Übersicht';
 
+$lang['NoEntriesFoundHint'] = 'Es wurden keine Seiten zum zusammenfassen gefunden.';
+
+
 //Setup VIM: ex: et ts=4 enc=utf-8 :

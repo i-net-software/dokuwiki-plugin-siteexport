@@ -68,5 +68,6 @@ $lang['AggregateSubmitLabel'] = 'Download';
 $lang['AggragateExportPages'] = 'Starting page for merger:';
 $lang['toolbarButton'] = 'Insert Siteexporter';
 $lang['useOptionsInEditor'] = 'Use these options and insert {{siteAggregator}} element';
+$lang['NoEntriesFoundHint'] = 'No pages have been found for aggregation.';
 
 //Setup VIM: ex: et ts=4 enc=utf-8 :
