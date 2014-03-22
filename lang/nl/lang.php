@@ -34,7 +34,6 @@ $lang['ens']                   = 'Ouder Namespace om te exporteren ';
 $lang['disablePluginsOption']  = 'Schakel (JS/CSS) Plugins uit tijdens het exporteren';
 $lang['depthType']             = 'Export Type';
 $lang['depth.pageOnly']        = 'Alleen deze pagina';
-
 $lang['depth.allSubNameSpaces'] = 'alle sub namespaces';
 $lang['depth.specifiedDepth']  = 'Opgegeven diepte';
 $lang['depth']                 = 'Diepte';
@@ -54,3 +53,4 @@ $lang['AggregateSubmitLabel']  = 'Download';
 $lang['AggragateExportPages']  = 'Startpagina voor samenvoegen:';
 $lang['toolbarButton']         = 'Voeg Siteexporter toe';
 $lang['useOptionsInEditor']    = 'Gebruik deze opties en voeg het {{siteAggregator}}element toe';
+$lang['NoEntriesFoundHint']    = 'Er werden geen pagina\'s gevonden voor samenvoeging.';
