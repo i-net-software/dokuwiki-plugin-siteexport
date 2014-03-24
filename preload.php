@@ -23,7 +23,9 @@ class preload_plugin_siteexport {
 
 			// Parse the Referrer URL
 			$url = parse_url($_SERVER['HTTP_REFERER']);
-			parse_str($url['query'], $tempREQUEST);
+			if ( isset($url['query']) ) {
+				parse_str($url['query'], $tempREQUEST);
+			}
 		} else {
 			return;
 		}
@@ -75,13 +77,13 @@ class preload_plugin_siteexport {
 		
 		$_SERVER['HTTP_HOST'] = 'siteexport.js'; // fake everything in here
 		
-		require_once(DOKU_INC.'inc/plugincontroller.class.php'); // Have to get the pluginutils already
-		require_once(DOKU_INC.'inc/pluginutils.php'); // Have to get the pluginutils already
+		// require_once(DOKU_INC.'inc/plugincontroller.class.php'); // Have to get the pluginutils already
+		// require_once(DOKU_INC.'inc/pluginutils.php'); // Have to get the pluginutils already
 		$this->__disablePlugins();
 	}
 
 	function __disablePlugins() {
-		global $plugin_controller_class, $plugin_controller;
+		global $plugin_controller_class;
 		$plugin_controller_class = 'preload_plugin_siteexport_controller';	
 	}
 
@@ -157,9 +159,15 @@ class preload_plugin_siteexport_controller extends Doku_Plugin_Controller {
 			$disabledPlugins = $_REQUEST['diPlu'];
 		}
 
-		if ( !empty($_REQUEST['diInv']) ) {
-			// Invert disabled plugins!
-			$disabledPlugins = array_diff(array_keys($this->tmp_plugins), $_REQUEST['diPlu']);
+		if ( !empty($_REQUEST['diInv']) )
+		{
+		    $allPlugins = array();
+		    foreach($this->tmp_plugins as $plugin => $enabled) { // All plugins
+		    	// check for CSS or JS
+		    	if ( $enabled == 1 && !file_exists(DOKU_PLUGIN."$plugin/script.js") && !file_exists(DOKU_PLUGIN."$plugin/style.css") && !file_exists(DOKU_PLUGIN."$plugin/print.css") ) { continue; }
+		    	$allPlugins[] = $plugin;
+		    }
+			$disabledPlugins = empty($_REQUEST['diPlu']) ? $allPlugins : array_diff($allPlugins, $_REQUEST['diPlu']);
 		}
 		
 		// if this is defined, it overrides the settings made above. obviously.
