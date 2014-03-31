@@ -352,6 +352,25 @@ class renderer_plugin_siteexport_pdf extends Doku_Renderer_xhtml {
 
         return $string;
     }
+    
+    /**
+     * API of the imagereference plugin
+     * https://github.com/i-net-software/dokuwiki-plugin-imagereference
+     *
+     * Allows to specify special imagecaption tags that the renderer (mpdf) can use
+     */
+    public function imageCaptionTags(&$imagereferenceplugin)
+    {
+    	if ( !$imagereferenceplugin->accepts('table') ) {
+		    return array( '<figure id="%s" class="imgcaption%s">', // $captionStart
+					      '</figure>',                             // $captionEnd
+						  '<figcaption class="undercaption">',     // $underCaptionStart
+						  '</figcaption>'                          // $underCaptionEnd
+					);
+    	}
+    	
+    	return null;
+    }
 }
 
 //Setup VIM: ex: et ts=4 enc=utf-8 :
