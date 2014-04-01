@@ -74,11 +74,12 @@ if ( file_exists(DOKU_PLUGIN . 'dw2pdf/DokuPDF.class.php') ) {
         	}
         	
         	parent::GetFullPath($path, $basepath);
-        	
-        	$regex = "/(". preg_quote(DOKU_BASE, '/') .".+)\\1/";
+
+        	$regex = "/^(". preg_quote(DOKU_BASE, '/') .".+)\\1/";
         	if ( preg_match($regex, $path, $matches) ) {
         		$path = preg_replace($regex, "\\1", $path);
         	}
+
         }
         
         function OpenTag($tag, $attr) {
