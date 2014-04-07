@@ -77,14 +77,14 @@ class action_plugin_siteexport_startup extends DokuWiki_Action_Plugin {
 	
 	function siteexport_metaheaders(&$event)
 	{
-		if ( defined('SITEEXPORT_TPL') ) {
+		global $conf;
+		$template = defined('SITEEXPORT_TPL') ? SITEEXPORT_TPL : $conf['template'];
 			
-			$head =& $event->data;
-			
-			foreach( $head['script'] as &$script ) {
-				if ( !empty($script['src']) && strstr($script['src'], 'js.php') ) {
-					$script['src'] .= '&template=' . SITEEXPORT_TPL;
-				}
+		$head =& $event->data;
+		
+		foreach( $head['script'] as &$script ) {
+			if ( !empty($script['src']) && strstr($script['src'], 'js.php') ) {
+				$script['src'] .= '&template=' . $template;
 			}
 		}
 		
