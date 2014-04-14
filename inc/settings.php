@@ -34,8 +34,13 @@ class settings_plugin_siteexport_settings extends DokuWiki_Plugin
     function settings_plugin_siteexport_settings($functions) {
         global $ID;
         
-		$functions->debug->setDebugLevel($this->getConf('debugLevel'));
         $functions->debug->setDebugFile ($this->getConf('debugFile'));
+        if ( !empty( $_REQUEST['debug'] ) && intval($_REQUEST['debug']) >= 0 && intval($_REQUEST['debug']) <= 5) {
+            $functions->debug->setDebugLevel(intval($_REQUEST['debug']));
+        } else 
+        {
+    		$functions->debug->setDebugLevel($this->getConf('debugLevel'));
+        }
 
         if ( empty($_REQUEST['pattern']) )
         {

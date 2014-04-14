@@ -2,7 +2,7 @@
 (function($){
 	$(function(){
 			
-		if ( !$('form#siteexport').size() ) {
+		if ( !$('form#siteexport, form#siteexport_site_aggregator').size() ) {
 			return;
 		}
 		
@@ -18,8 +18,8 @@
 		(function(_){
 			
 			_.url = DOKU_BASE + 'lib/exe/ajax.php';
-			_.suspendGenerate = false;
-			_.allElements = 'form#siteexport :input:not([readonly]):not([disabled]):not([type=submit]):not(button)';
+			_.suspendGenerate = $('form#siteexport_site_aggregator').size() > 0;
+			_.allElements = 'form#siteexport :input:not([readonly]):not([disabled]):not([type=submit]):not(button), form#siteexport_site_aggregator :input:not([type=submit]):not(button)';
 			_.isManager = $('div#siteexport__manager').size() > 0;
 			_.forbidden_options = [ 'call', 'sectok' ];
 
@@ -79,6 +79,83 @@
 					_.throbber(false);
 				});
 			};
+			
+			_.aggregatorStatus = null;
+			_.runAggregator = function() {
+				
+				this.resetDataForNewRequest();
+				
+				if ( _.aggregatorStatus == null ) {
+					_.aggregatorStatus = $('<span id="siteexport__out"/>').appendTo("form#siteexport_site_aggregator");
+				}
+
+				_.status(LANG.plugins.siteexport.loadingpage);
+				_.aggregatorStatus.removeClass('error').show();
+				var settings = _.settings('__siteexport_aggregate');
+				var throbber = $('form#siteexport_site_aggregator :input[name=baseID], form#siteexport_site_aggregator :input[type=submit]').prop('disabled', true);
+				$.post( _.url, settings, function(data, textStatus, jqXHR) {
+
+					_.downloadFile({
+							id : 'siteexport_site_aggregator_downloader',
+							src: window.location.origin + data,
+							root: 'form#siteexport_site_aggregator',
+							timeout: function(){
+							    _.aggregatorStatus.hide();
+                            }
+					});
+				}).fail(function(jqXHR){
+					_.aggregatorStatus.addClass('error')
+					_.status(jqXHR.responseText);
+				}).always(function(){
+					throbber.prop('disabled', false);
+				});
+			};
+			
+			_.downloadFile = function(iframeProps) {
+
+					_.status(LANG.plugins.siteexport.startdownload);
+					var frameQuery = "iframe#" + iframeProps.id;
+					var frame = $(frameQuery);
+					if ( frame.size() == 0 ) {
+    					frame = $('<iframe/>')
+    					.hide()
+						.appendTo(iframeProps.root)
+						.prop({
+							type : 'application/octet-stream',
+							id : iframeProps.id,
+						});
+					}
+					
+					// Downloads do not generate a load event
+					frame.load(function(event){
+    					_.status(LANG.plugins.siteexport.downloadfinished);
+    					
+    					// This must only happen when not downloading, meaning we have a PDF file.
+    					// ENSURE THIS IS THE ONLY CASE!
+    					// frame.remove();
+    					
+    					if ( $.popupviewer ) {
+
+    					    var clone = frame.clone().css({
+            					border: 'none'
+        					}).show();
+
+    					    var viewer = new $.popupviewer();
+        					viewer.showViewer();
+        					
+        					$("div#popupviewer div.content").html(clone);
+        					viewer.resizePopup($(window).width(), $(window).height(), null, clone, false, false);
+    					} else {
+    					    // No Popup? Open right here
+        					document.location.href = iframeProps.src;
+    					}
+					});
+					
+					frame.attr('src', iframeProps.src);
+					if ( typeof iframeProps.timeout == 'function' ) {
+    					window.setTimeout(iframeProps.timeout, 2000);
+					}
+			};
 					
 			_.addSite = function(site) {
 		
@@ -114,22 +191,16 @@
 				var page = this.allPages.shift();
 		
 				if (!page) {
-					_.status('Finished');
 					if (_.zipURL != "" && _.zipURL != 'undefined' && typeof _.zipURL != 'undefined' ) {
-						
-						var frame = $('<iframe>')
-							.hide()
-							.prop({
-								type : 'application/octet-stream',
-								src : window.location.origin + _.zipURL
-							})
-							.load(function(e){
-								_.status('Download completed.');
-								frame.remove();
-							}).appendTo('#siteexport');
-						_.status('Starting Download.');
+
+    					_.downloadFile({
+    							id : 'siteexport_downloader',
+    							src: window.location.origin + _.zipURL,
+    							root: '#siteexport',
+    					});
+
 					} else {
-						_.status('Finished - download failed. Please check your settings.');
+						_.status(LANG.plugins.siteexport.finishedbutdownloadfailed);
 						_.errorLog(_.zipURL);
 					}
 					return;
@@ -158,7 +229,10 @@
 			
 			_.settings = function(call) {
 				var settings = $(_.allElements).serializeArray();
+				console.log(settings);
+				
 				if (call)settings.push({ name: 'call', value: call});
+				if ($('input#pdfExport:checked'))settings.push({ name: 'renderer', value: 'siteexport_pdf'}); // is disabled and would not get pushed
 				return settings;
 			};
 			
@@ -430,6 +504,12 @@
 		$('form#siteexport :input[type=submit][name~=do\\[siteexport\\]]').click(function(event){
 			event.stopPropagation();
 			$.siteexport().run();
+			return false;
+		});
+		
+		$('form#siteexport_site_aggregator :input[type=submit][name~=do\\[siteexport\\]]').click(function(event){
+			event.stopPropagation();
+			$.siteexport().runAggregator();
 			return false;
 		});
 		

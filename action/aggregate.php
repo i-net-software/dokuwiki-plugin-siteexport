@@ -25,27 +25,31 @@ class action_plugin_siteexport_aggregate extends DokuWiki_Action_Plugin {
 	
 	function siteexport_aggregate(&$event)
 	{
-		global $ID;
+		global $ID, $INFO;
 
 		//if (  $event->data != 'siteexport_aggregate' ) { return true; }
 		if (  !isset($_REQUEST['siteexport_aggregate']) ) { return true; }
+        $event->preventDefault();
 		
 		$exportBase = cleanID($_REQUEST['baseID']);
         $functions=& plugin_load('helper', 'siteexport');
-        $values = $functions->__getOrderedListOfPagesForID($ID, $exportBase);
+        $values = $functions->__getOrderedListOfPagesForID(getNs($exportBase), $exportBase);
         
         // Generate a TOC that can be exported
-        $TOC = "<toc merge mergeheader>\n";
+        $TOC = "~~NOCACHE~~\n<toc merge mergeheader>\n";
         foreach( $values as $value ) {
         	list($id, $title, $sort) = $value;
-        	$TOC .= "  * [[{$title}]]\n";
+        	$TOC .= "  * [[{$id}|{$title}]]\n";
         }
         
-        $TOC .= "</toc>\n";
-        $info = null;
-        print p_render('xhtml', p_get_instructions($TOC),$info);
+        $TOC .= "</toc>";
         
-        $event->preventDefault();
+        $info = null;
+        $html = p_render('xhtml', p_get_instructions($TOC),$info);
+        $html = html_secedit($html,false);
+        if($INFO['prependTOC']) $html = tpl_toc(true).$html;
+        echo $html;
+        
         return false;
 	}
 	

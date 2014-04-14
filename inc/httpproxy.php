@@ -10,7 +10,7 @@
  * professionals can help explain the functionality of a particular
  * procedure, but they will not modify these examples to provide added
  * functionality or construct procedures to meet your specific needs.  
- * Copyright � i-net software 1998-2010
+ * Copyright © i-net software 1998-2010
  */
 
 /** ********************************************************************

@@ -108,7 +108,7 @@ class helper_plugin_siteexport extends DokuWiki_Plugin {
 	        	$newerThanPage = $sortIdentifier;
         	}
         	
-            array_push($values, array($site['id'], $functions->getSiteTitle($site['id']), $sortIdentifier));
+            array_push($values, array(':' . $site['id'], $functions->getSiteTitle($site['id']), $sortIdentifier));
         }
         
         if ( $newerThanPage != null ) {

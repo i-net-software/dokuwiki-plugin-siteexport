@@ -28,7 +28,14 @@ class siteexport_functions extends DokuWiki_Plugin
     
     public function downloadURL()
     {
-        return ml($this->settings->origZipFile, array('cache' => 'nocache', 'siteexport' => $this->settings->pattern), true, '&');
+        $params = array('cache' => 'nocache', 'siteexport' => $this->settings->pattern);
+
+        if ( $this->debug->debugLevel() < 5 ) {
+            // If debug, then debug!
+            $params['debug'] = $this->debug->debugLevel();
+        }
+        
+        return ml($this->settings->origZipFile, $params, true, '&');
     }
 
     public function checkIfCacheFileExistsForFileWithPattern($file, $pattern)
@@ -36,6 +43,7 @@ class siteexport_functions extends DokuWiki_Plugin
         if ( !@file_exists($file) )
         {
             // If the cache File does not exist, move the newly created one over ...
+            $this->debug->message("'{$file}' does not exist. Checking original ZipFile", null, 3 );
             $newCacheFile = mediaFN($this->getSpecialExportFileName($this->settings->origZipFile, $pattern));
             
             if ( !@file_exists($newCacheFile) )
@@ -45,6 +53,8 @@ class siteexport_functions extends DokuWiki_Plugin
             
             $status = io_rename($newCacheFile, $file);
             $this->debug->message("had to move another original file over. Did it work? " . ($status ? 'Yes, it did.' : 'No, it did not.'), null, 2 );
+        } else {
+            $this->debug->message("The file does exist!", $file, 2 );
         }
     }
 
@@ -280,13 +290,13 @@ class siteexport_functions extends DokuWiki_Plugin
         }
 
         if ( empty($PATTERN) && empty($this->settings->pattern) ){
-            $this->debug("Generating an internal md5 pattern. This will go wrong - and won't cache properly.");
+            $this->debug->message("Generating an internal md5 pattern. This will go wrong - and won't cache properly.", null, 3);
             $PATTERN = md5(microtime(false));
         }
 
         // Set Pattern Global for other stuff
         if ( empty($this->settings->pattern) ) {
-            $this->settings['pattern'] = $PATTERN;
+            $this->settings->pattern = $PATTERN;
         } else {
             $PATTERN = $this->settings->pattern;
         }
@@ -499,11 +509,6 @@ class siteexport_functions extends DokuWiki_Plugin
             }
 	        unset($removeArray['customoptionname']);
 	        unset($removeArray['customoptionvalue']);
-
-			
-	        if ( !empty( $removeArray['debug'] ) && intval($removeArray['debug']) >= 0 && intval($removeArray['debug']) <= 5) {
-		        $this->debug->setDebugLevel(intval($removeArray['debug']));
-	        }
         }
 
         if ( $advanced ) {
@@ -533,7 +538,7 @@ class siteexport_functions extends DokuWiki_Plugin
             unset($removeArray['startcounter']);
             unset($removeArray['pattern']);
             unset($removeArray['TOCMapWithoutTranslation']);
-			unset($removeArray['disableCache']);
+			// unset($removeArray['disableCache']);
 			unset($removeArray['debug']);
         }
 

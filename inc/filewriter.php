@@ -93,7 +93,7 @@ class siteexport_zipfilewriter
             return false;
         }
 
-        $zip = new ZipArchive;
+        $zip = new ZipArchive();
         if ( !$zip ) {
             $this->functions->debug->runtimeException("Can't create new instance of 'ZipArchive'. Please make sure that you have the ziplib extension for PHP installed.");
             return false;
@@ -125,7 +125,7 @@ class siteexport_zipfilewriter
      */
     function fileExistsInZip($NAME)
     {
-        $zip = new ZipArchive;
+        $zip = new ZipArchive();
         $code = $zip->open($this->functions->settings->zipFile, ZipArchive::CREATE);
         if ($code === TRUE) {
             return !($zip->statName($NAME) === FALSE);
@@ -140,11 +140,15 @@ class siteexport_zipfilewriter
      */
     function hasValidCacheFile($requestData, $depends=array())
     {
+        $pattern = $this->functions->requestParametersToCacheHash($requestData);
+        return $this->hasValidCacheFileForPattern($pattern, $depends);
+    }
+    
+    private function hasValidCacheFileForPattern($pattern, $depends=array())
+    {
+        $this->functions->debug->message("HASH-Pattern for CacheFile: ", $pattern, 2);
         $this->functions->settings->hasValidCacheFile = false; // reset the cache settings
-        $HASH = $this->functions->requestParametersToCacheHash($requestData);
-        $this->functions->debug->message("HASH for CacheFile: ", $HASH, 2);
-
-        $cacheFile = $this->functions->getCacheFileNameForPattern($HASH);
+        $cacheFile = $this->functions->getCacheFileNameForPattern($pattern);
         
         $mtime = @filemtime($cacheFile); // 0 if not exists
 
@@ -180,34 +184,42 @@ class siteexport_zipfilewriter
         return $this->functions->settings->hasValidCacheFile = true;
     }
     
-    public function getOnlyFileInZip(&$filename = null, &$headerFileName = null) {
-    
-    	if ( is_null($filename) ) $filename = $this->functions->settings->zipFile;
+    public function getOnlyFileInZip(&$data = null) {
+
+    	if ( is_null($data['file']) ) $data['file'] = $this->functions->settings->zipFile;
 	    
 	    $zip = new ZipArchive();
-	    if ( !$zip->open($filename) ) {
+	    $code = $zip->open($data['file']);
+	    if ( $code !== TRUE ) {
+            $this->functions->debug->message("Can't open the zip-file.", $data['file'], 2);
 		    return false;
 	    }
 
 		if ( $zip->numFiles != 1 ) {
+            $this->functions->debug->message("More than one ({$zip->numFiles}) file in zip.", $data['file'], 2);
 			return false;
 		}
 		
 		$stat = $zip->statIndex( 0 );
+		$this->functions->debug->message("Stat.", $stat, 3);
 		if ( substr($stat['name'], -3) != 'pdf' ) {
+            $this->functions->debug->message("The file was not a PDF ({$stat['name']}).", $stat['name'], 2);
 			return false;
 		}
 		
-		// Extract single file.
-		$folder = dirname($filename);
+		$data['mime'] = 'application/pdf';
+		$data['download'] = 0;
 		
-		$headerFileName = utf8_basename($stat['name']);
+		// Extract single file.
+		$folder = dirname($data['file']);
+		
+		$data['orig'] = utf8_basename($stat['name']);
 		$zip->extractTo($folder, $stat['name']);
 		$zip->close();
 		
 		sleep(1);
-		$filename .= '.' . cleanID($headerFileName); // Wee need the other file for cache reasons.
-		@rename($folder.'/'.$headerFileName, $filename);
+		$data['file'] .= '.' . cleanID($data['orig']); // Wee need the other file for cache reasons.
+		@rename($folder.'/'.$data['orig'], $data['file']);
 	    return true;
     }
 }

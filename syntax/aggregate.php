@@ -43,6 +43,9 @@ class syntax_plugin_siteexport_aggregate extends DokuWiki_Syntax_Plugin {
             $form = new Doku_Form($formParams);
             $functions=& plugin_load('helper', 'siteexport');
 
+        	$form->addHidden('ns', $ID);
+        	$form->addHidden('site', $ID);
+
 			if ( array_shift($data) == 'siteexportAGGREGATOR' ) {
 	        	$form->addHidden('siteexport_aggregate', '1');
 			}

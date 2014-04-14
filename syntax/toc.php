@@ -180,7 +180,7 @@ class syntax_plugin_siteexport_toc extends DokuWiki_Syntax_Plugin {
 						}
 					}
 				}
-
+				
 				// If there is some data to be merged
 				if ( count($this->mergedPages) > 0) {
 				
@@ -197,15 +197,19 @@ class syntax_plugin_siteexport_toc extends DokuWiki_Syntax_Plugin {
 					$instr = array();
 					foreach ( $this->mergedPages as $tocItem ) {
 						$file    = wikiFN($tocItem);
-						$instructions = p_cached_instructions($file, false); 
-
+						
+						if(@file_exists($file)) {
+							$instructions = p_cached_instructions($file, false, $tocItem); 
+						} else {
+							$instructions = p_get_instructions(io_readWikiPage($file,$tocItem)); 
+						}
+						
 						// Convert Link instructions
 						$instructions = $this->_convertInstructions($instructions, $addID, $renderer);
 						
 						if ( $renderer->meta['sitetoc']['mergeHeader'] && !empty($instr) ) {
 							// Merge
 							$instr = $this->_mergeWithHeaders($instr, $instructions, 1);
-							// print_r($instr);
 							
 						} else {
 							// Concat
@@ -213,17 +217,15 @@ class syntax_plugin_siteexport_toc extends DokuWiki_Syntax_Plugin {
 						}
 					}
 				
-					//page was empty
 					if (empty($instr)) {
 						return;
 					}
-					
+
 					$this->_cleanInstructions($instr, '/section_(close|open)/');
 					$this->_cleanInstructions($instr, '/listu_(close|open)/');
 					$this->_cleanInstructions($instr, '/listo_(close|open)/');
 					
 					$this->_render_output($renderer, $mode, $instr);
-
 					$renderer->section_close();
 				}
 				return true;
@@ -323,11 +325,11 @@ class syntax_plugin_siteexport_toc extends DokuWiki_Syntax_Plugin {
 			$content = $this->_cleanXHTML($content);
 
 			// embed the included page
-			$renderer->doc .= '<div class="include">';
+			// $renderer->doc .= '<div class="include">';
 			//add an anchor to find start of a inserted page
 			// $renderer->doc .= "<a name='$addID' id='$addID'>";
 			$renderer->doc .= $content;
-			$renderer->doc .= '</div>';
+			// $renderer->doc .= '</div>';
 		} else if ( $mode == 'odt') {
 
 			// Loop through the instructions

@@ -65,6 +65,7 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
             case '__siteexport_getsitelist': $this->ajax_siteexport_getsitelist( $event ); break;
             case '__siteexport_addsite': $this->ajax_siteexport_addsite( $event ); break;
             case '__siteexport_generateurl': $this->ajax_siteexport_generateurl( $event ); break;
+            case '__siteexport_aggregate': $this->ajax_siteexport_aggregate( $event ); break;
         }
     }
 
@@ -303,6 +304,20 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
         return;
     }
 
+    function ajax_siteexport_aggregate( &$event ) {
+        
+        // Quick preparations for one page only
+        if ( $this->filewriter->hasValidCacheFile($_REQUEST, $data) ) {
+            $this->functions->debug->message("Had a valid cache file and will use it.", null, 2);
+            print $this->functions->downloadURL();
+        } else {
+            // Then go for it!
+            $this->functions->debug->message("Will create a new cache thing.", null, 2);
+            $this->ajax_siteexport_addsite( $event );
+        }
+        
+    }
+
     /**
      * Add a page to the package (for AJAX calls - Wrapper)
      **/
@@ -504,6 +519,7 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
 
         // Parse URI PATH and add "html"
         $fileName = $this->functions->getSiteName($ID, true);
+        $this->functions->debug->message("Filename could be:", $fileName, 2);
 
         $this->fileChecked[$url] = $fileName; // 2010-09-03 - One URL to one FileName
         $this->functions->settings->depth = str_repeat('../', count(explode('/', $fileName))-1);
@@ -525,7 +541,7 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
 			$fileName = $dirname . '/' .  $this->functions->getSiteTitle($ID) . '.' . $extension;
         } else if ( !empty($tmpFile[1]) && !strstr($DATA[2], $tmpFile[1]) ) {
         
-			$this->functions->debug->message("Will replace old filename '{$fileName}' with {$tmpFile[1]}", null, 1);
+			$this->functions->debug->message("Will replace old filename '{$fileName}' with {$dirname}/{$tmpFile[1]}", null, 1);
 			$fileName = $dirname . '/' . $tmpFile[1];
         }
 

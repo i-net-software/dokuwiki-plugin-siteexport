@@ -221,6 +221,26 @@ class renderer_plugin_siteexport_pdf extends Doku_Renderer_xhtml {
         return "";
     }
 
+    /**
+     * Wrap centered media in a div to center it
+     */
+    function _media ($src, $title=NULL, $align=NULL, $width=NULL,
+                      $height=NULL, $cache=NULL, $render = true) {
+
+        $out = '';
+        if($align == 'center'){
+            $out .= '<div align="center" style="text-align: center">';
+        }
+
+        $out .= parent::_media ($src, $title, $align, $width, $height, $cache, $render);
+
+        if($align == 'center'){
+            $out .= '</div>';
+        }
+
+        return $out;
+    }
+    
     function internalmedia ($src, $title=NULL, $align=NULL, $width=NULL,
     $height=NULL, $cache=NULL, $linking=NULL) {
         global $ID;

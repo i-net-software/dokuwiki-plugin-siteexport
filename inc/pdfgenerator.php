@@ -89,7 +89,7 @@ if ( intval($_REQUEST['pdfExport']) == 1 && file_exists(DOKU_PLUGIN . 'dw2pdf/mp
                                     '<div class="wrap_pagebreak"></div>' => '<pagebreak />',
                                     '<sup>' => '<sup class="sup">',
                                     '<sub>' => '<sub class="sub">',
-                                    '<code>' => '<code class="code">',
+                                    '<code>' => '<code class="code">'
             );
             $html = str_replace(array_keys($standardReplacer), array_values($standardReplacer), $html);
 
