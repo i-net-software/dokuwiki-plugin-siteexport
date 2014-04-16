@@ -208,7 +208,7 @@ class siteexport_zipfilewriter
 		}
 		
 		$data['mime'] = 'application/pdf';
-		$data['download'] = 0;
+		$data['download'] = $this->functions->settings->download ? 1 : 0;
 		
 		// Extract single file.
 		$folder = dirname($data['file']);

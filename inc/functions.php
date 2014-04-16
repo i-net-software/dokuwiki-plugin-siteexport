@@ -35,6 +35,10 @@ class siteexport_functions extends DokuWiki_Plugin
             $params['debug'] = $this->debug->debugLevel();
         }
         
+        if ( $this->settings->download == 1 ) {
+            $params['download'] = 1;
+        }
+        
         return ml($this->settings->origZipFile, $params, true, '&');
     }
 
@@ -296,7 +300,7 @@ class siteexport_functions extends DokuWiki_Plugin
 
         // Set Pattern Global for other stuff
         if ( empty($this->settings->pattern) ) {
-            $this->settings->pattern = $PATTERN;
+            $this->settings['pattern'] = $PATTERN;
         } else {
             $PATTERN = $this->settings->pattern;
         }

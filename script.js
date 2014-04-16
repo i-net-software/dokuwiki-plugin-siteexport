@@ -139,6 +139,8 @@
     					    var clone = frame.clone().css({
             					border: 'none'
         					}).show();
+        					
+        					frame.remove();
 
     					    var viewer = new $.popupviewer();
         					viewer.showViewer();
@@ -155,6 +157,11 @@
 					if ( typeof iframeProps.timeout == 'function' ) {
     					window.setTimeout(iframeProps.timeout, 2000);
 					}
+
+   					$(window).unload(function(){
+   					    // last resort or the frame might reload
+       					frame.remove();
+   					});
 			};
 					
 			_.addSite = function(site) {
