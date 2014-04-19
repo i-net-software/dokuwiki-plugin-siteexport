@@ -104,7 +104,7 @@
                             }
 					});
 				}).fail(function(jqXHR){
-					_.aggregatorStatus.addClass('error')
+					_.aggregatorStatus.addClass('error');
 					_.status(jqXHR.responseText);
 				}).always(function(){
 					throbber.prop('disabled', false);
@@ -331,8 +331,8 @@
 					_.generate();
 				};
 
-				var name = $('<input/>').addClass('edit').attr({ name: 'customoptionname[]', value: nameVal}).change(regenerate).click(function(){this.select()});
-				var value = $('<input/>').addClass('edit').attr({ name: 'customoptionvalue[]', value: valueVal}).change(regenerate).click(function(){this.select()});
+				var name = $('<input/>').addClass('edit').attr({ name: 'customoptionname[]', value: nameVal}).change(regenerate).click(function(){this.select();});
+				var value = $('<input/>').addClass('edit').attr({ name: 'customoptionvalue[]', value: valueVal}).change(regenerate).click(function(){this.select();});
 				
 				$('<li/>').append(name).append(value).appendTo('#siteexport__customActions');
 			};
