@@ -236,8 +236,7 @@
 			
 			_.settings = function(call) {
 				var settings = $(_.allElements).serializeArray();
-				console.log(settings);
-				
+
 				if (call)settings.push({ name: 'call', value: call});
 				if ($('input#pdfExport:checked'))settings.push({ name: 'renderer', value: 'siteexport_pdf'}); // is disabled and would not get pushed
 				return settings;
