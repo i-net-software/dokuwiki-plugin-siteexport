@@ -35,10 +35,6 @@ class siteexport_functions extends DokuWiki_Plugin
             $params['debug'] = $this->debug->debugLevel();
         }
         
-        if ( $this->settings->download == 1 ) {
-            $params['download'] = 1;
-        }
-        
         return ml($this->settings->origZipFile, $params, true, '&');
     }
 
