@@ -73,6 +73,8 @@ class syntax_plugin_siteexport_aggregate extends DokuWiki_Syntax_Plugin {
             }
             
             $values = $functions->__getOrderedListOfPagesForID($namespace);
+            $renderer->doc .= '<div class="siteaggregator">';
+
             if ( empty($values) ) {
 	            $renderer->doc .= '<span style="color: #a00">'.$this->getLang('NoEntriesFoundHint').'</span>';
             } else {
@@ -85,6 +87,7 @@ class syntax_plugin_siteexport_aggregate extends DokuWiki_Syntax_Plugin {
 		        ob_end_clean();
             }
              
+            $renderer->doc .= '</div>';
             return true;
         }
 
