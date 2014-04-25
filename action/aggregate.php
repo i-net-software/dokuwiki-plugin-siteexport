@@ -52,7 +52,7 @@ class action_plugin_siteexport_aggregate extends DokuWiki_Action_Plugin {
         $TOC .= "</toc>";
         
         // Only get first and last element
-        $thema = array(reset($thema), end($thema));
+        $thema = array_unique(array(reset($thema), end($thema)));
         
         $meta = p_read_metadata($ID);
         $ID = (string) cleanID($ID . '-toc-' . implode('-', array_filter($thema)));
