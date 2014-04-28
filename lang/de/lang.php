@@ -5,6 +5,7 @@
  * 
  * @author Thor Weinreich <thorweinreich@nefkom.net>
  * @author Gerry Weißbach <gweissbach@inetsoftware.de>
+ * @author Gerry Weißbach <gerry.w@gammaproduction.de>
  */
 $lang['encoding']              = 'utf-8';
 $lang['direction']             = 'ltr';
@@ -52,3 +53,10 @@ $lang['search']                = 'Suche';
 $lang['toc']                   = 'Übersicht';
 $lang['AggregateSubmitLabel']  = 'Download';
 $lang['AggragateExportPages']  = 'Anfangsseite für das zusammenfügen';
+$lang['toolbarButton']         = 'Site Exporter einfügen';
+$lang['useOptionsInEditor']    = 'Ein {{siteAggregator}} Element mit diesen Einstellungen erzeugen';
+$lang['NoEntriesFoundHint']    = 'Es wurden keine Seiten zum Zusammenfassen gefunden';
+$lang['js']['loadingpage']     = 'Dokument erstellen';
+$lang['js']['startdownload']   = 'Download beginnen';
+$lang['js']['downloadfinished'] = 'Download beendet';
+$lang['js']['finishedbutdownloadfailed'] = 'Laden beendet, aber der Download war fehlerhaft.';
