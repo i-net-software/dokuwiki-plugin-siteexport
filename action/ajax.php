@@ -541,7 +541,9 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
 
 			$this->functions->debug->message("Will replace old filename '{$fileName}' with {$tmpFile[2]}", null, 1);
         	$extension = array_pop(explode('.', $fileName));
-			$fileName = $dirname . '/' .  $this->functions->getSiteTitle($ID) . '.' . $extension;
+        	
+        	// 2014-04-29 added cleanID to ensure that links are generated consistently when using [[this>...]] or another local, relativ linking
+			$fileName = $dirname . '/' . $this->functions->cleanID($this->functions->getSiteTitle($ID)) . '.' . $extension;
         } else if ( !empty($tmpFile[1]) && !strstr($DATA[2], $tmpFile[1]) ) {
         
 			$this->functions->debug->message("Will replace old filename '{$fileName}' with {$dirname}/{$tmpFile[1]}", null, 1);
