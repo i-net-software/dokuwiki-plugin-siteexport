@@ -57,7 +57,13 @@ class action_plugin_siteexport_sendfile extends DokuWiki_Action_Plugin {
 
     function siteexport_sendfile_not_found(&$event, $args)
     {
-        if ( empty($_REQUEST['siteexport']) /*|| $event->data['orig'] != $this->getConf('zipfilename')*/ || $event->data['status'] != 404 ) { return true; }
+        if ( empty($_REQUEST['siteexport']) ||
+        /**
+        $event->data['media'] != $this->getConf('zipfilename')
+        /*/
+        $event->data['status'] >= 400
+        //*/
+        ) { return true; }
         $event->data['status'] = 200;
         return true;
     }
