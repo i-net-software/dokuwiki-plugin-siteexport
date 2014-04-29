@@ -310,6 +310,9 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
         if ( $this->filewriter->hasValidCacheFile($_REQUEST, $data) ) {
             $this->functions->debug->message("Had a valid cache file and will use it.", null, 2);
             print $this->functions->downloadURL();
+            
+            $event->preventDefault();
+            $event->stopPropagation();
         } else {
             // Then go for it!
             $this->functions->debug->message("Will create a new cache thing.", null, 2);
