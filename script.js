@@ -1,3 +1,6 @@
+/* DOKUWIKI:include jquery.filedownload.js */
+
+
 // Siteexport Admin Plugin Script
 (function($){
 	$(function(){
@@ -114,6 +117,22 @@
 			_.downloadFile = function(iframeProps) {
 
 					_.status(LANG.plugins.siteexport.startdownload);
+                    if ( $.fileDownload ) {
+                        
+                        $.fileDownload(iframeProps.src).done(function(){
+        					_.status(LANG.plugins.siteexport.downloadfinished);
+
+                            if ( typeof iframeProps.timeout == 'function' ) {
+                                window.setTimeout(iframeProps.timeout, 2000);
+                            }
+                            
+                        }).fail(function(){
+                            _.error(LANG.plugins.siteexport.finishedbutdownloadfailed);
+                        });
+                        
+                        return;
+                    }
+
 					var frameQuery = "iframe#" + iframeProps.id;
 					var frame = $(frameQuery);
 					if ( frame.size() == 0 ) {
@@ -231,7 +250,11 @@
 			};
 			
 			_.status = function(text) {
-				$('#siteexport__out').html(text);
+				$('#siteexport__out').html(text).removeClass('error');
+			};
+
+			_.error = function(text) {
+				$('#siteexport__out').html(text).addClass('error');
 			};
 			
 			_.settings = function(call) {
