@@ -52,6 +52,10 @@ class action_plugin_siteexport_sendfile extends DokuWiki_Action_Plugin {
         $functions->checkIfCacheFileExistsForFileWithPattern($event->data['file'], $_REQUEST['siteexport']);
 
         $filewriter->getOnlyFileInZip($event->data);
+
+        header('Set-Cookie: fileDownload=true; path=' . DOKU_BASE);
+        header('Cache-Control: max-age=60, must-revalidate');
+
         $functions->debug->message("Event Data After:", $event->data, 3);
     }
 
@@ -61,7 +65,7 @@ class action_plugin_siteexport_sendfile extends DokuWiki_Action_Plugin {
         /**
         $event->data['media'] != $this->getConf('zipfilename')
         /*/
-        $event->data['status'] >= 400
+        $event->data['status'] >= 500
         //*/
         ) { return true; }
         $event->data['status'] = 200;
