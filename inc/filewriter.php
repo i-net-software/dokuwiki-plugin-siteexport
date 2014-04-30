@@ -186,39 +186,39 @@ class siteexport_zipfilewriter
     
     public function getOnlyFileInZip(&$data = null) {
 
-    	if ( is_null($data['file']) ) $data['file'] = $this->functions->settings->zipFile;
-	    
-	    $zip = new ZipArchive();
-	    $code = $zip->open($data['file']);
-	    if ( $code !== TRUE ) {
+        if ( is_null($data['file']) ) $data['file'] = $this->functions->settings->zipFile;
+        
+        $zip = new ZipArchive();
+        $code = $zip->open($data['file']);
+        if ( $code !== TRUE ) {
             $this->functions->debug->message("Can't open the zip-file.", $data['file'], 2);
-		    return false;
-	    }
-
-		if ( $zip->numFiles != 1 ) {
+            return false;
+        }
+        
+        if ( $zip->numFiles != 1 ) {
             $this->functions->debug->message("More than one ({$zip->numFiles}) file in zip.", $data['file'], 2);
-			return false;
-		}
-		
-		$stat = $zip->statIndex( 0 );
-		$this->functions->debug->message("Stat.", $stat, 3);
-		if ( substr($stat['name'], -3) != 'pdf' ) {
+            return false;
+        }
+        
+        $stat = $zip->statIndex( 0 );
+        $this->functions->debug->message("Stat.", $stat, 3);
+        if ( substr($stat['name'], -3) != 'pdf' ) {
             $this->functions->debug->message("The file was not a PDF ({$stat['name']}).", $stat['name'], 2);
-			return false;
-		}
-		
-		$data['mime'] = 'application/pdf';
-		
-		// Extract single file.
-		$folder = dirname($data['file']);
-		
-		$data['orig'] = utf8_basename($stat['name']);
-		$zip->extractTo($folder, $stat['name']);
-		$zip->close();
-		
-		sleep(1);
-		$data['file'] .= '.' . cleanID($data['orig']); // Wee need the other file for cache reasons.
-		@rename($folder.'/'.$data['orig'], $data['file']);
+            return false;
+        }
+        
+        $data['mime'] = 'application/pdf';
+        
+        // Extract single file.
+        $folder = dirname($data['file']);
+        
+        $data['orig'] = utf8_basename($stat['name']);
+        $zip->extractTo($folder, $stat['name']);
+        $zip->close();
+        
+        sleep(1);
+        $data['file'] .= '.' . cleanID($data['orig']); // Wee need the other file for cache reasons.
+        @rename($folder.'/'.$data['orig'], $data['file']);
 	    return true;
     }
 }
