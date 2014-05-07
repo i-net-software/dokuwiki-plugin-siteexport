@@ -261,7 +261,7 @@
 				var settings = $(_.allElements).serializeArray();
 
 				if (call)settings.push({ name: 'call', value: call});
-				if ($('input#pdfExport:checked'))settings.push({ name: 'renderer', value: 'siteexport_pdf'}); // is disabled and would not get pushed
+				if ( $('input#pdfExport:checked').size() > 0 )settings.push({ name: 'renderer', value: 'siteexport_pdf'}); // is disabled and would not get pushed
 				return settings;
 			};
 			
