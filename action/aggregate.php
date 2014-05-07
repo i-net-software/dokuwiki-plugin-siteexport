@@ -29,14 +29,23 @@ class action_plugin_siteexport_aggregate extends DokuWiki_Action_Plugin {
 	
 	function siteexport_aggregate_prepare(&$event)
 	{
-	    global $ID, $INFO;
-	    
-		if ( !isset($_REQUEST['siteexport_aggregate']) ) { return true; }
+	    global $ID, $INFO, $conf;
+
+        // Aggregate only if
+        // (1) we did submit a request to do so
+        // (2) this page really has an aggregator and we export as PDF
+		if ( !( isset($_REQUEST['siteexport_aggregate']) || ($INFO['meta']['siteexport']['hasaggregator'] == true && $conf['renderer_xhtml'] == 'siteexport_pdf') ) ) { return true; }
 		
 		$exportBase = cleanID($_REQUEST['baseID']);
+		$namespace = empty($exportBase) ? $INFO['meta']['siteexport']['baseID'] : getNs($exportBase);
+		
         $functions = plugin_load('helper', 'siteexport');
-        $values = $functions->__getOrderedListOfPagesForID(getNs($exportBase), $exportBase);
-    	
+        $values = $functions->__getOrderedListOfPagesForID($namespace, $exportBase);
+        
+        if ( empty($exportBase) ) {
+            list($exportBase) = end( $values );
+        }
+        
     	$this->originalID = (string) $ID;
 
         // Generate a TOC that can be exported

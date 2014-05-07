@@ -34,8 +34,19 @@ class syntax_plugin_siteexport_aggregate extends DokuWiki_Syntax_Plugin {
     function render($mode, &$renderer, $data){
         global $ID, $conf;
 
-        if ($mode == 'xhtml'){
+        $isAggregator = (array_shift($data) == 'siteexportAGGREGATOR');
+		$namespace = $ID;
+        foreach( $data as $option ) {
+            
+            list($key, $value) = explode('=', $option);
+            if ($key == "namespace") {
+	            $namespace = $value . ':';
+	            break;
+            }
+        }
 
+        if ($mode == 'xhtml'){
+        
             $renderer->info['toc'] = false;
             $renderer->nocache();
             
@@ -43,12 +54,12 @@ class syntax_plugin_siteexport_aggregate extends DokuWiki_Syntax_Plugin {
             $form = new Doku_Form($formParams);
             $functions=& plugin_load('helper', 'siteexport');
 
-            $form->addHidden('ns', $ID);
-            $form->addHidden('site', $ID);
+        	$form->addHidden('ns', $ID);
+        	$form->addHidden('site', $ID);
 
-            if ( array_shift($data) == 'siteexportAGGREGATOR' ) {
-                $form->addHidden('siteexport_aggregate', '1');
-            }
+			if ( $isAggregator ) {
+	        	$form->addHidden('siteexport_aggregate', '1');
+			}
 
             $namespace = $ID;
             $submitLabel = $this->getLang('AggregateSubmitLabel');
@@ -58,7 +69,7 @@ class syntax_plugin_siteexport_aggregate extends DokuWiki_Syntax_Plugin {
 	            list($key, $value) = explode('=', $option);
 	            switch ($key) {
     	            case "namespace":
-		            $namespace = $value . ':';
+    	            // Done at the top.
 		            break;
     	            case "buttonTitle":
 		            $submitLabel = urldecode($value);
@@ -78,8 +89,8 @@ class syntax_plugin_siteexport_aggregate extends DokuWiki_Syntax_Plugin {
             if ( empty($values) ) {
 	            $renderer->doc .= '<span style="color: #a00">'.$this->getLang('NoEntriesFoundHint').'</span>';
             } else {
-	            $form->addElement(form_makeMenuField('baseID', $values, isset($_REQUEST['baseID']) ? $_REQUEST['baseID'] : $values[0], $introduction/*, $id='', $class='', $attrs=array() */ ));
-	            $form->addElement(form_makeButton('submit', 'siteexport', $submitLabel, array('class' => 'button download' /*, 'onclick' => 'return (new inet_pdfc_request_license(this)).run();'*/)));
+	            $form->addElement(form_makeMenuField('baseID', $values, isset($_REQUEST['baseID']) ? $_REQUEST['baseID'] : $values[0], $introduction));
+	            $form->addElement(form_makeButton('submit', 'siteexport', $submitLabel, array('class' => 'button download')));
 	
 		        ob_start();
 		        $form->printForm();
@@ -89,6 +100,9 @@ class syntax_plugin_siteexport_aggregate extends DokuWiki_Syntax_Plugin {
              
             $renderer->doc .= '</div>';
             return true;
+        } else if ($mode == 'metadata') {
+            $renderer->meta['siteexport']['hasaggregator'] = $isAggregator;
+            $renderer->meta['siteexport']['baseID'] = $namespace;
         }
 
         return false;
