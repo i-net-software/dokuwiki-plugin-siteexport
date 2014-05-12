@@ -665,7 +665,7 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
 		// Clean data[2], remote ' and "
 		$DATA[2] = preg_replace("/^\s*?['\"]?(.*?)['\"]?\s*?$/", '\1', trim($DATA[2]));
 
-        $this->functions->debug->message("Starting Link Replacement", $DATA, 2);
+        $this->functions->debug->message("Starting Link Replacement", array( 'data' => $DATA, 'additional Params' => $newAdditionalParameters, 'newDepth' => $newDepth, 'currentID' => $currentID), 2);
 
         // $DATA[2] = urldecode($DATA[2]); // Leads to problems because it does not re-encode the url
         // External and mailto links
@@ -692,6 +692,11 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
         $ANCHOR = @parse_url($DATA[2], PHP_URL_FRAGMENT);
         $DATA[2] = @parse_url($DATA[2], PHP_URL_PATH);
 
+        // 2014-05-12 - fix problem with URLs starting with a ./ or ../ ... they seem to need the current IDs root
+        if ( preg_match("#^..?/#", $DATA[2])) {
+            $DATA[2] = getNS($currentID) . ':' . $DATA[2];
+        }
+
         // 2010-08-25 - fix problem with relative movement in links ( "test/../test2" )
         $tmpData2 = '';
         while( $tmpData2 != $DATA[2] ) {
@@ -710,7 +715,7 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
         // Handle rewrites other than 1 - just for non-lib-files
         // if ( !preg_match('$^/?lib/$', $DATA[2]) ) {
         if ( !preg_match('$^(' . DOKU_BASE . ')?lib/$', $DATA[2]) ) {
-		    $this->functions->debug->message("Did not match '$^(" . DOKU_BASE . ")?lib/$' userewrite == ", $conf['userewrite'], 2);
+		    $this->functions->debug->message("Did not match '$^(" . DOKU_BASE . ")?lib/$' userewrite == {$conf['userewrite']}", null, 2);
             if ( $conf['userewrite'] == 2 ) {
                 $DATA[2] = $this->__getInternalRewriteURL($DATA[2]);
             } elseif ( $conf['userewrite'] == 0 ) {
@@ -1019,7 +1024,9 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
         if ( is_null( $DEPTH ) ) $DEPTH = $this->functions->settings->depth;
         $DATA[2] .= ( !empty( $DATA['PARAMS']) && $this->functions->settings->addParams? '?' . $DATA['PARAMS'] : '' ) . ( !empty( $DATA['ANCHOR'] ) ? '#' . $DATA['ANCHOR'] : '' );
 
-        $newURL = $DATA[1] == 'url' ? $DATA[1] . '(' . $DEPTH . $DATA[2] . ')' : $DATA[1] . '="' . $DEPTH . $DATA[2] . '"';
+        $intermediateURL = $DEPTH . $DATA[2];
+
+        $newURL = $DATA[1] == 'url' ? $DATA[1] . '(' . $intermediateURL . ')' : $DATA[1] . '="' . $intermediateURL . '"';
         $this->functions->debug->message("Re-created URL: '$newURL'", null, 2);
 
         return $newURL;
