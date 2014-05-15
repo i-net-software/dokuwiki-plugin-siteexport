@@ -5,6 +5,7 @@
  * 
  * @author Alain Becker <alain@alain-becker.com>
  * @author NICOLAS ORTH <nicolas.orth@gmail.com>
+ * @author Florian TASSIN <florian.tassin@gmail.com>
  */
 $lang['encoding']              = 'utf-8';
 $lang['direction']             = 'ltr';
@@ -51,3 +52,7 @@ $lang['addCustomOption']       = 'Ajouter une option';
 $lang['search']                = 'Chercher';
 $lang['toc']                   = 'Table des matières';
 $lang['AggregateSubmitLabel']  = 'Télécharger';
+$lang['js']['loadingpage']     = 'Chargement';
+$lang['js']['startdownload']   = 'Début du téléchargement';
+$lang['js']['downloadfinished'] = 'Téléchargement terminé';
+$lang['js']['finishedbutdownloadfailed'] = 'Téléchargement échoué';
