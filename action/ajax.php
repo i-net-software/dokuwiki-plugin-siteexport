@@ -1019,13 +1019,32 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
      * build the new link to be put in place for the donwloaded site
      **/
     function __rebuildLink($DATA, $DEPTH = null) {
+        global $currentID;
 
         // depth is set, skip this one
         if ( is_null( $DEPTH ) ) $DEPTH = $this->functions->settings->depth;
         $DATA[2] .= ( !empty( $DATA['PARAMS']) && $this->functions->settings->addParams? '?' . $DATA['PARAMS'] : '' ) . ( !empty( $DATA['ANCHOR'] ) ? '#' . $DATA['ANCHOR'] : '' );
 
         $intermediateURL = $DEPTH . $DATA[2];
+        
+        // Check if the URL has a ../../something/somethingelse
+        // and basically goes back to our current page or something in parallel
+        // 1) remove all ../ at begining
+        $checkURL = preg_replace("#^(\.\./)+#", '', $intermediateURL);
+        if ( $checkURL != $intermediateURL ) {
+            
+            // 2) check if the URLs next parts match the current ENS to all NS parts of the current ID
+            // $this->functions->debug->message("Found ENS: '{$this->functions->settings->exportNamespace}', currentID: {$currentID}'", null, 2);
+            $currentIDPart = preg_replace("#^{$this->functions->settings->exportNamespace}/#", "", str_replace(':', '/', getNS($currentID) . '/'));
 
+            $this->functions->debug->message("Found ../: '$checkURL' / currentIDPart: '{$currentIDPart}'", null, 2);
+            if ( ($newURL = preg_replace("#^{$currentIDPart}#", "./", $checkURL)) != $checkURL ) {
+            // 3) if so, remove these parts
+                $intermediateURL = $newURL;
+                $this->functions->debug->message("Found ./ URL: '$newURL'", null, 2);
+            }
+        }
+        
         $newURL = $DATA[1] == 'url' ? $DATA[1] . '(' . $intermediateURL . ')' : $DATA[1] . '="' . $intermediateURL . '"';
         $this->functions->debug->message("Re-created URL: '$newURL'", null, 2);
 
