@@ -14,7 +14,7 @@ if ( intval($_REQUEST['pdfExport']) == 1 && file_exists(DOKU_PLUGIN . 'dw2pdf/mp
             $this->functions = $functions;
         }
 
-        function createPDFFromFile($filename, $NAME) {
+        function createPDFFromFile($filename, &$NAME) {
 
             if ( !preg_match("/" . $this->settings->fileType . "$/", $NAME) ) {
                 $this->functions->debug->message("Filetype {$this->settings->fileType} did not match filename '$NAME'", null, 4);
