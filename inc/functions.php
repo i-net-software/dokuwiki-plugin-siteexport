@@ -173,8 +173,14 @@ class siteexport_functions extends DokuWiki_Plugin
         if($conf['deaccent'] == 2 || $ascii) $id = utf8_romanize($id);
         if($conf['deaccent'] || $ascii) $id = utf8_deaccent($id,-1);
 
+        // We want spaces to be preserved when they are in the link.
+        global $UTF8_SPECIAL_CHARS2;
+        $UTF8_SPECIAL_CHARS2_SAVE = (string)$UTF8_SPECIAL_CHARS2;
+        $UTF8_SPECIAL_CHARS2 = str_replace(' ', '', $UTF8_SPECIAL_CHARS2);
+
         //remove specials
         $id = utf8_stripspecials($id,$sepchar,'\*');
+        $UTF8_SPECIAL_CHARS2 = $UTF8_SPECIAL_CHARS2_SAVE;
 
         if($ascii) $id = utf8_strip($id);
 
