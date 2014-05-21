@@ -45,7 +45,7 @@ class siteexport_javahelp
             $translationRoot = curNS($this->translation->tns);
         }
         
-        $hsPrename = curNS(getNS($this->translation->tns)) . '_' . $translationRoot;
+        $hsPrename = curNS(getNS($this->translation->tns));
         
         $check = array();
         foreach( $translationHSFiles as $lang => $data )
@@ -66,8 +66,8 @@ class siteexport_javahelp
                 $rootNode = '';
             }
             
-            $tsRootPath = $this->translationRootPath($translationRoot);
-
+            $tsRootPath = $hsPrename . '/' . $this->translationRootPath($translationRoot);
+            
             // Create toc and map for each lang
             list($tocData, $mapData, $startPageID) = $toc->__getJavaHelpTOCXML($data, $tsRootPath);
             $this->functions->debug->message("Generating JavaHelpDocZip for language '$lang'", null, 2);
@@ -77,12 +77,12 @@ class siteexport_javahelp
             // Create HS File
             // array_shift($toc->getMapID($rootNode, &$check))
             $HS = $this->getHSXML( $startPageID, $this->functions->getSiteTitle($rootNode), $lang, $tsRootPath );
-            $this->filewriter->__moveDataToZip($HS, $hsPrename . '_' . $lang . '.hs');
+            $this->filewriter->__moveDataToZip($HS, $translationRoot . '_' . $lang . '.hs');
             
             // Default Lang
             if ( $lang == $conf['lang'] )
             {
-                $this->filewriter->__moveDataToZip($HS, $hsPrename . '.hs');
+                $this->filewriter->__moveDataToZip($HS, $translationRoot . '.hs');
             }
         }
     }
