@@ -115,7 +115,7 @@ class siteexport_zipfilewriter
             return true;
         }
 
-        $this->functions->debug->runtimeException("Zip Error #$code");
+        $this->functions->debug->runtimeException("Zip Error #{$code} for file {$ZIP}");
         return false;
     }
 
@@ -128,7 +128,9 @@ class siteexport_zipfilewriter
         $zip = new ZipArchive();
         $code = $zip->open($this->functions->settings->zipFile, ZipArchive::CREATE);
         if ($code === TRUE) {
-            return !($zip->statName($NAME) === FALSE);
+            $exists = !($zip->statName($NAME) === FALSE);
+            $zip->close();
+            return $exists;
         }
 
         return false;
@@ -196,6 +198,7 @@ class siteexport_zipfilewriter
         }
         
         if ( $zip->numFiles != 1 ) {
+            $zip-close();
             $this->functions->debug->message("More than one ({$zip->numFiles}) file in zip.", $data['file'], 2);
             return false;
         }
@@ -203,6 +206,7 @@ class siteexport_zipfilewriter
         $stat = $zip->statIndex( 0 );
         $this->functions->debug->message("Stat.", $stat, 3);
         if ( substr($stat['name'], -3) != 'pdf' ) {
+            $zip-close();
             $this->functions->debug->message("The file was not a PDF ({$stat['name']}).", $stat['name'], 2);
             return false;
         }
