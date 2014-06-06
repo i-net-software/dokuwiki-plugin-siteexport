@@ -837,32 +837,32 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
             case 'detail.php' :
                 $fileName = $this->functions->getSiteName($ID, true); // 2010-09-03 - rewrite with override enabled
             case 'doku.php' :
-                if ( $this->functions->settings->addParams ) {
-                    $noDeepReplace = false;
 
-                    if ( empty($fileName) ) {
-                        $fileName = $this->functions->getSiteName($ID); // 2010-09-03 - rewrite with override enabled
-                    }
+                $noDeepReplace = false;
+                $this->__getParamsAndDataRewritten($DATA, $PARAMS, 'id');
+                $ID = $this->functions->cleanID($DATA[2], null, strstr($DATA[2], 'id'));
 
-                    $newDepth = str_repeat('../', count(explode('/', $fileName))-1);
-                    $this->__rebuildDataForNormalFiles($DATA, $PARAMS);
-
-                    $this->functions->debug->message("This is doku.php or detail.php file with addParams", array($DATA, $fileName, $newDepth, $newAdditionalParameters), 2);
-                    break;
+                if ( empty($fileName) ) {
+                    $fileName = $this->functions->getSiteName($ID); // 2010-09-03 - rewrite with override enabled
                 }
 
-                $url = str_replace('detail.php', 'fetch.php', $url);
-                $this->functions->debug->message("This is doku.php or detail.php file '$url'", null, 2);
+                $newDepth = str_repeat('../', count(explode('/', $fileName))-1);
+                $this->__rebuildDataForNormalFiles($DATA, $PARAMS);
+                $DATA[2] .= '.' . array_pop(explode('/', $fileName));
+
+                $this->functions->debug->message("This is doku.php or detail.php file with addParams", array($DATA, $ID, $fileName, $newDepth, $newAdditionalParameters), 2);
+                break;
+
                 // Fetch Handling for media - rewriting everything
             case 'fetch.php':
                 $this->__getParamsAndDataRewritten($DATA, $PARAMS, 'media');
 
                 $DATA[2] = str_replace('/', ':', $DATA[2]);
                 $ID = $this->functions->cleanID($DATA[2], null, strstr($DATA[2], 'media'));
+                resolve_mediaid(null, $ID, $IDexists);
 
-                $urlM = ml($ID, null, true);
-                $uriM = @parse_url($urlM);
-                $DATA[2] = $uriM['path'] . ( !empty( $ANCHOR) ? '#' . $ANCHOR : '' ) . ( !empty( $PARAMS) ? '?' . $PARAMS : '' );
+                $DATA[2] = $this->functions->wl($ID, null, null, null, $IDexists, true);
+                $this->__rebuildDataForNormalFiles($DATA, $PARAMS);
 
                 $DATA['PARAMS'] = "";
                 $newAdditionalParameters = array();
