@@ -535,7 +535,7 @@ class siteexport_functions extends DokuWiki_Plugin
             unset($removeArray['namespace']);
             unset($removeArray['exportbody']);
             unset($removeArray['addParams']);
-            unset($removeArray['template']);
+            // unset($removeArray['template']); // Whatever comes next may need the template!
             unset($removeArray['eclipseDocZip']);
             unset($removeArray['useTocFile']);
             unset($removeArray['JavaHelpDocZip']);
