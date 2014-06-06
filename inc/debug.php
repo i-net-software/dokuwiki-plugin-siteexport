@@ -78,6 +78,7 @@ class siteexport_debug
 	        if ( !$fh && !$ajaxCanLog ) {
 	            $this->runtimeException("Could not create/open/append logfile: '{$this->debugFile}'", true);
 	            $this->debugLevel = 5; // shutdown debug
+	            @fclose($fh);
 	            return;
 	        }
         }
