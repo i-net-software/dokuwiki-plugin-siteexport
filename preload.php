@@ -38,6 +38,9 @@ class preload_plugin_siteexport {
 		
 		// Set hint for Dokuwiki_Started event
 		if (!defined('SITEEXPORT_TPL'))		define('SITEEXPORT_TPL', $tempREQUEST['template']);
+		
+		// Some API-Methods stil go via conf
+		$conf['template'] = SITEEXPORT_TPL;
 
 		// define baseURL
 		// This should be DEPRECATED - as it is in init.php which suggest tpl_basedir and tpl_incdir
