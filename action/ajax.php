@@ -1143,7 +1143,7 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
     function __getParamsAndDataRewritten(&$DATA, &$PARAMS, $IDKEY='id') {
 
         $PARRAY = explode('&', str_replace('&amp;', '&', $PARAMS) );
-        $PARAMS = "";
+        $PARAMS = array();
 
         foreach ( $PARRAY as $item ) {
             list($key, $value) = explode('=', $item, 2);
@@ -1155,12 +1155,10 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
                 continue;
             }
 
-            if ( !empty( $PARAMS) ) {
-                $PARAMS .= '&';
-            }
-
-            $PARAMS .= "$key=$value";
+            $PARAMS[] = "$key=$value";
         }
+        
+        $PARAMS = implode('&', $PARAMS);
     }
 
     /**
