@@ -606,7 +606,7 @@ class siteexport_functions extends DokuWiki_Plugin
      * @param $replaceID - ID which will be made relative if needed
      * @param $baseID - ID which is the reference to be made relative against
      */
-    public function getRelativeURL($replaceID, $baseID)
+    public function getRelativeURL($replaceID, $baseID, $separator=':')
     {
         $origReplaceID = $replaceID;
     
@@ -616,8 +616,8 @@ class siteexport_functions extends DokuWiki_Plugin
         $replaceID = getNS($replaceTmp);
         $baseID = getNS($baseID);
 
-        $replaceParts = explode(':', $replaceID);
-        $baseParts = explode(':', $baseID);
+        $replaceParts = explode($separator, $replaceID);
+        $baseParts = explode($separator, $baseID);
         $exportNSParts = explode(':', cleanID($this->settings->exportNamespace));
         
         $newBase = array();
@@ -643,11 +643,11 @@ class siteexport_functions extends DokuWiki_Plugin
         if ( count($exportNSParts) == 1 && $exportNSParts[0] == $baseParts[0] )
         {
             array_shift($replaceParts);
-            $newBase = implode('/', $replaceParts);
+            $newBase = implode($separator, $replaceParts);
 
-            if ( substr($newBase, -1) != '/' )
+            if ( substr($newBase, -1) != $separator )
             {
-                $newBase .= '/';
+                $newBase .= $separator;
             }
             
             $this->debug->message("new Base: ", $newBase, 1);
