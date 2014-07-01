@@ -54,6 +54,7 @@ class HTTPProxy extends DokuHTTPClient {
 		}
 
 		$this->headers['X-Real-Ip'] = clientIP(true);
+		$this->headers['X-Site-Exporter'] = getSecurityToken();
 		$this->headers['Accept-Encoding'] = $_SERVER['HTTP_ACCEPT_ENCODING'];
 		$this->headers['Accept-Charset'] = $_SERVER['HTTP_ACCEPT_CHARSET'];
 		$this->agent = $_SERVER['HTTP_USER_AGENT'];

@@ -33,6 +33,12 @@ class action_plugin_siteexport_startup extends DokuWiki_Action_Plugin {
 	function siteexport_check_template()
 	{
 		global $conf, $INFO;
+
+        $headers = getallheaders();
+        if ( array_key_exists('X-Site-Exporter', $headers) && $headers['X-Site-Exporter'] = getSecurityToken() ) {
+            // This is a request via the HTTPProxy of the SiteExporter ... set config to what we need here.
+    		$conf['useslash'] = 1;
+        }
 	
 		if ( !defined('SITEEXPORT_TPL') ) { return; }
 		$conf['template'] = SITEEXPORT_TPL;
