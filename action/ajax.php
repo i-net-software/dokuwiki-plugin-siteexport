@@ -957,7 +957,6 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
                 unset($newAdditionalParameters['diPlu']);
         }
 
-
         $this->functions->debug->message("DATA after SWITCH CASE decision", array($DATA, $noDeepReplace, $fileName, $newDepth), 1);
 
         if ( $this->filewriter->canDoPDF() ) {
@@ -1035,8 +1034,8 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
 			$DATA[2] = $dirname . '/' . $tmpFile[1];
         }
 
-        // Custom extension
-        if ( !empty($tmpFile[2]) ) {
+        // Custom extension if not set already
+        if ( !empty($tmpFile[2]) && !preg_match("\.{$tmpFile[2]}$", $DATA[2]) ) {
             $DATA[2] .= '.' . $tmpFile[2];
         }
 
