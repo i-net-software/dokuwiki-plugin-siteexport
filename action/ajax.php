@@ -1035,7 +1035,7 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
         }
 
         // Custom extension if not set already
-        if ( !empty($tmpFile[2]) && !preg_match("\.{$tmpFile[2]}$", $DATA[2]) ) {
+        if ( !empty($tmpFile[2]) && !preg_match("$\.{$tmpFile[2]}$", $DATA[2]) ) {
             $DATA[2] .= '.' . $tmpFile[2];
         }
 
