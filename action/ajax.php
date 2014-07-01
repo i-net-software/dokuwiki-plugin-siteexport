@@ -606,7 +606,7 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
         }
 
         if( empty($getData) ) {
-            $this->functions->debug->message("No data fetched.", null , 4);
+            $this->functions->debug->message("No data fetched", $URL, 4);
             return false;
         }
 
