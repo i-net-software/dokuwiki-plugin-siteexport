@@ -37,7 +37,7 @@ class HTTPProxy extends DokuHTTPClient {
         parent::__construct();
         
         $this->timeout = 60; //max. 25 sec
-        $this->headers['If-Modified-Since'] = substr(gmdate('r', 0), 0, -5).'GMT';
+        $this->headers['If-Modified-Since'] = gmdate('r', 0);
         $this->status = -1;
         $this->debug = true;
 
