@@ -634,8 +634,17 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
 
         fwrite($fp,$getData);
         fclose($fp);
+
+        // plain/text; ...        
+        $extension = array_shift(explode(';', $http->resp_headers['content-type'], 2));
+        $extension = explode('/', $extension, 2);
+        if ( $extension[0] == 'image' || $extension[1] == 'html' ) {
+            $extension = $extension[1];
+        } else {
+            unset($extension);
+        }
         
-        return array($tmpFile, preg_replace("/.*?filename=\"?(.*?)\"?;?$/", "$1", $http->resp_headers['content-disposition'], strrev(array_shift(explode('/', strrev($http->resp_headers['content-type']), 2)))));
+        return array($tmpFile, preg_replace("/.*?filename=\"?(.*?)\"?;?$/", "$1", $http->resp_headers['content-disposition']), $extension);
     }
 
     /**
