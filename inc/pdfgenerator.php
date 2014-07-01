@@ -21,7 +21,7 @@ if ( intval($_REQUEST['pdfExport']) == 1 && file_exists(DOKU_PLUGIN . 'dw2pdf/mp
                 return false;
             }
 
-            $mpdf = new siteexportPDF('UTF-8-s', $this->functions->debug);
+            $mpdf = new siteexportPDF($this->functions->debug);
 
             if ( !$mpdf ) {
                 $this->functions->debug->message("Could not instantiate MPDF", null, 4);

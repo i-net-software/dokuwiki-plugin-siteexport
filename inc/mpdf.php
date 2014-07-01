@@ -19,14 +19,21 @@ if ( file_exists(DOKU_PLUGIN . 'dw2pdf/DokuPDF.class.php') ) {
     require_once(DOKU_PLUGIN . 'dw2pdf/DokuPDF.class.php');
 
     class siteexportPDF extends DokuPDF {
-        
-        var $debugObj = true;
+    
+        private $debugObj = false;
 
-		function __construct($encoding, $debug=false) {
-			
-            parent::__construct($encoding);
+		function __construct($debug) {
+            global $INPUT;
+		
+            $dw2pdf = &plugin_load('action', 'dw2pdf');
+		
+		    // decide on the paper setup from param or config
+            $pagesize    = $INPUT->str('pagesize', $dw2pdf->getConf('pagesize'), true);
+            $orientation = $INPUT->str('orientation', $dw2pdf->getConf('orientation'), true);
+
+            parent::__construct($pagesize, $orientation);
             $this->debugObj = $debug;
-            $this->debug = true;
+            $this->debug = $debug !== false;
             $this->shrink_tables_to_fit = 1; // Does not shrink tables by default, only in emergency
             $this->use_kwt = true; // avoids page-breaking in H1-H6 if a table follows directly
         }
@@ -40,8 +47,8 @@ if ( file_exists(DOKU_PLUGIN . 'dw2pdf/DokuPDF.class.php') ) {
 
         function Error($msg)
         {
-            if ( $this->debug !== false && $lvl == null && method_exists($this->debug, 'runtimeException') ) {
-                $this->debug->runtimeException($msg);
+            if ( $this->debugObj !== false && method_exists($this->debugObj, 'runtimeException') ) {
+                $this->debugObj->runtimeException($msg);
             } else {
                 parent::Error($msg);
             }
