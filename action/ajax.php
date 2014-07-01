@@ -593,7 +593,7 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
         $this->functions->addAdditionalParametersToURL($URL, $newAdditionalParameters);
 
         $this->functions->debug->message("Fetching URL: '$URL'", null, 2);
-        $getData = $http->get($URL);
+        $getData = $http->get($URL, true); // true == sloopy, get 304 body as well.
 
         if( $getData === false ) {
         
@@ -610,15 +610,6 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
             return false;
         }
 
-        $tmpFile = tempnam($this->functions->settings->tmpDir , 'siteexport__');
-        $this->functions->debug->message("Temporary filename", $tmpFile, 1);
-
-        $fp = fopen( $tmpFile, "w");
-        if(!$fp) {
-            $this->functions->debug->message("Can't open temporary File '$tmpFile'.", null , 4);
-            return false;
-        }
-
         $this->functions->debug->message("Headers received", $http->resp_headers, 2);
 
         if ( !$RECURSE ) {
@@ -632,10 +623,19 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
             $this->functions->debug->message("========================================", null, 1);
         }
 
+        $tmpFile = tempnam($this->functions->settings->tmpDir , 'siteexport__');
+        $this->functions->debug->message("Temporary filename", $tmpFile, 1);
+
+        $fp = fopen( $tmpFile, "w");
+        if(!$fp) {
+            $this->functions->debug->message("Can't open temporary File '$tmpFile'.", null , 4);
+            return false;
+        }
+
         fwrite($fp,$getData);
         fclose($fp);
         
-        return array($tmpFile, preg_replace("/.*?filename=\"?(.*?)\"?;?$/", "$1", $http->resp_headers['content-disposition']));
+        return array($tmpFile, preg_replace("/.*?filename=\"?(.*?)\"?;?$/", "$1", $http->resp_headers['content-disposition'], strrev(array_shift(explode('/', strrev($http->resp_headers['content-type']), 2)))));
     }
 
     /**
@@ -836,33 +836,45 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
                 break;
             case 'detail.php' :
                 $fileName = $this->functions->getSiteName($ID, true); // 2010-09-03 - rewrite with override enabled
+                $noDeepReplace = true;
+
+                $this->__getParamsAndDataRewritten($DATA, $PARAMS, 'id');
+                $ID = $this->functions->cleanID($DATA[2], null, strstr($DATA[2], 'id'));
+
+                $newDepth = str_repeat('../', count(explode('/', $fileName))-1);
+                $this->__rebuildDataForNormalFiles($DATA, $PARAMS);
+                $DATA[2] .= '.' . array_pop(explode('/', $fileName));
+
+                $this->functions->debug->message("This is detail.php file with addParams", array($DATA, $ID, $fileName, $newDepth, $newAdditionalParameters), 2);
+                break;
             case 'doku.php' :
-                if ( $this->functions->settings->addParams ) {
-                    $noDeepReplace = false;
 
-                    if ( empty($fileName) ) {
-                        $fileName = $this->functions->getSiteName($ID); // 2010-09-03 - rewrite with override enabled
-                    }
+                $noDeepReplace = false;
+                $this->__getParamsAndDataRewritten($DATA, $PARAMS, 'id');
+                $ID = $this->functions->cleanID($DATA[2], null, strstr($DATA[2], 'id'));
+                
+                $this->functions->debug->message("Current ID to filename (doku.php): '" . wikiFN($ID) . "'", null, 2);
 
-                    $newDepth = str_repeat('../', count(explode('/', $fileName))-1);
-                    $this->__rebuildDataForNormalFiles($DATA, $PARAMS);
+                $fileName = $this->functions->getSiteName($ID); // 2010-09-03 - rewrite with override enabled
 
-                    $this->functions->debug->message("This is doku.php or detail.php file with addParams", array($DATA, $fileName, $newDepth, $newAdditionalParameters), 2);
-                    break;
-                }
+                $newDepth = str_repeat('../', count(explode('/', $fileName))-1);
+                $this->__rebuildDataForNormalFiles($DATA, $PARAMS);
+                $DATA[2] .= '.' . array_pop(explode('/', $fileName));
 
-                $url = str_replace('detail.php', 'fetch.php', $url);
-                $this->functions->debug->message("This is doku.php or detail.php file '$url'", null, 2);
+                $this->functions->debug->message("This is doku.php file with addParams", array($DATA, $ID, $fileName, $newDepth, $newAdditionalParameters), 2);
+                return $this->__rebuildLink($DATA);
+                break;
+
                 // Fetch Handling for media - rewriting everything
             case 'fetch.php':
                 $this->__getParamsAndDataRewritten($DATA, $PARAMS, 'media');
 
                 $DATA[2] = str_replace('/', ':', $DATA[2]);
                 $ID = $this->functions->cleanID($DATA[2], null, strstr($DATA[2], 'media'));
+                resolve_mediaid(null, $ID, $IDexists);
 
-                $urlM = ml($ID, null, true);
-                $uriM = @parse_url($urlM);
-                $DATA[2] = $uriM['path'] . ( !empty( $ANCHOR) ? '#' . $ANCHOR : '' ) . ( !empty( $PARAMS) ? '?' . $PARAMS : '' );
+                $DATA[2] = $this->functions->wl($ID, null, null, null, $IDexists, true);
+                $this->__rebuildDataForNormalFiles($DATA, $PARAMS);
 
                 $DATA['PARAMS'] = "";
                 $newAdditionalParameters = array();
@@ -871,7 +883,10 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
                 break;
 
                 // default Handling for Pages
-            default			:
+            case 'feed.php':
+                return ""; // Ignore. Has no sense to export.
+                break;
+            default:
                 if ( preg_match("%" . DOKU_BASE . "_detail/%", $DATA[2]) ) {
 
                     // GET ID Param from origdata2
@@ -922,7 +937,9 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
                     
                     return $this->__rebuildLink($DATA);
                 } else {
-                    $this->__rebuildDataForNormalFiles($DATA, $PARAMS);
+                    $this->__rebuildDataForNormalFiles($DATA, $PARAMS, true);
+                    $newAdditionalParameters = null; // 2014-06-27 - when using the "normal" files way we will not need any additional stuff.
+                    // This would make problems with e.g. ditaa plugin
                 }
 
                 unset($newAdditionalParameters['diPlu']);
@@ -969,11 +986,11 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
         $this->functions->settings->depth = $newDepth;
 
         $tmpID = $currentID;
-        $tmpFile === false;
+        $tmpFile = false;
 
         $this->functions->debug->message("Going to get the file", array($url, $noDeepReplace, $newAdditionalParameters), 2);
         $tmpFile = $this->__getHTTPFile($url, $noDeepReplace, $newAdditionalParameters);
-        $this->functions->debug->message("This is the getHTTPFile result", $tmpFile, 2);
+        $this->functions->debug->message("The getHTTPFile result is still empty", $tmpFile === false ? 'YES' : 'NO', 2);
 
         $currentID = $tmpID;
         $this->functions->settings->depth = $origDepth; // 2010-09-03 - Reset depth at the very end
@@ -1143,7 +1160,7 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
     function __getParamsAndDataRewritten(&$DATA, &$PARAMS, $IDKEY='id') {
 
         $PARRAY = explode('&', str_replace('&amp;', '&', $PARAMS) );
-        $PARAMS = "";
+        $PARAMS = array();
 
         foreach ( $PARRAY as $item ) {
             list($key, $value) = explode('=', $item, 2);
@@ -1155,26 +1172,33 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
                 continue;
             }
 
-            if ( !empty( $PARAMS) ) {
-                $PARAMS .= '&';
-            }
-
-            $PARAMS .= "$key=$value";
+            $PARAMS[] = "$key=$value";
         }
+        
+        $PARAMS = implode('&', $PARAMS);
     }
 
     /**
      * rewrite detail.php calls
      **/
-    function __rebuildDataForNormalFiles(&$DATA, &$PARAMS) {
+    function __rebuildDataForNormalFiles(&$DATA, &$PARAMS, $addHash=false) {
         $PARTS = explode('.', $DATA[2]);
         if ( count($PARTS) > 1 ) {
             $EXT = '.' . array_pop($PARTS);
         }
 
-        $PARAMS = preg_replace("/(=|\?|&amp;)/", ".", $PARAMS);
-        $DATA[2] = implode('.', $PARTS) . ( !$this->functions->settings->addParams || empty($PARAMS) ? '' : '.' . $this->functions->cleanID($PARAMS)) . ( $EXT == '.php' ? '.' . $this->functions->settings->fileType : $EXT );
+        $internalParams = $PARAMS = preg_replace("/(=|\?|&amp;)/", ".", $PARAMS);
+        
+        // add anyways - if on overridde
+        if ( !$this->functions->settings->addParams && !empty($PARAMS) && $addHash ) {
+            $internalParams = md5($PARAMS);
+        } else if ( !$this->functions->settings->addParams ){
+            $internalParams = null;
+        }
+        
+        $DATA[2] = implode('.', $PARTS) . ( empty($internalParams) ? '' : '.' . $this->functions->cleanID($internalParams)) . ( $EXT == '.php' ? '.' . $this->functions->settings->fileType : $EXT );
         $DATA[2] = preg_replace("/\.+/", ".", $DATA[2]);
+        $this->functions->debug->message("Rebuilding Data for normal file.", $DATA[2], 1);
     }
 
 
