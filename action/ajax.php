@@ -1063,7 +1063,7 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
         }
         
         $newURL = $DATA[1] == 'url' ? $DATA[1] . '(' . $intermediateURL . ')' : $DATA[1] . '="' . $intermediateURL . '"';
-        $this->functions->debug->message("Re-created URL: '$newURL'", null, 2);
+        $this->functions->debug->message("Re-created URL: '$newURL'", $DEPTH, 2);
 
         return $newURL;
     }
