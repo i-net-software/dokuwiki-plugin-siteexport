@@ -167,6 +167,10 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
 
     public function __init_functions($isAJAX=false)
     {
+        global $conf;
+        
+        $conf['useslash'] = 1;
+    
         $this->functions = new siteexport_functions(true, $isAJAX);
         $this->filewriter = new siteexport_zipfilewriter($this->functions);
 
@@ -1064,14 +1068,13 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
         $intermediateURL = $DEPTH . $DATA[2];
 
         $this->functions->debug->message("currentID: '{$currentID}'; currentParent: '{$currentParent}'", null, 1);
-        
+//*        
         if ( preg_match("#^(\.\./)+#", $intermediateURL) ) {
             // Experimental
             $intermediateURL = $this->functions->getRelativeURL($intermediateURL, $currentParent);
             $this->functions->debug->message("relative URL is: '{$relativeURL}'", null, 1);
         }
-
-/*
+/*/
         // Check if the URL has a ../../something/somethingelse
         // and basically goes back to our current page or something in parallel
         // 1) remove all ../ at begining
@@ -1091,7 +1094,7 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
                 $this->functions->debug->message("Found ./ URL: '$newURL'", null, 2);
             }
         }
-*/
+//*/
         $newURL = $DATA[1] == 'url' ? $DATA[1] . '(' . $intermediateURL . ')' : $DATA[1] . '="' . $intermediateURL . '"';
         $this->functions->debug->message("Re-created URL: '$newURL'", $DEPTH, 2);
 
@@ -1230,9 +1233,6 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
         $DATA[2] = preg_replace("/\.+/", ".", $DATA[2]);
         $this->functions->debug->message("Rebuilding Data for normal file.", $DATA[2], 1);
     }
-
-
-
 
     /*
      * Clean JS and CSS cache files
