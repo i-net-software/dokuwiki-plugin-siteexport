@@ -88,6 +88,11 @@ class siteexport_functions extends DokuWiki_Plugin
 
         if ( empty($ID) ) return false;
 
+        // Remove extensions
+        if ( $overrideRewrite ) {
+            $ID = preg_replace("#\.[^\.]+$#", '', $ID);
+        }
+
         $url = $this->wl($this->cleanID($ID), null, true, null, null, $overrideRewrite); // this must be done with rewriting set to override
         //$url = $this->wl($this->cleanID($ID), null, true); // this must be done with rewriting set to override
         $uri = @parse_url($url);
