@@ -16,18 +16,21 @@ class SiteexportFunctionsGetRelativeURLTest extends DokuWikiTest {
         
         $testMatrix = array(
         
+            // Same directory
             array(
                 'base'      => "test/test.html",
                 'relative'  => "../test/test2.html",
                 'expected'  => "test2.html",
             ),
         
+            // Same directory at base
             array(
                 'base'      => "test.html",
                 'relative'  => "test2.html",
                 'expected'  => "test2.html",
             ),
         
+            // Different directory
             array(
                 'base'      => "test.html",
                 'relative'  => "../test/test2.html",
