@@ -1038,9 +1038,10 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
 			$DATA[2] = $dirname . '/' . $tmpFile[1];
         }
 
-        // Custom extension if not set already
-        if ( !empty($tmpFile[2]) && !preg_match("$\.{$tmpFile[2]}$", $DATA[2]) ) {
-            $DATA[2] .= '.' . $tmpFile[2];
+        // Custom extension if not set already - 2014-07-02
+        if ( !empty($tmpFile[2]) && !preg_match("#\.{$tmpFile[2]}$#", $DATA[2]) ) {
+            $DATA[2] = preg_replace("#\.([^\.])$#", '.' . $tmpFile[2], $DATA[2]);
+            $this->functions->debug->message("Added extension provided from Server.", $DATA[2], 1);
         }
 
         // Add to zip
