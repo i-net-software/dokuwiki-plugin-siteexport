@@ -131,7 +131,7 @@ class siteexport_functions extends DokuWiki_Plugin
     {
         $NS = $this->settings->exportNamespace;
         $NAME = preg_replace("%^" . DOKU_BASE . "%", "", $NAME);
-        $NAME = preg_replace("%^(_media/)?(" . $NS . "/)?%", "", $NAME);
+        $NAME = preg_replace("%^((_media|_detail)/)?(" . $NS . "/)?%", "", $NAME);
 
         $this->debug->message("Shortening file to '$NAME'", null, 1);
         return $NAME;
