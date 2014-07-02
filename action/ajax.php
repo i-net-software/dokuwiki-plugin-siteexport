@@ -483,7 +483,7 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
      * Add page with ID to the package
      **/
     function __siteexport_add_site( $ID ) {
-        global $conf, $currentID;
+        global $conf, $currentID, $currentParent;
 
         // Which is the current ID?
         $currentID = $ID;
@@ -525,7 +525,7 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
         $url = $this->functions->wl($ID, $request, true, '&');
 
         // Parse URI PATH and add "html"
-        $fileName = $this->functions->getSiteName($ID, true);
+        $currentParent = $fileName = $this->functions->getSiteName($ID, true);
         $this->functions->debug->message("Filename could be:", $fileName, 2);
 
         $this->fileChecked[$url] = $fileName; // 2010-09-03 - One URL to one FileName
@@ -678,7 +678,7 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
 		// Clean data[2], remote ' and "
 		$DATA[2] = preg_replace("/^\s*?['\"]?(.*?)['\"]?\s*?$/", '\1', trim($DATA[2]));
 
-        $this->functions->debug->message("Starting Link Replacement", array( 'data' => $DATA, 'additional Params' => $newAdditionalParameters, 'newDepth' => $newDepth, 'currentID' => $currentID), 2);
+        $this->functions->debug->message("Starting Link Replacement", array( 'data' => $DATA, 'additional Params' => $newAdditionalParameters, 'newDepth' => $newDepth, 'currentID' => $currentID, 'currentParent' => $currentParent), 2);
 
         // $DATA[2] = urldecode($DATA[2]); // Leads to problems because it does not re-encode the url
         // External and mailto links
@@ -851,15 +851,15 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
                 return "";
                 break;
             case 'detail.php' :
-                $fileName = $this->functions->getSiteName($ID, true); // 2010-09-03 - rewrite with override enabled
-                $noDeepReplace = true;
+                $noDeepReplace = false;
 
                 $this->__getParamsAndDataRewritten($DATA, $PARAMS, 'media');
                 $ID = $this->functions->cleanID($DATA[2], null, strstr($DATA[2], 'media'));
+                $fileName = $this->functions->getSiteName($ID, true); // 2010-09-03 - rewrite with override enabled
 
                 $newDepth = str_repeat('../', count(explode('/', $fileName))-1);
                 $this->__rebuildDataForNormalFiles($DATA, $PARAMS);
-                $DATA[2] .= '.' . array_pop(explode('/', $fileName));
+                $DATA[2] .= '.detail.html';
 
                 $this->functions->debug->message("This is detail.php file with addParams", array($DATA, $ID, $fileName, $newDepth, $newAdditionalParameters), 2);
                 break;
@@ -937,13 +937,6 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
                     // If this is a page ... skip it!
                     $DATA[2] .= ( !$this->functions->settings->addParams || empty($PARAMS) ? '' : '.' . $this->functions->cleanID(preg_replace("/(=|\?|&amp;)/", ".", $PARAMS)))  . '.' . $this->functions->settings->fileType;
 
-                    // 2012-06-15 originally has an absolute path ... we might need a relative one if not in our namespace
-                    $this->functions->debug->message("OK, this is to be absolute: " . (empty($_REQUEST['absolutePath'])?'false':'true'), null, 1);
-                    if ( empty($_REQUEST['absolutePath']) )
-                    {
-                        $DATA[2] = $this->functions->getRelativeURL($DATA[2], $currentID);
-                    }
-
                     $DATA[2] = $this->functions->shortenName($DATA[2]);
 
                     // If Parameters are to be included in the filename - they must not be added twice
@@ -1004,7 +997,7 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
         $tmpParent = $currentParent;
         $tmpFile = false;
 
-        $currentParent = dirname($DATA[2]);
+        $currentParent = $fileName;
         $this->functions->debug->message("Going to get the file", array($url, $noDeepReplace, $newAdditionalParameters), 2);
         $tmpFile = $this->__getHTTPFile($url, $noDeepReplace, $newAdditionalParameters);
         $this->functions->debug->message("The getHTTPFile result is still empty", $tmpFile === false ? 'YES' : 'NO', 2);
@@ -1068,12 +1061,13 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
 
         $intermediateURL = $DEPTH . $DATA[2];
 
-        $this->functions->debug->message("currentID: '{$currentID}'; currentParent: '{$currentParent}'", null, 1);
 //*        
-        if ( preg_match("#^(\.\./)+#", $intermediateURL) ) {
+        // 2012-06-15 originally has an absolute path ... we might need a relative one if not in our namespace
+        if ( empty($_REQUEST['absolutePath']) && preg_match("#^(\.\./)+#", $intermediateURL) ) {
+
+            $this->functions->debug->message("OK, this is not to be absolute: ", array($intermediateURL, $currentParent), 1);
             // Experimental
             $intermediateURL = $this->functions->getRelativeURL($intermediateURL, $currentParent);
-            $this->functions->debug->message("relative URL is: '{$relativeURL}'", null, 1);
         }
 /*/
         // Check if the URL has a ../../something/somethingelse

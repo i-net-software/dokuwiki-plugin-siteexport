@@ -2,17 +2,25 @@
 
 /**
  * @group plugin_siteexport
- * @group plugin_siteexport_functions
+ * @group plugins
  */
 class SiteexportFunctionsGetRelativeURLTest extends DokuWikiTest {
 
     protected $pluginsEnabled = array('siteexport');
-
-    function testAbsolute() {
+    
+    public function testGetRelativeURL() {
 
         $functions = new siteexport_functions();
+        $functions->debug->setDebugLevel(1);
+        $functions->debug->setDebugFile('/tmp/siteexport.log');
         
         $testMatrix = array(
+        
+            array(
+                'base'      => "test/test.html",
+                'relative'  => "../test/test2.html",
+                'expected'  => "test2.html",
+            ),
         
             array(
                 'base'      => "test.html",
@@ -21,16 +29,28 @@ class SiteexportFunctionsGetRelativeURLTest extends DokuWikiTest {
             ),
         
             array(
-                'base'      => "test/test.html",
-                'relative'  => "test/test2.html",
-                'expected'  => "test2.html",
+                'base'      => "test.html",
+                'relative'  => "../test/test2.html",
+                'expected'  => "test/test2.html",
             ),
-        
+
+            array(
+                'base'      => "test/test.html",
+                'relative'  => "../test2.html",
+                'expected'  => "../test2.html",
+            ),
+
+            array(
+                'base'      => "test/test.html",
+                'relative'  => "../test2/test2.html",
+                'expected'  => "../test2/test2.html",
+            ),
         );
 
         foreach($testMatrix as $test) {
             $result = $functions->getRelativeURL($test['relative'], $test['base']);
             $this->assertTrue($test['expected'] == $result, "Result '{$result}' did not match expected result '{$test['expected']}' (base: '{$test['base']}', relative: '{$test['relative']}')");
         }
-    }
+   }
+
 }
