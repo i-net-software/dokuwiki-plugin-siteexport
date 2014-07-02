@@ -11,8 +11,8 @@ class SiteexportFunctionsGetRelativeURLTest extends DokuWikiTest {
     public function testGetRelativeURL() {
 
         $functions = new siteexport_functions();
-        $functions->debug->setDebugLevel(1);
-        $functions->debug->setDebugFile('/tmp/siteexport.log');
+        // $functions->debug->setDebugLevel(1);
+        // $functions->debug->setDebugFile('/tmp/siteexport.log');
         
         $testMatrix = array(
         
