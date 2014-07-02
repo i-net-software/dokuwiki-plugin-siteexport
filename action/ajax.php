@@ -1230,7 +1230,7 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
             $internalParams = null;
         }
         
-        $DATA[2] = implode('.', $PARTS) . ( empty($internalParams) ? '' : '.' . $this->functions->cleanID($internalParams)) . ( $EXT == 'php' ? '.' . $this->functions->settings->fileType : $EXT );
+        $DATA[2] = implode('.', $PARTS) . ( empty($internalParams) ? '' : '.' . $this->functions->cleanID($internalParams)) . ( $EXT == '.php' ? '.' . $this->functions->settings->fileType : $EXT );
         $DATA[2] = preg_replace("/\.+/", ".", $DATA[2]);
         $this->functions->debug->message("Rebuilding Data for normal file.", $DATA[2], 1);
     }
