@@ -854,8 +854,8 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
                 $fileName = $this->functions->getSiteName($ID, true); // 2010-09-03 - rewrite with override enabled
                 $noDeepReplace = true;
 
-                $this->__getParamsAndDataRewritten($DATA, $PARAMS, 'id');
-                $ID = $this->functions->cleanID($DATA[2], null, strstr($DATA[2], 'id'));
+                $this->__getParamsAndDataRewritten($DATA, $PARAMS, 'media');
+                $ID = $this->functions->cleanID($DATA[2], null, strstr($DATA[2], 'media'));
 
                 $newDepth = str_repeat('../', count(explode('/', $fileName))-1);
                 $this->__rebuildDataForNormalFiles($DATA, $PARAMS);
