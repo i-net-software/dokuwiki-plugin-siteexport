@@ -24,7 +24,7 @@ class action_plugin_siteexport_cron extends action_plugin_siteexport_ajax
     /**
      * Register Plugin in DW
      **/
-    public function register(&$controller) {
+    public function register(Doku_Event_Handler $controller) {
         $controller->register_hook('AJAX_CALL_UNKNOWN', 'BEFORE', $this, 'ajax_siteexport_cron_provider');
     }
 

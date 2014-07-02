@@ -41,7 +41,7 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
     /**
      * Register Plugin in DW
      **/
-    function register(&$controller) {
+    public function register(Doku_Event_Handler $controller) {
         $controller->register_hook('AJAX_CALL_UNKNOWN', 'BEFORE', $this, 'ajax_siteexport_provider');
         $controller->register_hook('ACTION_ACT_PREPROCESS', 'BEFORE', $this, 'siteexport_action');
     }
