@@ -823,10 +823,10 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
                 // No paramters needed since they are rewritten.
                 $DATA['PARAMS'] = "";
                 $noDeepReplace = false;
-                $fileName = $this->functions->getSiteName($ID);
+                $fileName = $this->functions->getSiteName($ID, true);
                 
                 // NewDepth has to be relative to the css file itself ...
-                $newDepth = './' . str_repeat('../', count(explode(':', $fileName))-1); // it is an ID at this point.
+                $newDepth = './' . str_repeat('../', count(explode('/', $fileName))-1); // it is an ID at this point.
                 $newAdditionalParameters['do'] = 'siteexport';
 
                 $this->functions->debug->message("This is CSS file", array($DATA, $noDeepReplace, $fileName, $newDepth, $newAdditionalParameters), 2);
