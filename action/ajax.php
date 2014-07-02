@@ -755,7 +755,13 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
 
         $ID = $DATA[2];
         $MEDIAMATCHER = "#(_media(/|:)|media=|_detail(/|:)|_export(/|:)|do=export_)#i"; // 2010-10-23 added "(/|:)" for the ID may not contain slashes anymore
-        $ID = $this->functions->cleanID($DATA[2], null, preg_match($MEDIAMATCHER, $DATA[2]) );
+        $ISMEDIA = preg_match($MEDIAMATCHER, $DATA[2]);
+        if ( $ISMEDIA && $conf['userewrite'] == 1) {
+            //$DATA[2] = preg_replace($MEDIAMATCHER, "", $DATA[2]);
+            $ID = preg_replace("#^_(detail|media)(/|:)#", "", $ID);
+        }
+        
+        $ID = $this->functions->cleanID($DATA[2], null, $ISMEDIA );
         //        $ID = $this->functions->cleanID($DATA[2], null, strstr($DATA[2], 'media') ); // Export anpassung nun weiter unten
 
         //        $IDexists = page_exists($ID); // 08/10/2010 - Not needed. This will be done in the next block.
@@ -765,7 +771,7 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
         $IDexists = false;
 
         $this->functions->debug->message("Resolving ID: '$ID'", null, 2);
-        if ( preg_match($MEDIAMATCHER, $DATA[2]) ) {
+        if ( $ISMEDIA ) {
             resolve_mediaid(null, $ID, $IDexists);
              
             $this->functions->debug->message("Current mediaID to filename: '" . mediaFN($ID) . "'", null, 2);
@@ -797,14 +803,18 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
         // Parse URI PATH and add "html"
         $uri = @parse_url($url);
         $DATA[2] = $uri['path'];
-        $DATA['ANCHOR'] = $ANCHOR;
-        $DATA['PARAMS'] = $PARAMS;
 
         $this->functions->debug->message("DATA after parsing.", $DATA, 2);
 
         // Second Rewrite for UseRewrite = 2
-        if ( $conf['userewrite'] == 2 ) {
-            $DATA[2] = preg_replace( '$/lib/.*?fetch\.php$', '', $DATA[2]);
+        if ( $conf['userewrite'] == 2 && preg_match("%((/lib/exe/(fetch|detail|indexer)|feed|doku)\.php)/?(.*?)$%", $DATA[2], $matches)) {
+        
+        
+            // The actual file in lib
+            $DATA[2] = $matches[1];
+            $PARAMS .= '&' . (in_array($matches[3], array('fetch', 'detail')) ? 'media' : 'id') . '=' . cleanID(str_replace('/', ':', $matches[4]));
+            
+/*            $DATA[2] = preg_replace( '$/lib/.*?fetch\.php$', '', $DATA[2]);
             $DATA[2] = preg_replace( '%(/lib/.*?detail\.php.*$)%', '\1' . '.' . $this->functions->settings->fileType, $DATA[2]);
 
             if ( preg_match( '%/(lib/.*?detail|doku)\.php%', $DATA[2])) {
@@ -812,9 +822,13 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
                 $fileName = $this->functions->getSiteName($ID);
                 $newDepth = str_repeat('../', count(explode('/', $fileName))-1);
             }
-
             $this->functions->debug->message("DATA after second rewrite with UseRewrite = 2", array($DATA, $noDeepReplace, $fileName, $newDepth), 1);
+*/
+            $this->functions->debug->message("DATA after second rewrite with UseRewrite = 2", array($DATA, $matches, $PARAMS), 1);
         }
+
+        $DATA['ANCHOR'] = $ANCHOR;
+        $DATA['PARAMS'] = $PARAMS;
 
         switch ( array_pop(explode('/', $DATA[2])) ) {
             // CSS Extra Handling with extra rewrites
@@ -854,7 +868,7 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
                 $noDeepReplace = false;
 
                 $this->__getParamsAndDataRewritten($DATA, $PARAMS, 'media');
-                $ID = $this->functions->cleanID($DATA[2], null, strstr($DATA[2], 'media'));
+                $ID = $this->functions->cleanID(str_replace('/', ':', $DATA[2]), null, strstr($DATA[2], 'media'));
                 $fileName = $this->functions->getSiteName($ID, true); // 2010-09-03 - rewrite with override enabled
 
                 $newDepth = str_repeat('../', count(explode('/', $fileName))-1);
@@ -911,16 +925,17 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
 
                     $fileIDPart = isset($backlinkID[1]) && !empty($backlinkID[1]) ? $this->functions->cleanID(urldecode($backlinkID[1])) : 'detail';
 
-                    $DATA[2] .= '/' . $fileIDPart . '.' . $this->functions->settings->fileType; // add namespace and subpage for back button and add filetype
+                    $ID = preg_replace("#^_detail(/|:)#", "", $ID);
+                    $DATA[2] .= ':' . $fileIDPart . '.' . $this->functions->settings->fileType; // add namespace and subpage for back button and add filetype
 
                     $noDeepReplace = false;
                     $fileName = $this->functions->shortenName($DATA[2]);
                     $newDepth = str_repeat('../', count(explode('/', $fileName))-1);
                     $url .= ( strstr($url, '?') ? '&' : '?' ) . 'id=' . $fileIDPart; // add id-part to URL for backlinks
-                     
+
                     $DATA['PARAMS'] = "";
 
-                    $this->functions->debug->message("This is something with '_detail' file", array($DATA, $backlinkID, $newDepth, $url), 2);
+                    $this->functions->debug->message("This is something with '_detail' file", array($DATA, $backlinkID, $newDepth, $url, $ID), 2);
                 } else if ( preg_match("%" . DOKU_BASE . "_export/(.*?)/%", $DATA[2], $fileType) ) {
                      
                     // Fixes multiple codeblocks in one file
@@ -1202,6 +1217,8 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
 
             $PARAMS[] = "$key=$value";
         }
+        
+        sort($PARAMS);
         
         $PARAMS = implode('&', $PARAMS);
     }
