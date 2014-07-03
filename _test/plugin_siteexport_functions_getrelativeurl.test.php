@@ -1,5 +1,7 @@
 <?php
 
+@require_once(DOKU_PLUGIN . 'siteexport/inc/functions.php');
+
 /**
  * @group plugin_siteexport
  * @group plugins
@@ -9,6 +11,7 @@ class SiteexportFunctionsGetRelativeURLTest extends DokuWikiTest {
     protected $pluginsEnabled = array('siteexport');
 
     public function test_functionsExist() {
+        $this->assertFileExists(DOKU_PLUGIN . 'siteexport/inc/functions.php', 'The functions.php file could not be found.');
         $this->assertTrue( class_exists('siteexport_functions'), 'The class for the functions could not be found.' );
     }
 
