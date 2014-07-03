@@ -7,12 +7,16 @@
 class SiteexportFunctionsGetRelativeURLTest extends DokuWikiTest {
 
     protected $pluginsEnabled = array('siteexport');
-    
-    public function testGetRelativeURL() {
-    
-        // Include functions file.
-        @require_once(DOKU_PLUGIN . 'siteexport/inc/functions.php');
 
+    public function test_functionsExist() {
+        $this->assertTrue( class_exists('siteexport_functions'), 'The class for the functions could not be found.' );
+    }
+
+    /**
+     * @depends test_functionsExist
+     */    
+    public function test_getRelativeURL() {
+    
         $functions = new siteexport_functions();
         // $functions->debug->setDebugLevel(1);
         // $functions->debug->setDebugFile('/tmp/siteexport.log');
