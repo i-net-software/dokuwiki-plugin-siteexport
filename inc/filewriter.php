@@ -85,8 +85,8 @@ class siteexport_zipfilewriter
      * @param $NAME name of the file that is being added
      * @param $ZIP name of the zip file to which we add
      */
-    private function __writeFileToZip($FILE, $NAME, $ZIP) {
-        if ( empty( $ZIP ) ) $ZIP = $this->functions->settings->zipFile;
+    private function __writeFileToZip($FILE, $NAME, $ZIPFILE) {
+        if ( empty( $ZIPFILE ) ) $ZIPFILE = $this->functions->settings->zipFile;
 
         if ( !class_exists('ZipArchive') ) {
             $this->functions->debug->runtimeException("PHP class 'ZipArchive' does not exist. Please make sure that you have the ziplib extension for PHP installed.");
@@ -99,7 +99,7 @@ class siteexport_zipfilewriter
             return false;
         }
 
-        $code = $zip->open($ZIP, ZipArchive::CREATE);
+        $code = $zip->open($ZIPFILE, ZipArchive::CREATE);
         if ($code === TRUE) {
 
             $this->functions->debug->message("Adding file '$NAME' to ZIP $ZIP", null, 2);
@@ -115,7 +115,7 @@ class siteexport_zipfilewriter
             return true;
         }
 
-        $this->functions->debug->runtimeException("Zip Error #$code");
+        $this->functions->debug->runtimeException("Zip Error #{$code} for file {$NAME}");
         return false;
     }
 
@@ -128,7 +128,9 @@ class siteexport_zipfilewriter
         $zip = new ZipArchive();
         $code = $zip->open($this->functions->settings->zipFile, ZipArchive::CREATE);
         if ($code === TRUE) {
-            return !($zip->statName($NAME) === FALSE);
+            $exists = !($zip->statName($NAME) === FALSE);
+            $zip->close();
+            return $exists;
         }
 
         return false;
@@ -196,6 +198,7 @@ class siteexport_zipfilewriter
         }
         
         if ( $zip->numFiles != 1 ) {
+            $zip->close();
             $this->functions->debug->message("More than one ({$zip->numFiles}) file in zip.", $data['file'], 2);
             return false;
         }
@@ -203,6 +206,7 @@ class siteexport_zipfilewriter
         $stat = $zip->statIndex( 0 );
         $this->functions->debug->message("Stat.", $stat, 3);
         if ( substr($stat['name'], -3) != 'pdf' ) {
+            $zip->close();
             $this->functions->debug->message("The file was not a PDF ({$stat['name']}).", $stat['name'], 2);
             return false;
         }

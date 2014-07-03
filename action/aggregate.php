@@ -21,7 +21,7 @@ class action_plugin_siteexport_aggregate extends DokuWiki_Action_Plugin {
     /**
 	* Register Plugin in DW
 	**/
-	function register(&$controller) {
+	public function register(Doku_Event_Handler $controller) {
 		$controller->register_hook('ACTION_HEADERS_SEND', 'BEFORE',  $this, 'siteexport_aggregate_prepare');
 		$controller->register_hook('TPL_ACT_RENDER', 'BEFORE',  $this, 'siteexport_aggregate');
 		$controller->register_hook('TOOLBAR_DEFINE', 'AFTER', $this, 'siteexport_aggregate_button', array ());

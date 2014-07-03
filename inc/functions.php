@@ -69,7 +69,8 @@ class siteexport_functions extends DokuWiki_Plugin
         // Check current page - if its an NS add the startpage
         $clean = true;
         resolve_pageid(getNS($NS), $NS, $clean);
-        if ( ! page_exists($NS) && array_pop(explode(':', $NS)) != strtolower($conf['start'] )) { // Compare to lowercase since clean lowers it.
+        $NSa = explode(':', $NS);
+        if ( ! page_exists($NS) && array_pop($NSa) != strtolower($conf['start'] )) { // Compare to lowercase since clean lowers it.
             $NS .= ':' . $conf['start'];
             resolve_pageid(getNS($NS), $NS, $clean);
         }
@@ -87,6 +88,11 @@ class siteexport_functions extends DokuWiki_Plugin
         global $conf;
 
         if ( empty($ID) ) return false;
+
+        // Remove extensions
+        if ( $overrideRewrite ) {
+            $ID = preg_replace("#\.[^\.]+$#", '', $ID);
+        }
 
         $url = $this->wl($this->cleanID($ID), null, true, null, null, $overrideRewrite); // this must be done with rewriting set to override
         //$url = $this->wl($this->cleanID($ID), null, true); // this must be done with rewriting set to override
@@ -125,7 +131,7 @@ class siteexport_functions extends DokuWiki_Plugin
     {
         $NS = $this->settings->exportNamespace;
         $NAME = preg_replace("%^" . DOKU_BASE . "%", "", $NAME);
-        $NAME = preg_replace("%^(_media/)?(" . $NS . "/)?%", "", $NAME);
+        $NAME = preg_replace("%^((_media|_detail)/)?(" . $NS . "/)?%", "", $NAME);
 
         $this->debug->message("Shortening file to '$NAME'", null, 1);
         return $NAME;
@@ -600,63 +606,56 @@ class siteexport_functions extends DokuWiki_Plugin
         $this->debug->message("Calculated the following Cache Hash URL: ", $params, 2);
         return $this->cronJobNameForParameters($params);
     }
-    
+
     /**
-     * Check a replaceID against a baseID - and make the replaceID relative against it
-     * @param $replaceID - ID which will be made relative if needed
-     * @param $baseID - ID which is the reference to be made relative against
+     * Check a replaceURL against a baseURL - and make the replaceURL relative against it
+     * @param replaceURL - URL which will be made relative if needed
+     * @param baseURL - URL which is the reference to be made relative against
      */
-    public function getRelativeURL($replaceID, $baseID)
+    public function getRelativeURL($replaceURL, $baseURL)
     {
-        $origReplaceID = $replaceID;
-    
-        $replaceTmp = cleanID($replaceID);
-        $file = noNS($replaceTmp);
+        // Base is always absolute without anything at the beginning
+        if ( preg_match("#^(\.\./)+#", $baseURL) ) {
+            $this->debug->message("The baseURL was not absolute.", $baseURL, 1);
+            return $replaceURL;
+        }
 
-        $replaceID = getNS($replaceTmp);
-        $baseID = getNS($baseID);
+        $origReplaceURL = $replaceURL;
+        $replaceURL = preg_replace("#^(\.\./)+#", '', $replaceURL);
 
-        $replaceParts = explode(':', $replaceID);
-        $baseParts = explode(':', $baseID);
-        $exportNSParts = explode(':', cleanID($this->settings->exportNamespace));
+        // Remove ../ at beginning to get the absolute path
+        if ( $replaceURL == $origReplaceURL ) {
+            $this->debug->message("The replaceURL was already absolute.", $replaceURL, 1);
+            return $replaceURL;
+        }
+
+        $replaceParts = explode('/', $replaceURL);
+        $fileName = array_pop($replaceParts); // Get file
+
+        $baseParts = explode('/', $baseURL);
+        array_pop($baseParts); // Remove file. We only need the path to this location.
         
-        $newBase = array();
+        $this->debug->message("State before kicking.", array($replaceParts, $baseParts), 1);
+
+        // Kick all ../
+        while( count($replaceParts) > 0 && count($baseParts) > 0 ) {
         
-        foreach($exportNSParts as $exportNS)
-        {
-            if ( $replaceParts[0] == $exportNS && $baseParts[0] == $exportNS )
-            {
+            if ( $baseParts[0] == $replaceParts[0] ) {
+                // Beginning is OK, so remove it.
                 array_shift($replaceParts);
                 array_shift($baseParts);
-                array_shift($exportNSParts);
-            }
-            else {
-                // Nothing is matching anymore
+            } else {
                 break;
             }
+        
         }
         
-        $i = count($exportNSParts);
-        $this->debug->message("Checking", array('current extra removing amount'=>$i,'replace'=>$replaceParts,'base'=>$baseParts,'exportNSParts'=>$exportNSParts),1);
+        $this->debug->message("Found URL '{$replaceURL}' that is relative to current page '{$baseURL}'.", array($replaceParts, $baseParts), 1);
         
-        // Now if there is just one item in the ens left and it matches the base, but not the replace, this miiiiiight be the case we want.
-        if ( count($exportNSParts) == 1 && $exportNSParts[0] == $baseParts[0] )
-        {
-            array_shift($replaceParts);
-            $newBase = implode('/', $replaceParts);
-
-            if ( substr($newBase, -1) != '/' )
-            {
-                $newBase .= '/';
-            }
-            
-            $this->debug->message("new Base: ", $newBase, 1);
-    
-            // Now check from the beginning ...
-            return $newBase . $file;
-        }
+        // Remove everything that is identical
+        $replaceParts[] = $fileName;
         
-        return $origReplaceID;
+        return str_repeat('../', count($baseParts)) . implode('/', $replaceParts);
     }
 }
 

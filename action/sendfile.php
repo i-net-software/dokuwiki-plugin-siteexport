@@ -18,7 +18,7 @@ require_once(DOKU_PLUGIN.'siteexport/inc/functions.php');
 
 class action_plugin_siteexport_sendfile extends DokuWiki_Action_Plugin {
 
-    function register(&$controller) {
+    public function register(Doku_Event_Handler $controller) {
         // Download of a file
         
         $controller->register_hook('MEDIA_SENDFILE', 'BEFORE', $this, 'siteexport_sendfile');

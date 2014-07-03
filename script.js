@@ -1,6 +1,5 @@
 /* DOKUWIKI:include jquery.filedownload.js */
 
-
 // Siteexport Admin Plugin Script
 (function($){
 	$(function(){
@@ -14,15 +13,13 @@
 
 		var hasErrors = function(data, status) {
 			return (status != 'undefined' && status != 200);
-/*			return data.match(new RegExp("((runtime|fatal) error|[error])", "i"))
-					|| (status != 'undefined' && status != 200);*/
 		};
 
 		(function(_){
 			
 			_.url = DOKU_BASE + 'lib/exe/ajax.php';
 			_.suspendGenerate = $('form#siteexport_site_aggregator').size() > 0;
-			_.allElements = 'form#siteexport :input:not([readonly]):not([disabled]):not([type=submit]):not(button), form#siteexport_site_aggregator :input:not([type=submit]):not(button)';
+			_.allElements = 'form#siteexport :input:not([readonly]):not([disabled]):not([type=submit]):not(button):not(.dummy), form#siteexport_site_aggregator :input:not([type=submit]):not(button)';
 			_.isManager = $('div#siteexport__manager').size() > 0;
 			_.forbidden_options = [ 'call', 'sectok' ];
 
@@ -53,9 +50,9 @@
 				if ( _.isManager && opener ) {
 				
 					var settings = $.param(_.cleanSettings()).split('&').join(' ');
-					if ( settings.length > 0 ) settings = ' ' + settings;
+					if ( settings.length > 0 ) { settings = ' ' + settings; }
 					
-					edid = String.prototype.match.call(document.location, /&edid=([^&]+)/);
+					edid = String.prototype.match.call(document.location, new RegExp("&edid=([^&]+)"));
 					opener.insertTags(edid ? edid[1] : 'wiki__text', '{{siteexportAGGREGATOR' + settings + '}}','','');
 
 					window.close();
@@ -83,6 +80,7 @@
 				});
 			};
 			
+
 			_.aggregatorStatus = null;
 			_.runAggregator = function() {
 				
@@ -260,8 +258,8 @@
 			_.settings = function(call) {
 				var settings = $(_.allElements).serializeArray();
 
-				if (call)settings.push({ name: 'call', value: call});
-				if ( $('input#pdfExport:checked').size() > 0 )settings.push({ name: 'renderer', value: 'siteexport_pdf'}); // is disabled and would not get pushed
+				if (call) { settings.push({ name: 'call', value: call}); }
+				if ( $('input#pdfExport:checked').size() > 0 ) { settings.push({ name: 'renderer', value: 'siteexport_pdf'}); } // is disabled and would not get pushed
 				return settings;
 			};
 			
@@ -270,7 +268,7 @@
 				return _.settings(call).filter(function(element){
 					
 					if ( element.value == NS || element.value == JSINFO.id || element.value == JSINFO.namespace ) { element.name = null; }
-					if ( !isNaN(element.value) ) element.value = parseInt(element.value);
+					if ( !isNaN(element.value) ) { element.value = parseInt(element.value); }
 					return element.name && _.forbidden_options.indexOf(element.name) < 0 && (element.value.length > 0 || (!isNaN(element.value) && element.value > 0));
 				});
 			};
@@ -353,10 +351,18 @@
 					_.generate();
 				};
 
-				var name = $('<input/>').addClass('edit').attr({ name: 'customoptionname[]', value: nameVal}).change(regenerate).click(function(){this.select();});
-				var value = $('<input/>').addClass('edit').attr({ name: 'customoptionvalue[]', value: valueVal}).change(regenerate).click(function(){this.select();});
+                var customOption = $('<input type="hidden"/>').attr({ name: nameVal, value: valueVal})
+				var name = $('<input/>').addClass('edit dummy').attr({ value: nameVal}).change(function(event)
+				{
+    				customOption.attr({ name: this.value }); regenerate(event)
+				}).click(function(){this.select();});
+				var value = $('<input/>').addClass('edit dummy').attr({ value: valueVal}).change(function(event)
+				{
+    				customOption.attr({ value: this.value }); regenerate(event)
+				}).click(function(){this.select();});
 				
-				$('<li/>').append(name).append(value).appendTo('#siteexport__customActions');
+				
+				$('<li/>').append(name).append(value).append(customOption).appendTo('#siteexport__customActions');
 			};
 			
 			_.cronAction = function(action, cronExists, successstatus) {
@@ -510,7 +516,7 @@
 					_.throbber(false);
 				});
 			};
-
+			
 		}(siteexportadmin.prototype));
 		
 		var __siteexport = null;

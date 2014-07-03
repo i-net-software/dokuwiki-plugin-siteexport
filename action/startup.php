@@ -17,14 +17,14 @@ class action_plugin_siteexport_startup extends DokuWiki_Action_Plugin {
     /**
 	* Register Plugin in DW
 	**/
-	function register(&$controller) {
+    public function register(Doku_Event_Handler $controller) {
 		$controller->register_hook('INIT_LANG_LOAD', 'BEFORE', $this, 'siteexport_check_template');
 		$controller->register_hook('DOKUWIKI_STARTED', 'AFTER', $this, 'siteexport_check_template');
 		$controller->register_hook('ACTION_ACT_PREPROCESS', 'BEFORE', $this, 'siteexport_check_export');
 		$controller->register_hook('TEMPLATE_PAGETOOLS_DISPLAY', 'BEFORE', $this, 'siteexport_add_page_export');
 		$controller->register_hook('TPL_ACT_UNKNOWN', 'BEFORE',  $this, 'siteexport_addpage');
-        	$controller->register_hook('TPL_METAHEADER_OUTPUT', 'BEFORE', $this, 'siteexport_metaheaders');
-	        $controller->register_hook('JS_CACHE_USE', 'BEFORE', $this, 'siteexport_check_js_cache');
+    	$controller->register_hook('TPL_METAHEADER_OUTPUT', 'BEFORE', $this, 'siteexport_metaheaders');
+        $controller->register_hook('JS_CACHE_USE', 'BEFORE', $this, 'siteexport_check_js_cache');
 	}
 	
 	/**
@@ -33,6 +33,15 @@ class action_plugin_siteexport_startup extends DokuWiki_Action_Plugin {
 	function siteexport_check_template()
 	{
 		global $conf, $INFO;
+
+        if ( function_exists('getallheaders') ) {
+            $headers = getallheaders();
+        }
+
+        if ( is_array($headers) && array_key_exists('X-Site-Exporter', $headers) && $headers['X-Site-Exporter'] = getSecurityToken() || defined('SITEEXPORT_TPL') ) {
+            // This is a request via the HTTPProxy of the SiteExporter ... set config to what we need here.
+    		$conf['useslash'] = 1;
+        }
 	
 		if ( !defined('SITEEXPORT_TPL') ) { return; }
 		$conf['template'] = SITEEXPORT_TPL;

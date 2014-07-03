@@ -37,7 +37,7 @@ class HTTPProxy extends DokuHTTPClient {
         parent::__construct();
         
         $this->timeout = 60; //max. 25 sec
-        $this->headers['If-Modified-Since'] = substr(gmdate('r', 0), 0, -5).'GMT';
+        $this->headers['If-Modified-Since'] = gmdate('r', 0);
         $this->status = -1;
         $this->debug = true;
 
@@ -54,6 +54,7 @@ class HTTPProxy extends DokuHTTPClient {
 		}
 
 		$this->headers['X-Real-Ip'] = clientIP(true);
+		$this->headers['X-Site-Exporter'] = getSecurityToken();
 		$this->headers['Accept-Encoding'] = $_SERVER['HTTP_ACCEPT_ENCODING'];
 		$this->headers['Accept-Charset'] = $_SERVER['HTTP_ACCEPT_CHARSET'];
 		$this->agent = $_SERVER['HTTP_USER_AGENT'];
