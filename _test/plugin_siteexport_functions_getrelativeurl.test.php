@@ -11,7 +11,7 @@ class SiteexportFunctionsGetRelativeURLTest extends DokuWikiTest {
     public function testGetRelativeURL() {
     
         // Include functions file.
-        @require_once(dirname(__FILE__) . '/../inc/functions.php');
+        @require_once(DOKU_PLUGIN . 'siteexport/inc/functions.php');
 
         $functions = new siteexport_functions();
         // $functions->debug->setDebugLevel(1);
