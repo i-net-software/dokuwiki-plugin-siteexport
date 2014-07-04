@@ -600,7 +600,5 @@
 			$.siteexport().showCronJobs();
 			return false;
 		});
-		
-		
 	});
 })(jQuery);

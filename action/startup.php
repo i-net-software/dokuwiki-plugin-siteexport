@@ -34,9 +34,7 @@ class action_plugin_siteexport_startup extends DokuWiki_Action_Plugin {
 	{
 		global $conf, $INFO;
 
-        if ( function_exists('getallheaders') ) {
-            $headers = getallheaders();
-        }
+        $headers = function_exists('getallheaders') ? getallheaders() : null;
 
         if ( is_array($headers) && array_key_exists('X-Site-Exporter', $headers) && $headers['X-Site-Exporter'] = getSecurityToken() || defined('SITEEXPORT_TPL') ) {
             // This is a request via the HTTPProxy of the SiteExporter ... set config to what we need here.

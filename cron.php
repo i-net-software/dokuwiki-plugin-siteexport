@@ -226,13 +226,13 @@ if ( !$_SERVER['REMOTE_ADDR'] && 'cli' == php_sapi_name()) {
             
             // Load later to have the config up and running.
             // the config needs to adjust some variables of the server
-            require_once(DOKU_INC . 'inc/init.php');
-            require_once(DOKU_INC . 'inc/common.php');
-            require_once(DOKU_INC . 'inc/indexer.php');
-            require_once(DOKU_INC . 'inc/io.php');
-            require_once(DOKU_INC . 'inc/confutils.php');
+            @require_once(DOKU_INC . 'inc/init.php');
+            @require_once(DOKU_INC . 'inc/common.php');
+            @require_once(DOKU_INC . 'inc/indexer.php');
+            @require_once(DOKU_INC . 'inc/io.php');
+            @require_once(DOKU_INC . 'inc/confutils.php');
 
-            if ( !$this->siteexportAjax =& plugin_load('action', 'siteexport_ajax' ) ) {
+            if ( !$this->siteexportAjax = plugin_load('action', 'siteexport_ajax' ) ) {
                 $this->error = "Faild! Ajax Plugin not loaded\n";
             }
         }
