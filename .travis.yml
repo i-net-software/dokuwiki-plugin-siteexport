@@ -14,7 +14,6 @@ before_install:
   - "wget http://code.jquery.com/qunit/qunit-1.14.0.js"
 install:
   - "sh travis.sh"
-  - "npm install phantomjs"
 script:
   - "cd _test && phpunit --stderr --group plugin_siteexport && cd .."
-  - "cd lib/plugins/siteexport && find . -name \"*.test.html\" -exec /Users/gamma/Sites/node_modules/phantomjs/bin/phantomjs phantom-qunit.js file://$(pwd)/{} \\; && cd .."
+  - "cd lib/plugins/siteexport && find . -name \"*.test.html\" -exec phantomjs phantom-qunit.js file://$(pwd)/{} \\; && cd .."
