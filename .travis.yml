@@ -15,5 +15,7 @@ before_install:
 install:
   - "sh travis.sh"
 script:
-  - "cd _test && phpunit --stderr --group plugin_siteexport && cd .."
-  - "cd lib/plugins/siteexport && find . -name \"*.test.html\" -exec phantomjs phantom-qunit.js file://$(pwd)/{} \\; && cd .."
+  - "cd _test && phpunit --stderr --group plugin_siteexport"
+  - "cd .."
+  - "cd lib/plugins/siteexport && find . -name \"*.test.html\" -exec phantomjs phantom-qunit.js file://$(pwd)/{} \\;"
+  - "cd .."
