@@ -139,7 +139,7 @@
 						.appendTo(iframeProps.root)
 						.prop({
 							type : 'application/octet-stream',
-							id : iframeProps.id,
+							id : iframeProps.id
 						});
 					}
 					
@@ -220,7 +220,7 @@
     					_.downloadFile({
     							id : 'siteexport_downloader',
     							src: window.location.origin + _.zipURL,
-    							root: '#siteexport',
+    							root: '#siteexport'
     					});
 
 					} else {
@@ -351,14 +351,14 @@
 					_.generate();
 				};
 
-                var customOption = $('<input type="hidden"/>').attr({ name: nameVal, value: valueVal})
+                var customOption = $('<input type="hidden"/>').attr({ name: nameVal, value: valueVal});
 				var name = $('<input/>').addClass('edit dummy').attr({ value: nameVal}).change(function(event)
 				{
-    				customOption.attr({ name: this.value }); regenerate(event)
+    				customOption.attr({ name: this.value }); regenerate(event);
 				}).click(function(){this.select();});
 				var value = $('<input/>').addClass('edit dummy').attr({ value: valueVal}).change(function(event)
 				{
-    				customOption.attr({ value: this.value }); regenerate(event)
+    				customOption.attr({ value: this.value }); regenerate(event);
 				}).click(function(){this.select();});
 				
 				
