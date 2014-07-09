@@ -180,7 +180,8 @@ class helper_plugin_siteexport extends DokuWiki_Plugin {
         $form->startFieldset( $this->getLang('selectYourOptions') );
         $form->addElement(form_makeCheckboxField('absolutePath', 1, $this->getLang('absolutePath') . ':', 'absolutePath'));
         $form->addElement(form_makeTag('br'));
-        $form->addElement(form_makeCheckboxField('exportBody', 1, $this->getLang('exportBody') . ':', 'exportBody'));
+        // The parameter needs lowercase
+        $form->addElement(form_makeCheckboxField('exportbody', 1, $this->getLang('exportBody') . ':', 'exportbody'));
         $form->addElement(form_makeTag('br'));
         $form->addElement(form_makeCheckboxField('disableCache', 1, $this->getLang('disableCache') . ':', 'disableCache'));
         $form->addElement(form_makeTag('br'));
