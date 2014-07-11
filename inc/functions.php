@@ -91,7 +91,7 @@ class siteexport_functions extends DokuWiki_Plugin
 
         // Remove extensions
         if ( $overrideRewrite ) {
-            $ID = preg_replace("#\.[^\.]+$#", '', $ID);
+            $ID = preg_replace("#\.(php|html)$#", '', $ID);
         }
 
         $url = $this->wl($this->cleanID($ID), null, true, null, null, $overrideRewrite); // this must be done with rewriting set to override
