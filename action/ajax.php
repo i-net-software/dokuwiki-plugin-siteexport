@@ -643,6 +643,7 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
         $extension = array_shift(explode(';', $http->resp_headers['content-type'], 2));
         $extension = explode('/', $extension, 2);
         if ( $extension[0] == 'image' || $extension[1] == 'html' ) {
+            $this->functions->debug->message("Found new extension:", $extension , 2);
             $extension = $extension[1];
         } else {
             unset($extension);
@@ -1037,7 +1038,7 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
             return $link;
         }
 
-        $this->functions->debug->message("The fetched file looks good.", $tmpFile, 1);
+        $this->functions->debug->message("The fetched file looks good.", $tmpFile, 2);
         $dirname = dirname($DATA[2]);
 
         // If a Filename was given that does not comply to the original name, us this one!
@@ -1048,8 +1049,8 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
 
         // Custom extension if not set already - 2014-07-02
         if ( !empty($tmpFile[2]) && !preg_match("#\.{$tmpFile[2]}$#", $DATA[2]) ) {
-            $DATA[2] = preg_replace("#\.([^\.])$#", '.' . $tmpFile[2], $DATA[2]);
-            $this->functions->debug->message("Added extension provided from Server.", $DATA[2], 1);
+            $DATA[2] = preg_match("#(\.[^\.]+)$#", $DATA[2]) ? preg_replace("#(\.[^\.]+)$#", '.' . $tmpFile[2], $DATA[2]) : $DATA[2] . '.' . $tmpFile[2];
+            $this->functions->debug->message("Added extension provided from Server.", $DATA[2], 2);
         }
 
         // Add to zip
