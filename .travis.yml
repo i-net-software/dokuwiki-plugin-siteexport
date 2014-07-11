@@ -15,4 +15,4 @@ install:
   - "sh travis.sh"
 script:
   - "cd _test && phpunit --stderr --group plugin_siteexport"
-  - "cd ../lib/plugins/siteexport/_test && sh _test/phantomjs/runPhantomJs.sh"
+  - "cd ../lib/plugins/siteexport/_test && sh phantomjs/runPhantomJs.sh"

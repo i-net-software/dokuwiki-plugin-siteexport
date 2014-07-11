@@ -1,3 +1,2 @@
 _test/phantomjs/*.js
-qunit*.*
 phantom*.js
