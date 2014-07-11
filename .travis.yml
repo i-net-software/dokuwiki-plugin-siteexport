@@ -10,9 +10,6 @@ env:
 before_install:
   - "rm .gitignore"
   - "wget https://raw.github.com/splitbrain/dokuwiki-travis/master/travis.sh"
-  - "wget https://raw.github.com/mark-rushakoff/OpenPhantomScripts/master/phantom-qunit.js"
-  - "wget http://code.jquery.com/qunit/qunit-1.14.0.css"
-  - "wget http://code.jquery.com/qunit/qunit-1.14.0.js"
 install:
   - "sh travis.sh"
 script:
