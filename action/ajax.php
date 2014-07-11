@@ -543,7 +543,7 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
         // If a Filename was given that does not comply to the original name, use this one!
 		if ( $this->filewriter->canDoPDF() ) {
 
-			$this->functions->debug->message("Will replace old filename '{$fileName}' with {$tmpFile[2]}", null, 1);
+			$this->functions->debug->message("Will replace old filename '{$fileName}' with {$ID}", null, 1);
         	$extension = array_pop(explode('.', $fileName));
         	
         	// 2014-04-29 added cleanID to ensure that links are generated consistently when using [[this>...]] or another local, relativ linking
