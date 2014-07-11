@@ -10,8 +10,9 @@ env:
 before_install:
   - "rm .gitignore"
   - "wget https://raw.github.com/splitbrain/dokuwiki-travis/master/travis.sh"
+  - "wget https://raw.github.com/mark-rushakoff/OpenPhantomScripts/master/phantom-qunit.js -P _test"
 install:
   - "sh travis.sh"
 script:
   - "cd _test && phpunit --stderr --group plugin_siteexport"
-  - "cd ../lib/plugins/siteexport && sh _test/phantomjs/runPhantomJs.sh"
+  - "cd ../lib/plugins/siteexport/_test && sh _test/phantomjs/runPhantomJs.sh"
