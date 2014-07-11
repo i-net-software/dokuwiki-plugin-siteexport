@@ -28,17 +28,6 @@ class syntax_plugin_siteexport_toc extends DokuWiki_Syntax_Plugin {
 	function getSort() { return 100; }
 
 	/**
-	 * for backward compatability
-	 * @see inc/DokuWiki_Plugin#getInfo()
-	 */
-    function getInfo(){
-        if ( method_exists(parent, 'getInfo')) {
-            $info = parent::getInfo();
-        }
-        return is_array($info) ? $info : confToHash(dirname(__FILE__).'/../plugin.info.txt');
-    }
-	
-	/**
 	 * Connect pattern to lexer
 	 */
 	function connectTo($mode) {
