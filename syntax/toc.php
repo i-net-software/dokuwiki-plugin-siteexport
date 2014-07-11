@@ -116,7 +116,7 @@ class syntax_plugin_siteexport_toc extends DokuWiki_Syntax_Plugin {
 		return false;
 	}
 
-	function render($format, Doku_Renderer $renderer, $data) {
+	function render($mode, Doku_Renderer $renderer, $data) {
 		global $ID, $lang, $INFO;
 
 		list( $SID, $NAME, $DEPTH ) = $data;
