@@ -31,7 +31,7 @@ class syntax_plugin_siteexport_aggregate extends DokuWiki_Syntax_Plugin {
         return $options;
     }
     
-    function render($format, Doku_Renderer $renderer, $data) {
+    function render($mode, Doku_Renderer $renderer, $data) {
         global $ID, $conf;
 
         $isAggregator = (array_shift($data) == 'siteexportAGGREGATOR');
