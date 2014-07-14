@@ -642,7 +642,7 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
         // plain/text; ...        
         $extension = array_shift(explode(';', $http->resp_headers['content-type'], 2));
         $extension = explode('/', $extension, 2);
-        if ( $extension[0] == 'image' && !preg_match("[a-zA-Z]{3,4}", $extension) ) {
+        if ( $extension[0] == 'image' && preg_match("[a-zA-Z]{3,4}", $extension) ) {
             $extension = strtolower($extension[1]);
             $this->functions->debug->message("Found new image extension:", $extension, 2);
         } else {
