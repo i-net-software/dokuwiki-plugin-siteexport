@@ -61,7 +61,6 @@ class syntax_plugin_siteexport_aggregate extends DokuWiki_Syntax_Plugin {
 	        	$form->addHidden('siteexport_aggregate', '1');
 			}
 
-            $namespace = $ID;
             $submitLabel = $this->getLang('AggregateSubmitLabel');
             $introduction = $this->getLang('AggragateExportPages');
             foreach( $data as $option ) {
