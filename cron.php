@@ -203,7 +203,9 @@ OUTPUT;
 // ensure that the request comes from the cli
 if ( !$_SERVER['REMOTE_ADDR'] && 'cli' == php_sapi_name()) {
     ini_set('memory_limit','512M');
-    error_reporting(E_ALL);
+
+    // overriding this will lead to too many error messages
+    // error_reporting(E_ALL);
 
     /**
      * Cli Cron is responsible for doing the actual fetching of documentation
