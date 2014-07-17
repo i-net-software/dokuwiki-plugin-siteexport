@@ -25,7 +25,7 @@ if ( file_exists(DOKU_PLUGIN . 'dw2pdf/DokuPDF.class.php') ) {
 		function __construct($debug) {
             global $INPUT;
 		
-            $dw2pdf = &plugin_load('action', 'dw2pdf');
+            $dw2pdf = plugin_load('action', 'dw2pdf');
 		
 		    // decide on the paper setup from param or config
             $pagesize    = $INPUT->str('pagesize', $dw2pdf->getConf('pagesize'), true);

@@ -114,7 +114,8 @@ class siteexport_functions extends DokuWiki_Plugin
                 return $this->xmlEntities($heading);
             }
         }
-        return ucwords($this->xmlEntities(array_pop(explode(':', $ID))));
+        $elements = explode(':', $ID);
+        return ucwords($this->xmlEntities(array_pop($elements)));
     }
 
     /**

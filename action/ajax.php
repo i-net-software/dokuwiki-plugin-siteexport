@@ -544,7 +544,8 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
 		if ( $this->filewriter->canDoPDF() ) {
 
 			$this->functions->debug->message("Will replace old filename '{$fileName}' with {$ID}", null, 1);
-        	$extension = array_pop(explode('.', $fileName));
+			$extension = explode('.', $fileName);
+        	$extension = array_pop($extension);
         	
         	// 2014-04-29 added cleanID to ensure that links are generated consistently when using [[this>...]] or another local, relativ linking
 			$fileName = $dirname . '/' . $this->functions->cleanID($this->functions->getSiteTitle($ID)) . '.' . $extension;
@@ -639,8 +640,9 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
         fwrite($fp,$getData);
         fclose($fp);
 
-        // plain/text; ...        
-        $extension = array_shift(explode(';', $http->resp_headers['content-type'], 2));
+        // plain/text; ...
+        $extension = explode(';', $http->resp_headers['content-type'], 2);
+        $extension = array_shift($extension);
         $extension = explode('/', $extension, 2);
         if ( $extension[0] == 'image' && preg_match("[a-zA-Z]{3,4}", $extension) ) {
             $extension = strtolower($extension[1]);
@@ -830,8 +832,9 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
 
         $DATA['ANCHOR'] = $ANCHOR;
         $DATA['PARAMS'] = $PARAMS;
+        $elements = explode('/', $DATA[2]);
 
-        switch ( array_pop(explode('/', $DATA[2])) ) {
+        switch ( array_pop($elements) ) {
             // CSS Extra Handling with extra rewrites
             case 'css.php'	:	// $DATA[2] .=  ( !$this->functions->settings->addParams || empty($PARAMS) ? '' : '.' . $this->functions->cleanID(preg_replace("/(=|\?|&amp;)/", ".", $PARAMS))) . '.css';
                 $DATA[2] .=  '.' . $this->functions->cleanID(preg_replace("/(=|\?|&amp;)/", ".", $PARAMS)) . '.css'; // allways put parameters behind
