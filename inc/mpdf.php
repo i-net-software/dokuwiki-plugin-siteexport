@@ -102,4 +102,13 @@ if ( file_exists(DOKU_PLUGIN . 'dw2pdf/DokuPDF.class.php') ) {
             return parent::OpenTag($tag, $attr); 
         }
     }
+    
+    if ( file_exists(DOKU_PLUGIN . 'dw2pdf/mpdf/classes/cssmgr.php') && !class_exists('cssmgr', false)) {
+        
+        require_once(DOKU_PLUGIN . 'siteexport/inc/patchCSSmgr.php');
+        $objPatch = new CSSMgrPatch(DOKU_PLUGIN . 'dw2pdf/mpdf/classes/cssmgr.php');
+        $objPatch->redefineFunction(file_get_contents(DOKU_PLUGIN . 'siteexport/inc/readCSS.patch'));
+        eval($objPatch->getCode());
+    }
+
 }
