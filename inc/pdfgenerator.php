@@ -28,7 +28,6 @@ if ( intval($_REQUEST['pdfExport']) == 1 && file_exists(DOKU_PLUGIN . 'dw2pdf/mp
                 return false;
             }
 
-
             $html = file_get_contents($filename);
 
             if ( !strstr($html, "<html") ) {
@@ -40,11 +39,7 @@ if ( intval($_REQUEST['pdfExport']) == 1 && file_exists(DOKU_PLUGIN . 'dw2pdf/mp
             $this->functions->debug->message("Arranging HTML", null, 2);
             $this->arrangeHtml($html, 'bl,acronym');
             $this->functions->debug->message("Done arranging HTML:", $html, 1);
-
-            $fp = fopen($filename, "w");
-            fwrite($fp, $html);
-            fclose($fp);
-
+            
             $mpdf->debug = false;
             $mpdf->list_indent_first_level = 1; // Indents the first level of lists.
             //$mpdf->SetBasePath("/");
@@ -57,10 +52,9 @@ if ( intval($_REQUEST['pdfExport']) == 1 && file_exists(DOKU_PLUGIN . 'dw2pdf/mp
             $mpdf->setBasePath(empty($this->functions->settings->depth) ? './' : $this->functions->settings->depth);
             $mpdf->SetAutoFont(AUTOFONT_ALL);
 
-            // Temp dir
-
             $mpdf->ignore_invalid_utf8 = true;
             $mpdf->mirrorMargins = 0;	// don't mirror margins
+
             $mpdf->WriteHTML($html);
             $mpdf->Output($filename, "F");
 
