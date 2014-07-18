@@ -79,7 +79,7 @@ class HTTPProxy extends DokuHTTPClient {
 			$sticky = $INPUT->str('r');
 		} else {
 			$secret = auth_cookiesalt(!$sticky, true); //bind non-sticky to session
-			$this->pass = $this->auth_decrypt($this->pass, $secret);
+			$this->pass = !empty($this->pass) ? $this->auth_decrypt($this->pass, $secret) : '';
 		}
 		
 		return isset($this->user);
