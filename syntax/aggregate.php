@@ -17,6 +17,8 @@ require_once(DOKU_PLUGIN.'syntax.php');
  */
 class syntax_plugin_siteexport_aggregate extends DokuWiki_Syntax_Plugin {
 
+    private $headers = array();
+
     function getType(){ return 'substition';}
     function getPType(){ return 'block';}
     function getSort(){ return 300; }
@@ -50,7 +52,7 @@ class syntax_plugin_siteexport_aggregate extends DokuWiki_Syntax_Plugin {
             $renderer->info['toc'] = false;
             $renderer->nocache();
             
-            $formParams = array( 'id' => sectionID('siteexport_site_aggregator', $renderer->headers), 'action' => wl($ID), 'class' => 'siteexport aggregator' );
+            $formParams = array( 'id' => sectionID('siteexport_site_aggregator', $this->headers), 'action' => wl($ID), 'class' => 'siteexport aggregator' );
             $form = new Doku_Form($formParams);
             $functions=& plugin_load('helper', 'siteexport');
 
