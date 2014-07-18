@@ -34,7 +34,7 @@ class action_plugin_siteexport_aggregate extends DokuWiki_Action_Plugin {
         // Aggregate only if
         // (1) we did submit a request to do so
         // (2) this page really has an aggregator and we export as PDF
-		if ( !( isset($_REQUEST['siteexport_aggregate']) || ($INFO['meta']['siteexport']['hasaggregator'] == true && $conf['renderer_xhtml'] == 'siteexport_pdf') ) ) { return true; }
+		if ( !( isset($_REQUEST['siteexport_aggregate']) || (!empty($INFO['meta']['siteexport']) && $INFO['meta']['siteexport']['hasaggregator'] == true && $conf['renderer_xhtml'] == 'siteexport_pdf') ) ) { return true; }
 		
 		$exportBase = cleanID($_REQUEST['baseID']);
 		$namespace = empty($exportBase) ? $INFO['meta']['siteexport']['baseID'] : getNs($exportBase);
