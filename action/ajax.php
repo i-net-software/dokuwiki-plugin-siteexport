@@ -587,8 +587,6 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
 			if ( preg_match($PATTERN, $URL) ) { return false; }
         }
 
-        require_once( DOKU_INC . 'inc/HTTPClient.php');
-
         $http = new HTTPProxy($this->functions->debug, $this->functions->settings);
         $http->max_bodysize = $conf['fetchsize'];
         // $http->user = $_SERVER['PHP_AUTH_USER']; // Must not be set, or the files will be authenticated and have the edit thingies
