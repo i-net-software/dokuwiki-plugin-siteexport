@@ -597,16 +597,16 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
 
         $this->functions->debug->message("Fetching URL: '$URL'", null, 2);
         $getData = $http->get($URL, true); // true == sloopy, get 304 body as well.
-
-        if( $getData === false ) {
+        
+        if( $getData === false ) { // || ($http->status != 200 && !$this->functions->settings->ignoreNon200) ) {
         
         	if ( $this->functions->settings->ignoreNon200 ) {
-	        	return null;
+	        	return false;
         	}
         
             $this->functions->debug->message("Sending request failed with error, HTTP status was '{$http->status}'.", $URL, 4);
             return false;
-        }
+        } 
 
         if( empty($getData) ) {
             $this->functions->debug->message("No data fetched", $URL, 4);
@@ -700,6 +700,11 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
             return $this->__rebuildLink($DATA, "");
         }
 
+        // 2014-07-21: Origdata before anything else - or it will be missing some things.
+        $ORIGDATA2 = $DATA;
+        //        $ORIGDATA2 = $DATA[2]; // 08/10/2010 - this line required a $this->functions->wl which may mess up with the base URL
+        $this->functions->debug->message("OrigDATA is:", $ORIGDATA2, 1);
+
         // strip all things out
         // changed Data
         $PARAMS = @parse_url($DATA[2], PHP_URL_QUERY);
@@ -741,10 +746,6 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
         }
 
         $this->functions->debug->message("URL before rewriting option", array($DATA, $PARAMS), 2);
-
-        $ORIGDATA2 = $DATA;
-        //        $ORIGDATA2 = $DATA[2]; // 08/10/2010 - this line required a $this->functions->wl which may mess up with the base URL
-        $this->functions->debug->message("OrigDATA is:", $ORIGDATA2, 1);
 
         // Generate ID
         $DATA[2] = str_replace('/', ':', $DATA[2]);
