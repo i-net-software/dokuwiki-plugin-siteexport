@@ -1,0 +1,1 @@
+====== gestionnaire d'export de site ====== Configurez un element ''%%{{siteAGGREGATOR}}%%''  avec ces options. Ceci fait, pressez le bouton à la fin de la page et les options seront insérer dans la page.
