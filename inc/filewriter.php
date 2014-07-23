@@ -30,23 +30,23 @@ class siteexport_zipfilewriter
      * Wrapper for fetching the Context or the TOC for Eclipse Documentation
      * This also puts the file into the zip package
      **/
-    public function __moveDataToZip($DATA, $FILENAME='toc.xml') {
+    public function __moveDataToZip($DATA, $FILENAME='toc.xml', $ZIP=null, $JUSTWRITE=false) {
 
         if ( empty($DATA) ) { return false; }
 
         $tmpFile = tempnam($this->functions->settings->tmpDir , 'siteexport__');
 
-        $fp = fopen( $tmpFile, "w");
-        if(!$fp) return false;
-
-        fwrite($fp,$DATA);
-        fclose($fp);
+        @file_put_contents($tmpFile, $DATA);
 
         // Add to zip
-        $status = $this->__addFileToZip($tmpFile, $FILENAME);
+        if ( $JUSTWRITE ) {
+            $status = $this->__writeFileToZip($tmpFile, $FILENAME, $ZIP);
+        } else {
+            $status = $this->__addFileToZip($tmpFile, $FILENAME, $ZIP);
+        }
         @unlink($tmpFile);
 
-        return true;
+        return $status;
     }
 
     /**
@@ -66,11 +66,13 @@ class siteexport_zipfilewriter
         if ( $this->canDoPDF() ) {
             $this->functions->debug->message("Trying to create PDF from File '$FILE' with name '$NAME' for ZIP '$ZIP'", null, 2);
 
+            $succeeded = $this->pdfGenerator->createPDFFromFile($FILE, $NAME);
+
             if ( $this->functions->debug->debugLevel() <= 1 ) { // 2011-01-12 Write HTML to ZIP for Debug purpose
-                $this->__writeFileToZip($FILE, "_debug/$NAME.html", $ZIP);
+                $this->__moveDataToZip($succeeded, "_debug/$NAME.html", $ZIP, true);
             }
 
-            if ( !$this->pdfGenerator->createPDFFromFile($FILE, $NAME) ) {
+            if ( $succeeded===false ) {
                 $this->functions->debug->runtimeException("Create PDF from File '$FILE' with name '$NAME' went wrong and is not being added!");
                 return false;
             }

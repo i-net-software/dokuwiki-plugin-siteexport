@@ -28,7 +28,7 @@ if ( !empty($_REQUEST['pdfExport']) && intval($_REQUEST['pdfExport']) == 1 && fi
                 return false;
             }
 
-            $html = file_get_contents($filename);
+            $html = @file_get_contents($filename);
 
             if ( !strstr($html, "<html") ) {
                 $this->functions->debug->message("Filecontent had no HTML starting tag", null, 4);
@@ -61,7 +61,7 @@ if ( !empty($_REQUEST['pdfExport']) && intval($_REQUEST['pdfExport']) == 1 && fi
             $this->functions->debug->message("Used images:", $mpdf->images, 1);
             $this->functions->debug->message("Failed images:", $mpdf->failedimages, 1);
 
-            return true;
+            return $html;
         }
 
         function arrangeHtml(&$html, $norendertags = '' )
@@ -117,7 +117,7 @@ if ( !empty($_REQUEST['pdfExport']) && intval($_REQUEST['pdfExport']) == 1 && fi
 
         private function __pdfHeaderCallback($DATA) {
             //*
-            $contentText = preg_replace("/<\/?.*?>/s", '', $DATA[3]); // 2014-07-23 Do not encode again.
+            $contentText = preg_replace("/<\/?.*?>/s", '', $DATA[3]); // 2014-07-23 Do not encode again. or &auml; -> &amp;auml;
             /*/
             $contentText = $this->xmlEntities(preg_replace("/<\/?.*?>/s", '', $DATA[3])); // Double encoding - has to be decoded in mpdf once more.
             //*/
