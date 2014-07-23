@@ -69,7 +69,7 @@ if ( !empty($_REQUEST['pdfExport']) && intval($_REQUEST['pdfExport']) == 1 && fi
             global $conf;
 
             // add bookmark links
-            $html = preg_replace_callback("/<h(\d)(.*?)>(.+?)<\/h\\1>/s", array($this, '__pdfHeaderCallback'), $html);
+            $html = preg_replace_callback("/<h(\d)(.*?)>(.*?)<\/h\\1>/s", array($this, '__pdfHeaderCallback'), $html);
             $html = preg_replace_callback("/<\/div>\s*?<h({$conf['plugin']['siteexport']['PDFHeaderPagebreak']})(.*?)>/s", array($this, '__pdfHeaderCallbackPagebreak'), $html);
             $html = preg_replace("/(<img.*?mediacenter.*?\/>)/", "<table style=\"width:100%; border: 0px solid #000;\"><tr><td style=\"text-align: center\">$1</td></tr></table>", $html);
             $html = preg_replace("/<p>(\s*?<table.*?<\/table>\s*?)<\/p>/s", "$1", $html);
@@ -121,7 +121,7 @@ if ( !empty($_REQUEST['pdfExport']) && intval($_REQUEST['pdfExport']) == 1 && fi
             /*/
             $contentText = $this->xmlEntities(preg_replace("/<\/?.*?>/s", '', $DATA[3])); // Double encoding - has to be decoded in mpdf once more.
             //*/
-            return '<tocentry content="' . $contentText . '" level="' . ($DATA[1]-1) . '" /><bookmark content="' . $contentText . '" level="' . ($DATA[1]-1) . '" /><h' . $DATA[1] . $DATA[2] . '>' . $DATA[3] . '</h' . $DATA[1] . '>';
+            return '<tocentry content="' . $contentText . '" level="' . ($DATA[1]-1) . '" ><bookmark content="' . $contentText . '" level="' . ($DATA[1]-1) . '" ><h' . $DATA[1] . $DATA[2] . '>' . $DATA[3] . '</h' . $DATA[1] . '></bookmark></tocentry>';
         }
 
         private function __pdfHeaderCallbackPagebreak($DATA) {
