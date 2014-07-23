@@ -117,7 +117,7 @@ if ( !empty($_REQUEST['pdfExport']) && intval($_REQUEST['pdfExport']) == 1 && fi
 
         private function __pdfHeaderCallback($DATA) {
             //*
-            $contentText = preg_replace("/<\/?.*?>/s", '', $DATA[3]); // 2014-07-23 Do not encode again. or &auml; -> &amp;auml;
+            $contentText = htmlspecialchars_decode(preg_replace("/<\/?.*?>/s", '', $DATA[3]), ENT_NOQUOTES); // 2014-07-23 Do not encode again. or &auml; -> &amp;auml;
             /*/
             $contentText = $this->xmlEntities(preg_replace("/<\/?.*?>/s", '', $DATA[3])); // Double encoding - has to be decoded in mpdf once more.
             //*/
