@@ -724,7 +724,7 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
             $DATA[2] = preg_replace("#/(?!\.\.)[^\/]*?/\.\./#", '/', $DATA[2]);
         }
 
-        $temp = preg_replace("%^" . DOKU_BASE . "%", "", $DATA[2]);
+        $temp = preg_replace("%^" . preg_quote(DOKU_BASE, '%') . "%", "", $DATA[2]);
         if ( $temp != $DATA[2] ) {
             $DATA[2] = $temp;
             $hadBase = true; // 2010-08-23 Check if there has been a rewrite here that will have to be considered later on
@@ -920,7 +920,7 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
                 return ""; // Ignore. Has no sense to export.
                 break;
             default:
-                if ( preg_match("%" . DOKU_BASE . "_detail/%", $DATA[2]) ) {
+                if ( preg_match("%" . preg_quote(DOKU_BASE, '%') . "_detail/%", $DATA[2]) ) {
 
                     // GET ID Param from origdata2
                     preg_match("#id=(.*?)(&|\")#i", $DATA[0], $backlinkID);
@@ -939,7 +939,7 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
                     $DATA['PARAMS'] = "";
 
                     $this->functions->debug->message("This is something with '_detail' file", array($DATA, $backlinkID, $newDepth, $url, $ID), 2);
-                } else if ( preg_match("%" . DOKU_BASE . "_export/(.*?)/%", $DATA[2], $fileType) ) {
+                } else if ( preg_match("%" . preg_quote(DOKU_BASE, '%') . "_export/(.*?)/%", $DATA[2], $fileType) ) {
                      
                     // Fixes multiple codeblocks in one file
                     $this->__rebuildDataForNormalFiles($DATA, $PARAMS);
@@ -1047,6 +1047,7 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
         // 2014-02-28 But only if we are on PDF Mode. Does this produce any other Problems?
         if ( $this->filewriter->canDoPDF() && !empty($tmpFile[1]) && !strstr($DATA[2], $tmpFile[1]) ) {
 			$DATA[2] = $dirname . '/' . $tmpFile[1];
+            $this->functions->debug->message("Changed filename.", $DATA[2], 2);
         }
 
         // Custom extension if not set already - 2014-07-02
@@ -1214,7 +1215,7 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
             continue;
 
             if ( strtolower(trim($key)) == $IDKEY ) {
-                $DATA[2] = preg_replace("%^" . DOKU_BASE . "%", "", str_replace(':', '/', $value));
+                $DATA[2] = preg_replace("%^" . preg_quote(DOKU_BASE, '%') . "%", "", str_replace(':', '/', $value));
                 continue;
             }
 

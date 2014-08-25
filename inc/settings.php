@@ -80,7 +80,7 @@ class settings_plugin_siteexport_settings extends DokuWiki_Plugin
         // set export Namespace - which is a virtual Root
         $pg = noNS($ID);
         if ( empty( $this->namespace ) ) { $this->namespace = $functions->getNamespaceFromID(getNS($ID), $pg); }
-        $this->exportNamespace = !empty($_REQUEST['ens']) && preg_match("%^" . $functions->getNamespaceFromID($_REQUEST['ens'], $pg) . "%", $this->namespace) ? $functions->getNamespaceFromID($_REQUEST['ens'], $pg) : $this->namespace;
+        $this->exportNamespace = !empty($_REQUEST['ens']) && preg_match("%^" . preg_quote($functions->getNamespaceFromID($_REQUEST['ens'], $pg), '%') . "%", $this->namespace) ? $functions->getNamespaceFromID($_REQUEST['ens'], $pg) : $this->namespace;
 
         $this->TOCMapWithoutTranslation = intval($_REQUEST['TOCMapWithoutTranslation']) == 1 ? true : false;
 

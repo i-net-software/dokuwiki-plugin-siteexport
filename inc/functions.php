@@ -131,9 +131,9 @@ class siteexport_functions extends DokuWiki_Plugin
     function shortenName($NAME)
     {
         $NS = $this->settings->exportNamespace;
-        $NAME = preg_replace("%^" . DOKU_BASE . "%", "", $NAME);
-        $NAME = preg_replace("%^((_media|_detail)/)?(" . $NS . "/)?%", "", $NAME);
-
+        $NAME = preg_replace("%^" . preg_quote(DOKU_BASE, '%') . "%", "", $NAME);
+        $NAME = preg_replace("%^((_media|_detail)/)?(" . preg_quote($NS, '%') . "/)?%", "", $NAME);
+        
         $this->debug->message("Shortening file to '$NAME'", null, 1);
         return $NAME;
     }
