@@ -134,6 +134,8 @@ class siteexport_functions extends DokuWiki_Plugin
         $NAME = preg_replace("%^" . preg_quote(DOKU_BASE, '%') . "%", "", $NAME);
         $NAME = preg_replace("%^((_media|_detail)/)?(" . preg_quote($NS, '%') . "/)?%", "", $NAME);
         
+        if ( strstr($NAME, '%') ) { $NAME = rawurldecode($NAME); }
+
         $this->debug->message("Shortening file to '$NAME'", null, 1);
         return $NAME;
     }
