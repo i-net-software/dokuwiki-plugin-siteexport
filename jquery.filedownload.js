@@ -189,7 +189,7 @@ $.extend({
                 //remove the perparing message if it was specified
                 if ($preparingDialog) {
                     $preparingDialog.dialog('close');
-                };
+                }
 
                 settings.successCallback(url);
 
@@ -201,7 +201,7 @@ $.extend({
                 //remove the perparing message if it was specified
                 if ($preparingDialog) {
                     $preparingDialog.dialog('close');
-                };
+                }
 
                 //wire up a jquery dialog to display the fail message if specified
                 if (settings.failMessageHtml) {
