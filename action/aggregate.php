@@ -43,7 +43,9 @@ class action_plugin_siteexport_aggregate extends DokuWiki_Action_Plugin {
         $values = $functions->__getOrderedListOfPagesForID($namespace, $exportBase);
         
         if ( empty($exportBase) ) {
-            list($exportBase) = end( $values );
+            // Reset to latest element
+            list($exportBase) = reset( $values );
+            $values = array(reset( $values ));
         }
         
     	$this->originalID = (string) $ID;
