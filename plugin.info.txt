@@ -6,4 +6,4 @@ email  tools@inetsoftware.de
 date   2014-08-27
 name   Site Export
 desc   exports the dokuwiki site in the given format
-url    http://www.inetsoftware.de/other-products/dokuwiki-plugins/site-export
+url    https://www.dokuwiki.org/plugin:siteexport
