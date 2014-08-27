@@ -49,6 +49,7 @@ class syntax_plugin_siteexport_toc extends DokuWiki_Syntax_Plugin {
 				$this->insideToc = true;
 
 				$this->options = explode(' ', substr($match, 5, -1));
+				
 				return array('start' => true, 'pos' => $pos, 'options' => $this->options);
 				break;
 
@@ -103,7 +104,7 @@ class syntax_plugin_siteexport_toc extends DokuWiki_Syntax_Plugin {
 				return false;
 			case DOKU_LEXER_UNMATCHED:
 
-				$handler->_addCall('cdata',array($match), $pos);
+    			$handler->_addCall('cdata',array($match), $pos);
 
 				return false;
 				break;
@@ -128,7 +129,7 @@ class syntax_plugin_siteexport_toc extends DokuWiki_Syntax_Plugin {
 		if ($mode == 'xhtml' || $mode == 'odt') {
 
 		    // TOC Title
-			if ( isset($data['start']) ) {
+			if ( is_array($data) && $data['start'] == true ) {
 			    
 			    if ( is_Array($data['options']) ) {
                     foreach( $data['options'] as $opt ) {
@@ -148,7 +149,7 @@ class syntax_plugin_siteexport_toc extends DokuWiki_Syntax_Plugin {
 				}
 
 				return true;
-			}
+			} else
 
 			// All Output has been done
 			if ( !is_array($data) && $data == 'save__meta' ) {
@@ -206,15 +207,14 @@ class syntax_plugin_siteexport_toc extends DokuWiki_Syntax_Plugin {
 						}
 					}
 				
-					if (empty($instr)) {
-						return;
+					if (!empty($instr)) {
+    					$this->_cleanInstructions($instr, '/section_(close|open)/');
+    					$this->_cleanInstructions($instr, '/listu_(close|open)/');
+    					$this->_cleanInstructions($instr, '/listo_(close|open)/');
+    					
+    					$this->_render_output($renderer, $mode, $instr);
 					}
 
-					$this->_cleanInstructions($instr, '/section_(close|open)/');
-					$this->_cleanInstructions($instr, '/listu_(close|open)/');
-					$this->_cleanInstructions($instr, '/listo_(close|open)/');
-					
-					$this->_render_output($renderer, $mode, $instr);
 					$renderer->section_close();
 				}
 				return true;
