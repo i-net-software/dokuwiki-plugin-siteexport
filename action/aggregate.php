@@ -42,10 +42,17 @@ class action_plugin_siteexport_aggregate extends DokuWiki_Action_Plugin {
         $functions = plugin_load('helper', 'siteexport');
         $values = $functions->__getOrderedListOfPagesForID($namespace, $exportBase);
         
+        // If no base given, take the first one from the ordered list.        
         if ( empty($exportBase) ) {
             // Reset to latest element
             list($exportBase) = reset( $values );
-            $values = array(reset( $values ));
+        }
+        
+        // If only the one file should be exported, strip it down.
+        if ( !empty($_REQUEST['exportSelectedVersionOnly']) ) {
+            // Strip down values
+            $values = $functions->__getOrderedListOfPagesForID($namespace, $exportBase);    
+            $values = array(end( $values )); // the list above has the $exportBase element at the very end
         }
         
     	$this->originalID = (string) $ID;
