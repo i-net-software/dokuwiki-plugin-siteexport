@@ -11,27 +11,51 @@
 if(!defined('DOKU_INC')) define('DOKU_INC',realpath(dirname(__FILE__).'/../../').'/');
 if(!defined('DOKU_PLUGIN')) define('DOKU_PLUGIN',DOKU_INC.'lib/plugins/');
 
-if ( file_exists(DOKU_PLUGIN . 'dw2pdf/DokuPDF.class.php') ) {
+if ( file_exists(DOKU_PLUGIN . 'dw2pdf/mpdf/mpdf.php') ) {
 
-	global $conf;
-	// if(!defined('_MPDF_TEMP_PATH')) define('_MPDF_TEMP_PATH', $conf['tmpdir'].'/dwpdf/'.rand(1,1000).'/');
+    global $conf;
+    if(!defined('_MPDF_TEMP_PATH')) define('_MPDF_TEMP_PATH', $conf['tmpdir'].'/dwpdf/'.rand(1,1000).'/');
+    if(!defined('_MPDF_TTFONTDATAPATH')) define('_MPDF_TTFONTDATAPATH',$conf['cachedir'].'/mpdf_ttf/');
 
-    require_once(DOKU_PLUGIN . 'dw2pdf/DokuPDF.class.php');
+    require_once(DOKU_PLUGIN . 'dw2pdf/mpdf/mpdf.php');
 
-    class siteexportPDF extends DokuPDF {
+    class siteexportPDF extends mpdf {
     
         private $debugObj = false;
 
 		function __construct($debug) {
             global $INPUT;
+            global $conf;
 		
             $dw2pdf = plugin_load('action', 'dw2pdf');
 		
 		    // decide on the paper setup from param or config
             $pagesize    = $INPUT->str('pagesize', $dw2pdf->getConf('pagesize'), true);
             $orientation = $INPUT->str('orientation', $dw2pdf->getConf('orientation'), true);
-
-            parent::__construct($pagesize, $orientation);
+    
+            io_mkdir_p(_MPDF_TTFONTDATAPATH);
+            io_mkdir_p(_MPDF_TEMP_PATH);
+    
+            $format = $pagesize;
+            if($orientation == 'landscape') $format .= '-L';
+    
+            switch($conf['lang']) {
+                case 'zh':
+                case 'zh-tw':
+                case 'ja':
+                case 'ko':
+                    $mode = '+aCJK';
+                    break;
+                default:
+                    $mode = 'UTF-8-s';
+    
+            }
+    
+            // we're always UTF-8
+            parent::__construct($mode, $format);
+            $this->SetAutoFont(AUTOFONT_ALL);
+            $this->ignore_invalid_utf8 = true;
+            $this->tabSpaces = 4;
             $this->debugObj = $debug;
             $this->debug = $debug !== false;
             $this->shrink_tables_to_fit = 1; // Does not shrink tables by default, only in emergency
@@ -104,11 +128,14 @@ if ( file_exists(DOKU_PLUGIN . 'dw2pdf/DokuPDF.class.php') ) {
     }
     
     if ( file_exists(DOKU_PLUGIN . 'dw2pdf/mpdf/classes/cssmgr.php') && !class_exists('cssmgr', false)) {
-        
+//*        
         require_once(DOKU_PLUGIN . 'siteexport/inc/patchCSSmgr.php');
         $objPatch = new CSSMgrPatch(DOKU_PLUGIN . 'dw2pdf/mpdf/classes/cssmgr.php');
-        $objPatch->redefineFunction(file_get_contents(DOKU_PLUGIN . 'siteexport/inc/readCSS.patch'));
-        eval($objPatch->getCode());
+        if ( $objPatch->redefineFunction(file_get_contents(DOKU_PLUGIN . 'siteexport/inc/readCSS.patch')) ) {
+            eval($objPatch->getCode());
+        }
+/*/
+//*/
     }
 
 }

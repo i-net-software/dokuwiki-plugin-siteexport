@@ -2,13 +2,13 @@ function ReadCSS($html) {
 	preg_match_all('/<style[^>]*media=["\']([^"\'>]*)["\'].*?<\/style>/is',$html,$m);
 	for($i=0; $i<count($m[0]); $i++) {
 		if ($this->mpdf->CSSselectMedia && !preg_match('/('.trim($this->mpdf->CSSselectMedia).'|all)/i',$m[1][$i])) { 
-			$html = preg_replace('/'.preg_quote($m[0][$i],'/').'/','',$html);
+			$html = str_replace($m[0][$i],'',$html);
 		}
 	}
 	preg_match_all('/<link[^>]*media=["\']([^"\'>]*)["\'].*?>/is',$html,$m);
 	for($i=0; $i<count($m[0]); $i++) {
 		if ($this->mpdf->CSSselectMedia && !preg_match('/('.trim($this->mpdf->CSSselectMedia).'|all)/i',$m[1][$i])) { 
-			$html = preg_replace('/'.preg_quote($m[0][$i],'/').'/','',$html);
+			$html = str_replace($m[0][$i],'',$html);
 		}
 	}
 
@@ -102,7 +102,7 @@ function ReadCSS($html) {
 					$embedded = $cxtem[2][$i];
 					if (!preg_match('/^data:image/i', $embedded)) {	// mPDF 5.5.13
 						$this->mpdf->GetFullPath($embedded, $cssBasePath );
-						$CSSextblock = preg_replace('/'.preg_quote($cxtem[0][$i],'/').'/', ($cxtem[1][$i].$embedded.$cxtem[3][$i]), $CSSextblock);
+						$CSSextblock = str_replace($cxtem[0][$i], ($cxtem[1][$i].$embedded.$cxtem[3][$i]), $CSSextblock);
 					}
 				}
 			}
@@ -125,7 +125,7 @@ function ReadCSS($html) {
 			$embedded = $cxtem[2][$i];
 			if (!preg_match('/^data:image/i', $embedded)) {	// mPDF 5.5.13
 				$this->mpdf->GetFullPath($embedded);
-				$tmpCSSstr = preg_replace('/'.preg_quote($cxtem[0][$i],'/').'/', ($cxtem[1][$i].$embedded.$cxtem[3][$i]), $tmpCSSstr );
+				$tmpCSSstr = str_replace($cxtem[0][$i], ($cxtem[1][$i].$embedded.$cxtem[3][$i]), $tmpCSSstr );
 			}
 		   }
 		}
