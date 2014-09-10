@@ -85,8 +85,7 @@ class syntax_plugin_siteexport_toc extends DokuWiki_Syntax_Plugin {
 								if ( in_array( $item[0], array( 'list_item', 'list_open') ) ) { $call = $item; break;}
 							}
 
-							$depth = $handler->CallWriter->interpretSyntax($call[1][0], $listType);
-
+							$depth = $handler->CallWriter->interpretSyntax($call[1][0], $listType) -1; // Minus one because of plus one inside the interpret function
 						}
 
 						if ( empty( $link[0] ) ) { break; } // No empty elements. This would lead to problems
@@ -164,11 +163,13 @@ class syntax_plugin_siteexport_toc extends DokuWiki_Syntax_Plugin {
 				// If this is not set, we may have it as Metadata
 				if ( !$this->mergedPages && $renderer->meta['sitetoc']['mergeDoc'] ) {
 					$toc = $renderer->meta['sitetoc']['siteexportTOC'];
+					
 					if ( is_array($toc)) {
 						foreach ($toc as $tocItem ) {
-							$this->mergedPages[] = $tocItem['id'];
+							$this->mergedPages[] = array($tocItem['id'], $tocItem['depth']);
 						}
 					}
+
 				}
 				
 				// If there is some data to be merged
@@ -180,12 +181,14 @@ class syntax_plugin_siteexport_toc extends DokuWiki_Syntax_Plugin {
 
 					// Prepare lookup Array
 					foreach ( $this->mergedPages as $tocItem ) {
-						$this->includedPages[] = array_shift(explode('#', $tocItem));
+						$this->includedPages[] = array_shift(explode('#', $tocItem[0]));
 					}
 
 					// Load the instructions
 					$instr = array();
-					foreach ( $this->mergedPages as $tocItem ) {
+					foreach ( $this->mergedPages as $tocElement ) {
+					
+					    list($tocItem, $depth) = $tocElement;
 						$file    = wikiFN($tocItem);
 						
 						if(@file_exists($file)) {
@@ -194,8 +197,8 @@ class syntax_plugin_siteexport_toc extends DokuWiki_Syntax_Plugin {
 							$instructions = p_get_instructions(io_readWikiPage($file,$tocItem)); 
 						}
 						
-						// Convert Link instructions
-						$instructions = $this->_convertInstructions($instructions, $addID, $renderer);
+						// Convert Link and header instructions
+						$instructions = $this->_convertInstructions($instructions, $addID, $renderer, $depth);
 						
 						if ( $renderer->meta['sitetoc']['mergeHeader'] && !empty($instr) ) {
 							// Merge
@@ -225,12 +228,13 @@ class syntax_plugin_siteexport_toc extends DokuWiki_Syntax_Plugin {
 
 			// Add ID to flags['mergeDoc']
 			if ( $renderer->meta['sitetoc']['mergeDoc'] === true ) { // || (count($renderer->meta['sitetoc']['siteexportTOC']) > 0 && $renderer->meta['sitetoc']['siteexportMergeDoc'] === true) ) {
-				$this->mergedPages[] = $SID;
+				$this->mergedPages[] = array($SID, $DEPTH);
 				$default = $renderer->_simpleTitle($SID); $isImage = false;
 				resolve_pageid(getNS($ID),$SID,$exists);
 
 				$NAME = empty($NAME) ? p_get_first_heading($SID,true) : $NAME;
 				$LNID = "$ID#" . sectionID($SID, $check);
+				
 			} else {
 				// // print normal internal link (XHTML odt)
 				$renderer->internallink($LNID, $NAME, null);
@@ -333,7 +337,7 @@ class syntax_plugin_siteexport_toc extends DokuWiki_Syntax_Plugin {
 	 * Corrects relative internal links and media and
 	 * converts headers of included pages to subheaders of the current page
 	 */
-	function _convertInstructions($instr, $id, &$renderer) {
+	function _convertInstructions($instr, $id, &$renderer, $depth=1) {
 		global $ID;
 		global $conf;
 
@@ -346,6 +350,12 @@ class syntax_plugin_siteexport_toc extends DokuWiki_Syntax_Plugin {
 			}
 			else if((substr($instr[$i][0], 0, 13) == 'internalmedia')){
 				$this->_convert_media($renderer,$instr[$i],$id);
+			}
+			else if((substr($instr[$i][0], 0, 6) == 'header')){
+				$this->_convert_header($renderer,$instr[$i],$depth-1); // -1 because the depth starts at 1
+			}
+			else if((substr($instr[$i][0], 0, 12) == 'section_open')){
+				$this->_convert_section($renderer,$instr[$i],$depth-1); // -1 because the depth starts at 1
 			}
 		}
 
@@ -396,6 +406,16 @@ class syntax_plugin_siteexport_toc extends DokuWiki_Syntax_Plugin {
 		// Resolvemedia returns the absolute path to media by reference
 		$exists = false;
 		resolve_mediaid(getNS($id),$instr[1][0],$exists);
+	}
+	
+	function _convert_header(&$renderer, &$instr, $depth) {
+    	// More Depth!
+    	$instr[1][1] += $depth;
+	}
+
+	function _convert_section(&$renderer, &$instr, $depth) {
+    	// More Depth!
+    	$instr[1][0] += $depth;
 	}
 	
 	function _mergeWithHeaders($existing, $newInstructions, $level = 1) {
