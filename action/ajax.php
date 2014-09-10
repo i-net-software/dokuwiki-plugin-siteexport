@@ -505,6 +505,8 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
         {
             $do = 'export_siteexport_pdf';
             $_REQUEST['origRenderer'] = (empty($_REQUEST['renderer']) ? $conf['renderer_xhtml'] : $_REQUEST['renderer'] );
+        } else if ( $_REQUEST['renderer'] == 'dw2pdf' ) {
+            $do = 'pdf';
         }
         
         $do = ($do == $conf['renderer_xhtml'] && intval($_REQUEST['exportbody']) != 1) ? '' : 'export_' . $do;

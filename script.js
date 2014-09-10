@@ -566,6 +566,12 @@
             $('form#siteexport #renderer').prop('disabled', this.checked);
         });
         
+        $('form#siteexport select#renderer').change(function(event){
+            event.stopPropagation();
+            $('form#siteexport #pdfExport:input, form#siteexport select#template').prop('disabled', $(this).prop('value') == 'dw2pdf');
+        });
+
+        
         $('form#siteexport #disableall:input').change(function(event){
             event.stopPropagation();
             $.siteexport().toggleDisableAllPlugins(this);
