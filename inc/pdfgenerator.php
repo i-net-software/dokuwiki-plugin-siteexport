@@ -54,6 +54,7 @@ if ( !empty($_REQUEST['pdfExport']) && intval($_REQUEST['pdfExport']) == 1 && fi
 
             $mpdf->ignore_invalid_utf8 = true;
             $mpdf->mirrorMargins = 0;	// don't mirror margins
+            $mpdf->useOddEven = 1;
 
             $mpdf->WriteHTML($html);
             $mpdf->Output($filename, "F");
