@@ -58,10 +58,11 @@ if ( !empty($_REQUEST['pdfExport']) && intval($_REQUEST['pdfExport']) == 1 && fi
 
             $mpdf->WriteHTML($html);
             $mpdf->Output($filename, "F");
-
+/*
             $this->functions->debug->message("Used images:", $mpdf->images, 1);
             $this->functions->debug->message("Failed images:", $mpdf->failedimages, 1);
-
+/*/
+//*/
             return $html;
         }
 
@@ -73,7 +74,10 @@ if ( !empty($_REQUEST['pdfExport']) && intval($_REQUEST['pdfExport']) == 1 && fi
             $html = preg_replace_callback("/<h(\d)(.*?)>(.*?)<\/h\\1>/s", array($this, '__pdfHeaderCallback'), $html);
             $html = preg_replace_callback("/<\/div>\s*?<h({$conf['plugin']['siteexport']['PDFHeaderPagebreak']})(.*?)>/s", array($this, '__pdfHeaderCallbackPagebreak'), $html);
             $html = preg_replace("/(<img.*?mediacenter.*?\/>)/", "<table style=\"width:100%; border: 0px solid #000;\"><tr><td style=\"text-align: center\">$1</td></tr></table>", $html);
-            $html = preg_replace("/<p>(\s*?<table.*?<\/table>\s*?)<\/p>/s", "$1", $html);
+
+            // Remove p arround img and table
+            $html = preg_replace("/<p[^>]*?>(\s*?<img[^>]*?\/?>\s*?)<\/p>/s", "$1", $html);
+            $html = preg_replace("/<p[^>]*?>(\s*?<table.*?<\/table>\s*?)<\/p>/s", "$1", $html);
             $html = preg_replace_callback("/<pre(.*?)>(.*?)<\/pre>/s", array($this, '__pdfPreCodeCallback'), $html);
             $html = preg_replace_callback("/<a href=\"mailto:(.*?)\".*?>(.*?)<\/a>/s", array($this, '__pdfMailtoCallback'), $html);
             /**/
