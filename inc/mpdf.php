@@ -77,6 +77,44 @@ if ( file_exists(DOKU_PLUGIN . 'dw2pdf/mpdf/mpdf.php') ) {
                 parent::Error($msg);
             }
         }
+
+//*
+        // Nothing
+/*/        
+        var $previousPage = '';
+        var $currentPage = '';
+        var $skipAddPage = false;
+        
+        function Footer(){
+        
+            $currentPage = $this->pages[count($this->pages)];
+            $this->skipAddPage = $this->previousPage && $this->pages[count($this->pages)] == $this->currentPage;
+            
+            if ( $this->skipAddPage ) {
+                $this->message("HAS TO REMOVE PAGE:", count($this->pages));
+            }
+            
+            $this->currentPage = $currentPage;
+            parent::Footer();
+        }
+        function AddPage($orientation='',$condition='', $resetpagenum='', $pagenumstyle='', $suppress='',$mgl='',$mgr='',$mgt='',$mgb='',$mgh='',$mgf='',$ohname='',$ehname='',$ofname='',$efname='',$ohvalue=0,$ehvalue=0,$ofvalue=0,$efvalue=0,$pagesel='',$newformat='')
+        {
+        
+            if ( $skipAddPage ) { return; }
+
+            $count = count($this->pages);
+            $stack = array();
+            $trace = debug_backtrace();
+            foreach( $trace as $entry ) {
+                $vars = substr(implode(',', $entry['args']), 0, 20);
+                $stack[] = "{$entry['function']}({$vars}) | {$entry['file']} | {$entry['line']}";
+            }
+
+            $this->message("Is Adding Page $count: $orientation,$condition, $resetpagenum, $pagenumstyle,$suppress,$mgl,$mgr,$mgt,$mgb,$mgh,$mgf,$ohname,$ehname,$ofname,$efname,$ohvalue,$ehvalue,$ofvalue,$efvalue,$pagesel,$newformat", $stack, 1);
+        
+            parent::AddPage($orientation,$condition, $resetpagenum, $pagenumstyle,$suppress,$mgl,$mgr,$mgt,$mgb,$mgh,$mgf,$ohname,$ehname,$ofname,$efname,$ohvalue,$ehvalue,$ofvalue,$efvalue,$pagesel,$newformat);
+        }
+//*/        
         
         function GetFullPath(&$path,$basepath='') {
         
@@ -111,6 +149,13 @@ if ( file_exists(DOKU_PLUGIN . 'dw2pdf/mpdf/mpdf.php') ) {
         		$path = preg_replace($regex, "\\1", $path);
         	}
 
+        }
+        
+        /*
+          Only when the toc is being generated  
+        */
+        function MovePages($target_page, $start_page, $end_page=-1) {
+            parent::MovePages($target_page, $start_page, $end_page);
         }
         
         function OpenTag($tag, $attr) {
