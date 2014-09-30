@@ -373,6 +373,18 @@ class renderer_plugin_siteexport_pdf extends Doku_Renderer_xhtml {
         return $string;
     }
     
+    function preformatted($text) {
+        $this->doc .= '<div class="pre">';
+        parent::preformatted($text);
+        $this->doc .= '</div>';
+    }
+    
+    function _highlight($type, $text, $language = null, $filename = null) {
+        $this->doc .= '<div class="pre">';
+        parent::_highlight($type, $text, $language, $filename);
+        $this->doc .= '</div>';
+    }
+    
     /**
      * API of the imagereference plugin
      * https://github.com/i-net-software/dokuwiki-plugin-imagereference
