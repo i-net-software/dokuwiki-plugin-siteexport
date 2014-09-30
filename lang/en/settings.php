@@ -20,5 +20,7 @@ $lang['debugLevel_o_3'] = 'Warn';
 $lang['debugLevel_o_2'] = 'Info';
 $lang['debugLevel_o_1'] = 'Debug';
 
+$lang['useOddEven'] = 'Allows setting of different headers and footer on odd/even pages. TOCs will always start on odd pages.';
+
 
 //Setup VIM: ex: et ts=2 enc=utf-8 :

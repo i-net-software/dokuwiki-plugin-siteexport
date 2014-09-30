@@ -14,5 +14,6 @@ $meta['debugFile'] = array('string');
 
 $meta['cachetime'] = array('numeric');
 
+$meta['useOddEven'] = array('onoff');
 
 //Setup VIM: ex: et ts=2 enc=utf-8 :

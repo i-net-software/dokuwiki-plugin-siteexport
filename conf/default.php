@@ -13,5 +13,6 @@ $conf['debugLevel'] = 5;
 $conf['debugFile'] = "";
 
 $conf['cachetime'] = 60*60*24;
+$conf['useOddEven'] = false;
 
 //Setup VIM: ex: et ts=2 enc=utf-8 :
