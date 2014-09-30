@@ -110,6 +110,9 @@ if ( file_exists(DOKU_PLUGIN . 'dw2pdf/mpdf/mpdf.php') ) {
                 $stack[] = "{$entry['function']}({$vars}) | {$entry['file']} | {$entry['line']}";
             }
 
+            array_unshift($stack, "(({$this->y}+{$this->divheight}>{$this->PageBreakTrigger}) || ({$this->y}+h>{$this->PageBreakTrigger}) || 
+		({$this->y}+(h*2)+{$this->blk[$this->blklvl]['padding_bottom']}+{$this->blk[$this->blklvl]['margin_bottom']}>{$this->PageBreakTrigger} && {$this->blk[$this->blklvl]['page_break_after_avoid']})) and !{$this->InFooter} and AcceptPageBreak())");
+
             $this->message("Is Adding Page $count: $orientation,$condition, $resetpagenum, $pagenumstyle,$suppress,$mgl,$mgr,$mgt,$mgb,$mgh,$mgf,$ohname,$ehname,$ofname,$efname,$ohvalue,$ehvalue,$ofvalue,$efvalue,$pagesel,$newformat", $stack, 1);
         
             parent::AddPage($orientation,$condition, $resetpagenum, $pagenumstyle,$suppress,$mgl,$mgr,$mgt,$mgb,$mgh,$mgf,$ohname,$ehname,$ofname,$efname,$ohvalue,$ehvalue,$ofvalue,$efvalue,$pagesel,$newformat);
