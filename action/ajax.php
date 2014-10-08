@@ -114,7 +114,7 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
         $counter = 0;
 
         if ( count($data) == 0 && !$this->functions->settings->hasValidCacheFile ) {
-            exit();
+            exit( "No Data to export" );
         }
 
         foreach ( $data as $site ) {
