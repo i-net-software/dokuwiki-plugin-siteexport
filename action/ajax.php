@@ -369,6 +369,7 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
         global $conf;
 
         $NS = $this->namespace = $this->functions->getNamespaceFromID($NS, $PAGE);
+        $this->functions->debug->message("ROOT Namespace to export from: '{$NS}' / {$this->namespace}", null, 1);
 
         $depth = $this->getConf('depth');
         $query = '';
@@ -451,6 +452,7 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
         if ( $isRedirected || empty($data) )
         {
             // if we have been redirected, simply return the data
+            $this->functions->debug->message("List is empty I guess. Used NS: '{$NS}' ", null, 1);
             return $data;
         }
 
