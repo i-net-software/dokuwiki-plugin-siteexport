@@ -48,6 +48,7 @@ class siteexport_javahelp
         $hsPrename = curNS(getNS($this->translation->tns));
         
         $check = array();
+        $last_key = end(array_keys($translationHSFiles));
         foreach( $translationHSFiles as $lang => $data )
         {
             if ( count($translationHSFiles) == 1 && $lang == $conf['lang'] )
@@ -77,12 +78,13 @@ class siteexport_javahelp
             // Create HS File
             // array_shift($toc->getMapID($rootNode, &$check))
             $HS = $this->getHSXML( $startPageID, $this->functions->getSiteTitle($rootNode), $lang, $tsRootPath );
-            $this->filewriter->__moveDataToZip($HS, $translationRoot . '_' . $lang . '.hs');
+            $this->filewriter->__moveDataToZip($HS, $translationRoot . ( empty($lang) ? '' : '_') . $lang . '.hs');
             
             // Default Lang
-            if ( $lang == $conf['lang'] )
+            if ( $lang == $conf['lang'] || $lang == $last_key )
             {
                 $this->filewriter->__moveDataToZip($HS, $translationRoot . '.hs');
+                $last_key = null;
             }
         }
     }
@@ -99,6 +101,10 @@ class siteexport_javahelp
     
     private function getHSXML($rootID, $title, $lang='', $translationRoot='')
     {
+        if ( empty($lang) && substr($translationRoot, -1) == '/') {
+            $translationRoot = substr($translationRoot, 0, -1);
+        }
+    
         return <<<OUTPUT
 <?xml version='1.0' encoding='ISO-8859-1' ?>
 <helpset version="1.0">
