@@ -25,6 +25,12 @@ class action_plugin_siteexport_startup extends DokuWiki_Action_Plugin {
 		$controller->register_hook('TPL_ACT_UNKNOWN', 'BEFORE',  $this, 'siteexport_addpage');
     	$controller->register_hook('TPL_METAHEADER_OUTPUT', 'BEFORE', $this, 'siteexport_metaheaders');
         $controller->register_hook('JS_CACHE_USE', 'BEFORE', $this, 'siteexport_check_js_cache');
+        $controller->register_hook('TOOLBAR_DEFINE', 'AFTER', $this, 'siteexport_toolbar_define');
+	}
+	
+	private function hasSiteexportHeaders() {
+        $headers = function_exists('getallheaders') ? getallheaders() : null;
+    	return is_array($headers) && array_key_exists('X-Site-Exporter', $headers) && $headers['X-Site-Exporter'] = getSecurityToken();
 	}
 	
 	/**
@@ -34,9 +40,8 @@ class action_plugin_siteexport_startup extends DokuWiki_Action_Plugin {
 	{
 		global $conf, $INFO;
 
-        $headers = function_exists('getallheaders') ? getallheaders() : null;
 
-        if ( is_array($headers) && array_key_exists('X-Site-Exporter', $headers) && $headers['X-Site-Exporter'] = getSecurityToken() || defined('SITEEXPORT_TPL') ) {
+        if ( $this->hasSiteexportHeaders() || defined('SITEEXPORT_TPL') ) {
             // This is a request via the HTTPProxy of the SiteExporter ... set config to what we need here.
     		$conf['useslash'] = 1;
         }
@@ -109,5 +114,13 @@ class action_plugin_siteexport_startup extends DokuWiki_Action_Plugin {
 		}
 		
 		return true;
+	}
+	
+	function siteexport_toolbar_define(&$event) {
+    	
+    	if ( $this->hasSiteexportHeaders() ) {
+        	// Remove Toolbar
+        	$event->data = [];
+    	}
 	}
 }

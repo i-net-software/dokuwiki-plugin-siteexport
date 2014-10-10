@@ -172,10 +172,13 @@ class preload_plugin_siteexport_controller extends Doku_Plugin_Controller {
 		
 		// if this is defined, it overrides the settings made above. obviously.
 		$disabledPlugins = empty($_REQUEST['disableplugin']) ? $disabledPlugins : $_REQUEST['disableplugin'];
-
+		
 		foreach( $disabledPlugins as $plugin ) {
 			$this->disable($plugin);
 		}
+
+        // always enabled - JS and CSS will be cut out later.
+        $this->enable('siteexport');
 	}
 
    /**
@@ -187,6 +190,27 @@ class preload_plugin_siteexport_controller extends Doku_Plugin_Controller {
    public function disable($plugin) {
 	   $this->tmp_plugins[$plugin] = 0;
 	   return true;
+   }
+
+   
+   public function hasSiteexportHeaders() {
+       $headers = function_exists('getallheaders') ? getallheaders() : null;
+       return is_array($headers) && array_key_exists('X-Site-Exporter', $headers) && $headers['X-Site-Exporter'] = getSecurityToken();
+   }
+	
+    /**
+     * Get the list of plugins, bute remove Siteexport from Style and
+     * JS if in export Mode
+     */   
+   public function getList($type='',$all=false) {
+       $plugins = parent::getList($type, $all);
+       
+       list(,, $caller) = debug_backtrace(false);
+       if ( $this->hasSiteexportHeaders() && $caller != null && preg_match("/^(js|css)_/", $caller['function']) && preg_match("/(js|css)\.php$/", $caller['file']) ) {
+           $plugins = array_filter($plugins, function ($item) { return $item != 'siteexport' ;});
+       }
+       
+       return $plugins;
    }
 }
 
