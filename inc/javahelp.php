@@ -22,7 +22,7 @@ class siteexport_javahelp
     public function createTOCFiles($data)
     {
         global $conf;
-        
+
         // Split Tree for translation
         $translationHSFiles = array();
 
@@ -46,6 +46,8 @@ class siteexport_javahelp
         }
         
         $hsPrename = curNS(getNS($this->translation->tns));
+        $this->functions->debug->message("HelpSetPre-Name: {$hsPrename}", null, 1);
+        $this->functions->debug->message("Translation-Root: {$translationRoot}", null, 1);
         
         $check = array();
         $last_key = end(array_keys($translationHSFiles));
@@ -78,7 +80,7 @@ class siteexport_javahelp
             // Create HS File
             // array_shift($toc->getMapID($rootNode, &$check))
             $HS = $this->getHSXML( $startPageID, $this->functions->getSiteTitle($rootNode), $lang, $tsRootPath );
-            $this->filewriter->__moveDataToZip($HS, $translationRoot . ( empty($lang) ? '' : '_') . $lang . '.hs');
+            $this->filewriter->__moveDataToZip($HS, $translationRoot . ( empty($lang) ? '' : '_' . $lang ) . '.hs');
             
             // Default Lang
             if ( $lang == $conf['lang'] || $lang == $last_key )
