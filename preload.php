@@ -192,6 +192,16 @@ class preload_plugin_siteexport_controller extends Doku_Plugin_Controller {
 	   return true;
    }
 
+   /**
+    * Enable the plugin
+    *
+    * @param string $plugin name of plugin
+    * @return bool; true allways.
+    */
+   public function enable($plugin) {
+	   $this->tmp_plugins[$plugin] = 1;
+	   return true;
+   }
    
    public function hasSiteexportHeaders() {
        $headers = function_exists('getallheaders') ? getallheaders() : null;
