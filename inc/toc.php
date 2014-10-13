@@ -87,6 +87,11 @@ class siteexport_toc
             // only add an url once
             if ( in_array($elem['url'], $CHECKDATA) ) { continue; }
 
+            if ( !isset($elem['exists']) ) {
+                resolve_pageid(getNS($elem['id']),$elem['id'],$elem['exists']);
+                $this->functions->debug->message("EXISTS previously not set.", $elem, 1);
+            }
+
 			// if not there, no map ids will be generated
             $elem['mapID'] = intval($elem['exists']) == 1 ? $this->getMapID($elem, $check) : array();
 
