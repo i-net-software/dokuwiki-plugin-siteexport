@@ -158,7 +158,7 @@ class renderer_plugin_siteexport_pdf extends Doku_Renderer_xhtml {
             
             if ( !empty($headingNumber) ) {
 	            $class[] = 'level' . trim($headingNumber);
-	            if ( $headingNumber[0] != '1' ) {
+	            if ( intval($headingNumber) > 1 ) {
 		            $class[] = 'notfirst';
 	            } else {
 		            $class[] = 'first';
