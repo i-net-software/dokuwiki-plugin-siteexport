@@ -120,7 +120,8 @@ class action_plugin_siteexport_startup extends DokuWiki_Action_Plugin {
     	
     	if ( $this->hasSiteexportHeaders() ) {
         	// Remove Toolbar
-        	$event->data = [];
+        	// This is pr 5.4 syntax.
+        	$event->data = array();
     	}
 	}
 }
