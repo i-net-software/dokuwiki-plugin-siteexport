@@ -21,3 +21,6 @@ $lang['debugLevel_o_4']        = 'Fehler';
 $lang['debugLevel_o_3']        = 'Warnen';
 $lang['debugLevel_o_2']        = 'Info';
 $lang['debugLevel_o_1']        = 'Debug';
+
+$lang['defaultAuthenticationUser']        = 'Benutzername für nicht öffentliche Seiten';
+$lang['defaultAuthenticationPassword']    = 'Password für nicht öffentliche Seiten';

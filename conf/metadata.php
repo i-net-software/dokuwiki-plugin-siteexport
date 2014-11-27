@@ -16,4 +16,7 @@ $meta['cachetime'] = array('numeric');
 
 $meta['useOddEven'] = array('onoff');
 
+$meta['defaultAuthenticationUser'] = array('string');
+$meta['defaultAuthenticationPassword'] = array('password');
+
 //Setup VIM: ex: et ts=2 enc=utf-8 :

@@ -660,6 +660,23 @@ class siteexport_functions extends DokuWiki_Plugin
         
         return str_repeat('../', count($baseParts)) . implode('/', $replaceParts);
     }
+
+    public function hasAuthentication() {
+        $user = $this->getConf('defaultAuthenticationUser');
+        $password = $this->getConf('defaultAuthenticationPassword');
+        return empty($user) ? false : array(
+            'user' => $user,
+            'password' => $password
+        );
+    }
+    
+    public function authenticate() {
+        if( !isset($_SERVER['HTTP_AUTHORIZATION']) && $this->hasAuthentication() ) {
+            $_SERVER['HTTP_AUTHORIZATION'] = 'Basic ' . base64_encode( $this->hasAuthentication()->user . ':' . $this->hasAuthentication()->password );
+            $this->functions->debug->message("Re-authenticating with default user from configuration", $this->getConf('defaultAuthenticationUser'), 3);
+            auth_setup();
+        }
+    }
 }
 
 ?>

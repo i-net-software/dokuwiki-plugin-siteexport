@@ -575,7 +575,7 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
      * Download the file via HTTP URL + recurse if this is not an image
      * The file will be saved as temporary file. The filename is the result.
      **/
-    function __getHTTPFile($URL, $RECURSE=false, $newAdditionalParameters=null) {
+    function __getHTTPFile($URL, $RECURSE=false, $newAdditionalParameters=null, $authUser=null, $authPass=null) {
         global $conf;
 
         $EXCLUDE = $this->getConf('exclude');
@@ -593,8 +593,8 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
 
         $http = new HTTPProxy($this->functions->debug, $this->functions->settings);
         $http->max_bodysize = $conf['fetchsize'];
-        // $http->user = $_SERVER['PHP_AUTH_USER']; // Must not be set, or the files will be authenticated and have the edit thingies
-        // $http->pass = $_SERVER['PHP_AUTH_PW']; // Must not be set, or the files will be authenticated and have the edit thingies
+        $http->user = $authUser; // Must not be set, or the files will be authenticated and have the edit thingies
+        $http->pass = $authPass; // Must not be set, or the files will be authenticated and have the edit thingies
 
         // Add additional Params
         $this->functions->addAdditionalParametersToURL($URL, $newAdditionalParameters);
@@ -603,6 +603,10 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
         $getData = $http->get($URL, true); // true == sloopy, get 304 body as well.
         
         if( $getData === false ) { // || ($http->status != 200 && !$this->functions->settings->ignoreNon200) ) {
+        
+            if ( $http->status == 403 && !empty( $this->functions->hasAuthentication() ) && empty( $authUser ) ) {
+                return $this->__getHTTPFile( $URL, $RECURSE, $newAdditionalParameters, $this->functions->hasAuthentication()['user'], $this->functions->hasAuthentication()['password'] );
+            }
         
         	if ( $http->status != 200 && $this->functions->settings->ignoreNon200 ) {
                 $this->functions->debug->message("HTTP status was '{$http->status}' - but I was told to ignore it by the settings.", $URL, 3);
@@ -1124,7 +1128,7 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
     /**
      * remove an old zip file
      **/
-    function __removeOldZip( $FILENAMEID=null, $checkForMore=true ) {
+    function __removeOldZip( $FILENAMEID=null, $checkForMore=true, $reauthenticated=false ) {
         global $INFO;
         global $conf;
 
@@ -1140,6 +1144,12 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
 
             require_once( DOKU_INC . 'inc/media.php');
             if ( !media_delete($FILENAMEID, $INFO['perm']) ) {
+                
+                if ( !$reauthenticated ) {
+                    $this->functions->authenticate();
+                    return $this->__removeOldZip( $FILENAMEID, $checkForMore, true );
+                }
+                
                 $returnValue = false;
             }
         }
@@ -1160,7 +1170,7 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
 
                     //decide if has to be deleted needed:
                     if( $media['mtime'] < time()-$cache) {
-                        $this->__removeOldZip($media['id'], false);
+                        $this->__removeOldZip($media['id'], false, $reauthenticated);
                     }
                 }
             }

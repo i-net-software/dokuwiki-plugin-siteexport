@@ -22,5 +22,7 @@ $lang['debugLevel_o_1'] = 'Debug';
 
 $lang['useOddEven'] = 'Allows setting of different headers and footer on odd/even pages. TOCs will always start on odd pages.';
 
+$lang['defaultAuthenticationUser']        = 'Username for non-public pages';
+$lang['defaultAuthenticationPassword']    = 'Password for non-public pages';
 
 //Setup VIM: ex: et ts=2 enc=utf-8 :

@@ -15,4 +15,7 @@ $conf['debugFile'] = "";
 $conf['cachetime'] = 60*60*24;
 $conf['useOddEven'] = false;
 
+$conf['defaultAuthenticationUser'] = '';
+$conf['defaultAuthenticationPassword'] = '';
+
 //Setup VIM: ex: et ts=2 enc=utf-8 :
