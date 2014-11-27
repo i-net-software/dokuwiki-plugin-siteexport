@@ -604,7 +604,7 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
         
         if( $getData === false ) { // || ($http->status != 200 && !$this->functions->settings->ignoreNon200) ) {
         
-            if ( $http->status == 403 && !empty( $this->functions->hasAuthentication() ) && empty( $authUser ) ) {
+            if ( $http->status == 403 && $this->functions->hasAuthentication() !== false && empty( $authUser ) ) {
                 return $this->__getHTTPFile( $URL, $RECURSE, $newAdditionalParameters, $this->functions->hasAuthentication()['user'], $this->functions->hasAuthentication()['password'] );
             }
         
