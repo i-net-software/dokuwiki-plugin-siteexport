@@ -207,6 +207,13 @@ class preload_plugin_siteexport_controller extends Doku_Plugin_Controller {
        $headers = function_exists('getallheaders') ? getallheaders() : null;
        return is_array($headers) && array_key_exists('X-Site-Exporter', $headers) && $headers['X-Site-Exporter'] = getSecurityToken();
    }
+   
+   /**
+    * Filter the List of Plugins for the siteexport plugin
+    */
+   private function isSiteexportPlugin ($item) {
+        return $item != 'siteexport';
+   }
 	
     /**
      * Get the list of plugins, bute remove Siteexport from Style and
@@ -217,7 +224,7 @@ class preload_plugin_siteexport_controller extends Doku_Plugin_Controller {
        
        list(,, $caller) = debug_backtrace(false);
        if ( $this->hasSiteexportHeaders() && $caller != null && preg_match("/^(js|css)_/", $caller['function']) && preg_match("/(js|css)\.php$/", $caller['file']) ) {
-           $plugins = array_filter($plugins, function ($item) { return $item != 'siteexport' ;});
+           $plugins = array_filter($plugins, array($this, 'isSiteexportPlugin'));
        }
        
        return $plugins;
