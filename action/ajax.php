@@ -575,7 +575,7 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
      * Download the file via HTTP URL + recurse if this is not an image
      * The file will be saved as temporary file. The filename is the result.
      **/
-    function __getHTTPFile($URL, $RECURSE=false, $newAdditionalParameters=null, $authUser=null, $authPass=null) {
+    function __getHTTPFile($URL, $RECURSE=false, $newAdditionalParameters=null) {
         global $conf;
 
         $EXCLUDE = $this->getConf('exclude');
@@ -591,10 +591,8 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
 			if ( preg_match($PATTERN, $URL) ) { return false; }
         }
 
-        $http = new HTTPProxy($this->functions->debug, $this->functions->settings);
+        $http = new HTTPProxy($this->functions);
         $http->max_bodysize = $conf['fetchsize'];
-        $http->user = $authUser; // Must not be set, or the files will be authenticated and have the edit thingies
-        $http->pass = $authPass; // Must not be set, or the files will be authenticated and have the edit thingies
 
         // Add additional Params
         $this->functions->addAdditionalParametersToURL($URL, $newAdditionalParameters);
@@ -603,13 +601,6 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
         $getData = $http->get($URL, true); // true == sloopy, get 304 body as well.
         
         if( $getData === false ) { // || ($http->status != 200 && !$this->functions->settings->ignoreNon200) ) {
-        
-            if ( $http->status == 403 && empty( $authUser ) ) {
-                $authentication = $this->functions->hasAuthentication();
-                if ( $authentication !== false ) {
-                    return $this->__getHTTPFile( $URL, $RECURSE, $newAdditionalParameters, $authentication['user'], $authentication['password'] );
-                }
-            }
         
         	if ( $http->status != 200 && $this->functions->settings->ignoreNon200 ) {
                 $this->functions->debug->message("HTTP status was '{$http->status}' - but I was told to ignore it by the settings.", $URL, 3);

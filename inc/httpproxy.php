@@ -24,16 +24,18 @@ class HTTPProxy extends DokuHTTPClient {
 	
     var $debugClass = null;
     var $setttings = null;
+    var $forceUser = null;
+    var $forcePass = null;
     
     /**
      * Constructor.
      */
-    function __construct($debug, $settings){
+    function __construct($functions){
         global $conf;
 
         // call parent constructor
-        $this->debugClass = $debug;
-        $this->settings = $settings;
+        $this->debugClass = $functions->debug;
+        $this->settings = $functions->settings;
         parent::__construct();
         
         $this->timeout = 60; //max. 25 sec
@@ -44,7 +46,13 @@ class HTTPProxy extends DokuHTTPClient {
 		if ( $this->settings->cookie == null ) {
 			$this->_debug("Has to re-authenticate request.");
 			if ( !$this->authenticate() ) {
-				$this->_debug("Trying other Authentication (auth.php):", auth_setup() && $this->authenticate(true) ? 'authenticated' : 'not authenticated'); // Try again.
+                
+                $this->_debug("Trying other Authentication (auth.php):"); // Try again.
+    		    if ( !(auth_setup() && $this->authenticate(true)) )	{
+                    $this->_debug("Trying other Authentication (config):", $functions->authenticate() && $this->authenticate(true) ? 'authenticated' : 'not authenticated'); // Try again.
+    		    } else {
+                    $this->_debug("Ok, using default auth.php"); // Try again.
+    		    }
 			}
 
 			$this->_debug("Using Authentication:", array('user' => $this->user, 'password' => '*****'));

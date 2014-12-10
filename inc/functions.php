@@ -672,10 +672,13 @@ class siteexport_functions extends DokuWiki_Plugin
     
     public function authenticate() {
         if( !isset($_SERVER['HTTP_AUTHORIZATION']) && $this->hasAuthentication() ) {
-            $_SERVER['HTTP_AUTHORIZATION'] = 'Basic ' . base64_encode( $this->hasAuthentication()->user . ':' . $this->hasAuthentication()->password );
-            $this->functions->debug->message("Re-authenticating with default user from configuration", $this->getConf('defaultAuthenticationUser'), 3);
-            auth_setup();
+            $authentication = $this->hasAuthentication();
+            $_SERVER['HTTP_AUTHORIZATION'] = 'Basic ' . base64_encode( $authentication['user'] . ':' . $authentication['password'] );
+            $this->debug->message("Re-authenticating with default user from configuration", $authentication['user'], 3);
+            return auth_setup();
         }
+        
+        return false;
     }
 }
 
