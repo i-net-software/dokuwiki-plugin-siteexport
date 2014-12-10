@@ -24,8 +24,6 @@ class HTTPProxy extends DokuHTTPClient {
 	
     var $debugClass = null;
     var $setttings = null;
-    var $forceUser = null;
-    var $forcePass = null;
     
     /**
      * Constructor.
