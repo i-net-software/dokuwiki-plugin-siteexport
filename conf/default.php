@@ -8,6 +8,7 @@ $conf['exclude'] = '';
 $conf['max_execution_time'] = 20;
 $conf['PDFHeaderPagebreak'] = "1";
 $conf['ignoreNon200'] = 1;
+$conf['ignoreAJAXError'] = 0;
 
 $conf['debugLevel'] = 5;
 $conf['debugFile'] = "";

@@ -41,6 +41,8 @@ class settings_plugin_siteexport_settings extends DokuWiki_Plugin
         {
     		$functions->debug->setDebugLevel($this->getConf('debugLevel'));
         }
+        
+        $functions->debug->isAJAX = $this->getConf('ignoreAJAXError') ? false : $functions->debug->isAJAX;
 
         if ( empty($_REQUEST['pattern']) )
         {

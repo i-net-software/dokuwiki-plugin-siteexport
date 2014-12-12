@@ -14,6 +14,8 @@ $lang['max_execution_time']    = 'Maximale Ausführungszeit für das Skript';
 $lang['cachetime']             = 'Cachezeit für das exportierte Ergebnis';
 $lang['allowallusers']         = 'Allen Benutzern erlauben, Seiten zu exportieren';
 $lang['ignoreNon200']          = 'Nicht-200er Status ignorieren';
+$lang['ignoreAJAXError']       = 'Fehler während eines Exports ignorieren';
+
 $lang['debugFile']             = 'Debug Datei';
 $lang['debugLevel']            = 'Debug Level';
 $lang['debugLevel_o_5']        = 'Nicht debuggen';
