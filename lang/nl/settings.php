@@ -4,6 +4,7 @@
  * @license    GPL 2 (http://www.gnu.org/licenses/gpl.html)
  * 
  * @author Rene <wllywlnt@yahoo.com>
+ * @author Mijndert <mijndert@mijndertstuij.nl>
  */
 $lang['depth']                 = 'Standaard Export Diepte';
 $lang['skipacl']               = 'Probeer niet publieke pagina\'s te exporteren';
@@ -20,3 +21,5 @@ $lang['debugLevel_o_4']        = 'Fout';
 $lang['debugLevel_o_3']        = 'Waarschuwing';
 $lang['debugLevel_o_2']        = 'Info';
 $lang['debugLevel_o_1']        = 'Debug';
+$lang['defaultAuthenticationUser'] = 'Gebruikersnaam voor niet publieke pagina\'s';
+$lang['defaultAuthenticationPassword'] = 'Wachtwoord voor niet publieke pagina\'s';
