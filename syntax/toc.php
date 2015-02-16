@@ -138,6 +138,7 @@ class syntax_plugin_siteexport_toc extends DokuWiki_Syntax_Plugin {
     						case 'merge' : $renderer->meta['sitetoc']['mergeDoc'] = true; break;
     						case 'nohead' : $renderer->meta['sitetoc']['noTocHeader'] = true; break;
     						case 'mergeheader' : $renderer->meta['sitetoc']['mergeHeader'] = true; break;
+    						case 'pagebreak' : $renderer->meta['sitetoc']['pagebreak'] = true; break;
     					}
     				}
 			    }
@@ -199,11 +200,13 @@ class syntax_plugin_siteexport_toc extends DokuWiki_Syntax_Plugin {
 						
 						// Convert Link and header instructions
 						$instructions = $this->_convertInstructions($instructions, $addID, $renderer, $depth);
-						
+    						
 						if ( $renderer->meta['sitetoc']['mergeHeader'] && !empty($instr) ) {
 							// Merge
 							$instr = $this->_mergeWithHeaders($instr, $instructions, 1);
-							
+						} else
+						if ( $renderer->meta['sitetoc']['pagebreak'] ) {
+    						$instr = array_merge($instr, $instructions, $this->_convertInstructions(p_get_instructions('<sitepagebreak>'), $addID, $renderer, $depth) );
 						} else {
 							// Concat
 							$instr = array_merge($instr, $instructions);
@@ -214,6 +217,11 @@ class syntax_plugin_siteexport_toc extends DokuWiki_Syntax_Plugin {
     					$this->_cleanInstructions($instr, '/section_(close|open)/');
     					$this->_cleanInstructions($instr, '/listu_(close|open)/');
     					$this->_cleanInstructions($instr, '/listo_(close|open)/');
+    					
+						//if its the document start, cut off the first element(document information)
+                        if ($instr[count($instr)-1][1][0] == 'siteexport_pagebreak') {
+                            $instr = array_slice($instr, 0, -1);
+                        }
     					
     					$this->_render_output($renderer, $mode, $instr);
 					}

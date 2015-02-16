@@ -161,6 +161,7 @@ notoc | hide the user defined TOC in the document
 description | display the description abstract below of the linked page below the link (usefull together with:`~~META:description abstract=This is my abstract.~~`
 merge | this will merge all the defined documents from the TOC into the current document.
 mergeheader | this will, as addition to merge, merge all headers starting with the first document (new headers of later documents will be appended at the end, the will not be sorted alphabetically)
+pagebreak | inserts a pagebreak after each page defined by the namespace
 
 You have to define the options like this: <code>&lt;toc notoc merge&gt;</code>
 
