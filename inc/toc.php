@@ -99,7 +99,7 @@ class siteexport_toc
                 $startPageID = $elem['mapID'][0];
             }
             
-            if ( empty( $elem['name'] ) || $elem['name'] == NoNs($elem['id']) ) {
+            if ( empty( $elem['name'] ) || $elem['name'] == noNs($elem['id']) ) {
 	            $elem['name'] = $this->functions->getSiteTitle($elem['id']);
             }
 
