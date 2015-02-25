@@ -16,9 +16,10 @@ class siteexport_toc
     
     private function shortenByTranslation(&$inputURL, $deepSearch = false)
     {
+        // Mandatory: we allways want '/' insteadf of ':' here
+        $inputURL = str_replace(':', '/', $inputURL);
         if ( $this->translation )
         {
-            $inputURL = str_replace(':', '/', $inputURL);
             $url = explode('/', $inputURL);
             
             for( $i=0; $i<count($url); $i++ )
