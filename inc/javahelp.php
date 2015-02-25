@@ -53,20 +53,22 @@ class siteexport_javahelp
         $last_key = end(array_keys($translationHSFiles));
         foreach( $translationHSFiles as $lang => $data )
         {
-            if ( count($translationHSFiles) == 1 && $lang == $conf['lang'] )
-            {
-                // If there is only one language and it is the system language - there is no language
-                $lang = '';
-            }
-            
             // Prepare Translations
-            if ( !empty($lang) )
+            if ( !empty($lang) && !$functions->settings->TOCMapWithoutTranslation )
             {
                 $toc->translation = &$this->translation;
                 $rootNode = cleanID($this->translation->tns . $lang) . ':';
             } else {
                 $toc->translation = null;
                 $rootNode = '';
+            }
+            
+            // Decide only after we did setup the more important stuff. If there is still a language in the namespace
+            // we do not want any colissions
+            if ( count($translationHSFiles) == 1 && $lang == $conf['lang'] )
+            {
+                // If there is only one language and it is the system language - there is no language
+                $lang = '';
             }
             
             $tsRootPath = $hsPrename . '/' . $this->translationRootPath($translationRoot);
