@@ -12,11 +12,6 @@ class siteexport_toc
     {
         $this->emptyNSToc = !empty($_REQUEST['emptyTocElem']);
         $this->functions = $functions;
-
-        if ( $functions->settings->TOCMapWithoutTranslation )
-        {
-             plugin_load('helper', 'translation' );
-        }
     }
     
     private function shortenByTranslation(&$inputURL, $deepSearch = false)
