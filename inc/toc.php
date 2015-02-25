@@ -80,7 +80,7 @@ class siteexport_toc
         {
 			// Check if available
             $anchor = ( !empty($elem['anchor']) ? '#' . $elem['anchor'] : '' );
-            $elem['url'] = $this->functions->getSiteName($elem['id']);
+            $elem['url'] = $this->functions->getSiteName($elem['id'], true); // Override - we need a clean name
             $elem['mapURL'] = $elem['url'];
             $this->shortenByTranslation($elem['url']);
             
