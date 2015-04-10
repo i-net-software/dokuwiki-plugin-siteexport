@@ -168,10 +168,12 @@ class siteexport_zipfilewriter
         // Check for dependencies
         if ( !empty($depends) )
         {
+            $this->functions->debug->message("Checking dependencies: ", $depends, 1);
             foreach ($depends as $site) {
                 
                 if ( !page_exists($site['id']) )
                 {
+                    $this->functions->debug->message("File does not exist: ", $site['id'], 2);
                     continue;
                 }
                 

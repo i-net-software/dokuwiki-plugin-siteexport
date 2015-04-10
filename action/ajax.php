@@ -383,7 +383,7 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
                 if ( $exists ) {
                     $data = array( array( 'id' => $PAGE) );
                        
-                    $this->functions->debug->message("Checking for Cache", null, 2);
+                    $this->functions->debug->message("Checking for Cache, depthType:0", null, 2);
                     if ( !$overrideCache && $this->filewriter->hasValidCacheFile($_REQUEST, $data) )
                     {
                         return array();
@@ -430,7 +430,7 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
             }
         }
 
-        $this->functions->debug->message("Checking for Cache", null, 2);
+        $this->functions->debug->message("Checking for Cache after lookup of pages", null, 2);
         if ( !$overrideCache && $this->filewriter->hasValidCacheFile($_REQUEST, $data) )
         {
             return array();
