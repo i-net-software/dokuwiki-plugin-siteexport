@@ -37,6 +37,7 @@ $lang['start'] = 'start';
 $lang['status'] = 'Status'; 
 $lang['ns'] = 'Set Namespace';
 $lang['ens'] = 'Parent Namespace to export';
+$lang['defaultLang'] = 'Default Language for multi-language namespaces';
 
 $lang['disablePluginsOption'] = 'Disable (JS/CSS) Plugins while export'; 
 

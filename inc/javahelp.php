@@ -46,15 +46,18 @@ class siteexport_javahelp
         }
         
         $hsPrename = curNS(getNS($this->translation->tns));
-        $this->functions->debug->message("HelpSetPre-Name: {$hsPrename}", null, 1);
-        $this->functions->debug->message("Translation-Root: {$translationRoot}", null, 1);
+        $this->functions->debug->message("HelpSetPre-Name: {$hsPrename}", null, 3);
+        $this->functions->debug->message("Translation-Root: {$translationRoot}", null, 3);
+        $this->functions->debug->message("HSFiles:", $translationHSFiles, 1);
+        
         
         $check = array();
         $last_key = end(array_keys($translationHSFiles));
+        
         foreach( $translationHSFiles as $lang => $data )
         {
             // Prepare Translations
-            if ( !empty($lang) && !$functions->settings->TOCMapWithoutTranslation )
+            if ( !empty($lang) && !$this->functions->settings->TOCMapWithoutTranslation )
             {
                 $toc->translation = &$this->translation;
                 $rootNode = cleanID($this->translation->tns . $lang) . ':';
@@ -64,10 +67,10 @@ class siteexport_javahelp
             }
             
             $tsRootPath = $hsPrename . '/' . $this->translationRootPath($translationRoot);
+            $this->functions->debug->message("Generating JavaHelpDocZip for language '$lang'", $tsRootPath, 3);
             
             // Create toc and map for each lang
             list($tocData, $mapData, $startPageID) = $toc->__getJavaHelpTOCXML($data, $tsRootPath);
-            $this->functions->debug->message("Generating JavaHelpDocZip for language '$lang'", null, 2);
             $this->filewriter->__moveDataToZip($tocData, $tsRootPath . $lang . '/' . $this->tocName);
             $this->filewriter->__moveDataToZip($mapData, $tsRootPath . $lang . '/' . $this->mapName);
 
@@ -77,8 +80,9 @@ class siteexport_javahelp
             $this->filewriter->__moveDataToZip($HS, $translationRoot . ( empty($lang) ? '' : '_' . $lang ) . '.hs');
             
             // Default Lang
-            if ( $lang == $conf['lang'] || $lang == $last_key )
+            if ( $lang == $this->functions->settings->defaultLang || $lang == $last_key )
             {
+                $this->functions->debug->message("Writing Default HS File for Language:", $lang, 3);
                 $this->filewriter->__moveDataToZip($HS, $translationRoot . '.hs');
                 $last_key = null;
             }

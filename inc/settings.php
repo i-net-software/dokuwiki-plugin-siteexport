@@ -31,8 +31,10 @@ class settings_plugin_siteexport_settings extends DokuWiki_Plugin
     
     var $ignoreNon200 = true;
     
+    var $defaultLang = 'en';
+    
     function settings_plugin_siteexport_settings($functions) {
-        global $ID;
+        global $ID, $conf;
         
         $functions->debug->setDebugFile ($this->getConf('debugFile'));
         if ( !empty( $_REQUEST['debug'] ) && intval($_REQUEST['debug']) >= 0 && intval($_REQUEST['debug']) <= 5) {
@@ -85,6 +87,8 @@ class settings_plugin_siteexport_settings extends DokuWiki_Plugin
         $this->exportNamespace = !empty($_REQUEST['ens']) && preg_match("%^" . preg_quote($functions->getNamespaceFromID($_REQUEST['ens'], $pg), '%') . "%", $this->namespace) ? $functions->getNamespaceFromID($_REQUEST['ens'], $pg) : $this->namespace;
 
         $this->TOCMapWithoutTranslation = intval($_REQUEST['TOCMapWithoutTranslation']) == 1 ? true : false;
+
+        $this->defaultLang = empty($_REQUEST['defaultLang']) ? $conf['lang'] : $_REQUEST['defaultLang'];
 
         // Strip params that should be forwarded
         $this->additionalParameters = $_REQUEST;

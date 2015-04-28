@@ -129,6 +129,7 @@ class helper_plugin_siteexport extends DokuWiki_Plugin {
 	    $pdfExport = false;
 	    $usenumberedheading = false;
 	    $cronEnabled = false;
+	    $translation = null;
 	    $translationAvailable = false;
 	    $usenumberedheading = true;
 	
@@ -147,7 +148,7 @@ class helper_plugin_siteexport extends DokuWiki_Plugin {
             $cronEnabled = $functions->canWriteSettings();
         }
         
-        if ( $functions =& plugin_load('helper', 'translation' ) ) {
+        if ( $translation =& plugin_load('helper', 'translation' ) ) {
             $translationAvailable = true;
         }
 
@@ -240,6 +241,9 @@ class helper_plugin_siteexport extends DokuWiki_Plugin {
         $form->addElement(form_makeTag('br'));
         if ( !$translationAvailable ) {
             $form->addElement(form_makeCheckboxField('TOCMapWithoutTranslation', 1, $this->getLang('TOCMapWithoutTranslation') . ':', 'TOCMapWithoutTranslation'));
+            $form->addElement(form_makeTag('br'));
+        } else {
+            $form->addElement(form_makeListboxField('defaultLang', $translation->trans, $conf['lang'], $this->getLang('defaultLang') . ':', 'defaultLang'));
             $form->addElement(form_makeTag('br'));
         }
         $form->endFieldset();
