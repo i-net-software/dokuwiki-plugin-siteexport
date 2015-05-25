@@ -7,6 +7,7 @@
  * @author NICOLAS ORTH <nicolas.orth@gmail.com>
  * @author Florian TASSIN <florian.tassin@gmail.com>
  * @author tuxun <tuxuntrash@gmail.com>
+ * @author Schplurtz le Déboulonné <schplurtz@laposte.net>
  */
 $lang['encoding']              = 'utf-8';
 $lang['direction']             = 'ltr';
@@ -34,6 +35,7 @@ $lang['start']                 = 'Démarrer';
 $lang['status']                = 'Statut';
 $lang['ns']                    = 'Définir l\'espace de nom';
 $lang['ens']                   = 'Espace de nom parent à exporter';
+$lang['defaultLang']           = 'Langue par défaut pour les catégories multilingues.';
 $lang['disablePluginsOption']  = 'Désactive les plugins (JS/CSS) durant l\'export';
 $lang['depthType']             = 'Type d\'export';
 $lang['depth.pageOnly']        = 'cette page uniquement';
