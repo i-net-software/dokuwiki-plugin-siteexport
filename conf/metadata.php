@@ -16,6 +16,8 @@ $meta['debugFile'] = array('string');
 
 $meta['cachetime'] = array('numeric');
 
+$meta['PDFHeaderPagebreak'] = array('numeric');
+
 $meta['useOddEven'] = array('onoff');
 
 $meta['defaultAuthenticationUser'] = array('string');
