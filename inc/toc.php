@@ -251,7 +251,8 @@ class siteexport_toc
         $meta = p_get_metadata($elem['id'], 'context', true);
 
         if ( empty($meta['id']) ) {
-            $meta['id'] = sectionID(cleanId(str_replace(':', '-', $this->shortenByTranslation($elem['id']))), $check);
+            $title = empty( $meta['title'] ) ? $this->functions->getSiteTitle($elem['id']) : $meta['title'];
+            $meta['id'] = sectionID($this->functions->cleanId(strtolower($title)), $check);
         }
 
         $mapID = explode('|', $meta['id']);
