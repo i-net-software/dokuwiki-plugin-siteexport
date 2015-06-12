@@ -21,7 +21,7 @@ class siteexport_javahelp
 
     public function createTOCFiles($data)
     {
-        global $conf;
+        global $conf, $ID;
 
         // Split Tree for translation
         $translationHSFiles = array();
@@ -46,6 +46,11 @@ class siteexport_javahelp
         }
         
         $hsPrename = curNS(getNS($this->translation->tns));
+        if ( empty($translationRoot) ) {
+            $translationRoot = noNS($ID);
+            $hsPrename = '.';
+        }
+                
         $this->functions->debug->message("HelpSetPre-Name: {$hsPrename}", null, 3);
         $this->functions->debug->message("Translation-Root: {$translationRoot}", null, 3);
         $this->functions->debug->message("HSFiles:", $translationHSFiles, 1);
