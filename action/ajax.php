@@ -462,13 +462,13 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
 
         if ( !empty($_REQUEST['eclipseDocZip']) )
         {
-            $toc = new siteexport_toc($this->functions);
+            $toc = new siteexport_toc($this->functions, $NS);
             $this->functions->debug->message("Generating eclipseDocZip", null, 2);
             $this->filewriter->__moveDataToZip($toc->__getTOCXML($data), 'toc.xml');
             $this->filewriter->__moveDataToZip($toc->__getContextXML($data), 'context.xml');
         } else  if ( !empty($_REQUEST['JavaHelpDocZip']) )
         {
-            $toc = new siteexport_javahelp($this->functions, $this->filewriter);
+            $toc = new siteexport_javahelp($this->functions, $this->filewriter, $NS);
             $toc->createTOCFiles($data);
             
 /*            $toc = new siteexport_toc($this->functions);

@@ -6,43 +6,44 @@ class siteexport_toc
 {
     private $emptyNSToc = true;
     private $functions = null;
+    private $NS = null;
     public $translation = null;
     
-    public function siteexport_toc($functions)
+    public function siteexport_toc($functions, $NS)
     {
         $this->emptyNSToc = !empty($_REQUEST['emptyTocElem']);
         $this->functions = $functions;
+        $this->NS = $NS;
     }
     
     private function shortenByTranslation(&$inputURL, $deepSearch = false)
     {
         // Mandatory: we allways want '/' insteadf of ':' here
         $inputURL = str_replace(':', '/', $inputURL);
-        if ( $this->translation )
+        $checkArray = $this->translation ? $this->translation->trans : array( array_pop(explode(':', $this->NS )) );
+        
+        $url = explode('/', $inputURL);
+        
+        for( $i=0; $i<count($url); $i++ )
         {
-            $url = explode('/', $inputURL);
-            
-            for( $i=0; $i<count($url); $i++ )
+            if ( in_array($url[$i], $checkArray ) )
             {
-                if ( in_array($url[$i], $this->translation->trans ) )
-                {
-                    // Rauswerfen und weg
-                    $url[$i] = '';
-                    break;
-                }
-                
-                if ( !$deepSearch )
-                {
-                    break;
-                }
-
-                // Ok, remove anyway
+                // Rauswerfen und weg
                 $url[$i] = '';
+                break;
             }
             
-            $inputURL = implode('/', $url);
-            $inputURL = preg_replace("$\/+$", "/", $inputURL);
+            if ( !$deepSearch )
+            {
+                break;
+            }
+
+            // Ok, remove anyway
+            $url[$i] = '';
         }
+        
+        $inputURL = implode('/', $url);
+        $inputURL = preg_replace("$\/+$", "/", $inputURL);
         
         if ( strlen($inputURL) > 0 && substr($inputURL, 0, 1) == '/' )
         {
@@ -124,7 +125,7 @@ class siteexport_toc
         print "<html><pre>";
         print_r($DATA);
         $TOCXML = str_replace("<", "&lt;", str_replace(">", "&gt;", $TOCXML));
-        print "$TOCXML";
+        print "$TOCXML\n\n";
 
         $MAPXML = str_replace("<", "&lt;", str_replace(">", "&gt;", $MAPXML));
         print "$MAPXML";
