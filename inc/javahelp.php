@@ -104,9 +104,10 @@ class siteexport_javahelp
     {
         if ( empty($lang) && substr($translationRoot, -1) != '/') {
             $translationRoot .= '/';
-        } else if ( !empty($lang) && substr($translationRoot, -1) != '/' ) {
+        } else if ( !empty($lang) && substr($lang, -1) != '/' ) {
             $lang .= '/';
         }
+
         return <<<OUTPUT
 <?xml version='1.0' encoding='ISO-8859-1' ?>
 <helpset version="1.0">
