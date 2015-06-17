@@ -32,9 +32,9 @@ class action_plugin_siteexport_aggregate extends DokuWiki_Action_Plugin {
 	    global $ID, $INFO, $conf;
 
         // Aggregate only if
-        // (1) we did submit a request to do so
+        // (1) this page really has an aggregator and we did submit a request to do so
         // (2) this page really has an aggregator and we export as PDF
-		if ( !( isset($_REQUEST['siteexport_aggregate']) || (!empty($INFO['meta']['siteexport']) && $INFO['meta']['siteexport']['hasaggregator'] == true && $conf['renderer_xhtml'] == 'siteexport_pdf') ) ) { return true; }
+		if ( !( (!empty($INFO['meta']['siteexport']) && $INFO['meta']['siteexport']['hasaggregator'] == true) && ( isset($_REQUEST['siteexport_aggregate']) || $conf['renderer_xhtml'] == 'siteexport_pdf' ) ) ) { return true; }
 		
 		$exportBase = cleanID($_REQUEST['baseID']);
 		$namespace = empty($exportBase) ? $INFO['meta']['siteexport']['baseID'] : getNs($exportBase);

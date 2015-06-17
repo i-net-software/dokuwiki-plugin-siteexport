@@ -42,7 +42,13 @@ class syntax_plugin_siteexport_aggregate extends DokuWiki_Syntax_Plugin {
             
             list($key, $value) = explode('=', $option);
             if ($key == "namespace") {
-	            $namespace = $value . ':';
+                $namespace = $value;
+                if ( substr($value, -1) != ':' ) {
+    	            $namespace .= ':';
+                }
+
+                // The following function wants an page but we only have an NS at this moment
+                $namespace .= 'index';
 	            break;
             }
         }
