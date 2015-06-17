@@ -43,12 +43,10 @@ class siteexport_javahelp
         if ( $this->translation )
         {
             $translationRoot = curNS($this->translation->tns);
-        }
-        
-        $hsPrename = curNS(getNS($this->translation->tns));
-        if ( empty($translationRoot) ) {
-            $translationRoot = noNS($ID);
-            $hsPrename = '.';
+            $hsPrename = curNS(getNS($this->translation->tns));
+        } else {
+            $translationRoot = '';
+            $hsPrename = '';
         }
                 
         $this->functions->debug->message("HelpSetPre-Name: {$hsPrename}", null, 3);
@@ -108,6 +106,8 @@ class siteexport_javahelp
     {
         if ( empty($lang) && substr($translationRoot, -1) == '/') {
             $translationRoot = substr($translationRoot, 0, -1);
+        } else if ( !empty($lang) && substr($translationRoot, -1) != '/' ) {
+            $lang .= '/';
         }
     
         return <<<OUTPUT
@@ -117,14 +117,14 @@ class siteexport_javahelp
 	<title>{$title}</title>
     <maps>
         <homeID>{$rootID}</homeID>
-        <mapref location="{$translationRoot}{$lang}/{$this->mapName}"/>
+        <mapref location="{$translationRoot}{$lang}{$this->mapName}"/>
      </maps>
 
     <view>
         <name>TOC</name>
         <label>{$this->functions->getLang('toc')}</label>
         <type>javax.help.TOCView</type>
-        <data>{$translationRoot}{$lang}/{$this->tocName}</data>
+        <data>{$translationRoot}{$lang}{$this->tocName}</data>
     </view>
 
     <view>
@@ -132,7 +132,7 @@ class siteexport_javahelp
         <label>{$this->functions->getLang('search')}</label>
         <type>javax.help.SearchView</type>
         <data engine="com.sun.java.help.search.DefaultSearchEngine">
-            {$translationRoot}{$lang}/JavaHelpSearch
+            {$translationRoot}{$lang}JavaHelpSearch
         </data>
     </view>
 
