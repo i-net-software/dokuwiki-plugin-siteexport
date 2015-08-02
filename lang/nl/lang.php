@@ -4,6 +4,7 @@
  * @license    GPL 2 (http://www.gnu.org/licenses/gpl.html)
  * 
  * @author Rene <wllywlnt@yahoo.com>
+ * @author hugo smet <hugo.smet@scarlet.be>
  */
 $lang['encoding']              = 'utf-8';
 $lang['direction']             = 'Ltr';
@@ -31,6 +32,7 @@ $lang['start']                 = 'Start';
 $lang['status']                = 'Status';
 $lang['ns']                    = 'Stel Namespace in';
 $lang['ens']                   = 'Ouder Namespace om te exporteren ';
+$lang['defaultLang']           = 'Verstekwaarde taal voor multi-taal naamruimtes';
 $lang['disablePluginsOption']  = 'Schakel (JS/CSS) Plugins uit tijdens het exporteren';
 $lang['depthType']             = 'Export Type';
 $lang['depth.pageOnly']        = 'Alleen deze pagina';
