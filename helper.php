@@ -93,11 +93,10 @@ class helper_plugin_siteexport extends DokuWiki_Plugin {
 		global $conf;
 		require_once(dirname(__FILE__)."/inc/functions.php");
 		$functions = new siteexport_functions(false);
-
+		
         $sites = $values = array();
         $page = null;
 		search($sites, $conf['datadir'], 'search_allpages', array(), $functions->getNamespaceFromID($ID, $page));
-        
         foreach( $sites as $site ) {
         	
         	if ( $ID == $site['id'] ) continue;
