@@ -119,7 +119,6 @@ class siteexport_toc
 
         $TOCXML .= $this->__writeTOCTree($DATA) . "\n</toc>";
         $MAPXML .= "\n</map>";
-/*
 //*
         // http://documentation:81/documentation/clear-reports/remote-interface-help/configuration/configuration/index?JavaHelpDocZip=1&depthType=1&diInv=1&do=siteexport&ens=documentation%3Aclear-reports%3Aremote-interface-help%3Aconfiguration&renderer=&template=clearreports-setup&useTocFile=1
         print "<html><pre>";
