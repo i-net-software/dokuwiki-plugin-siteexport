@@ -93,27 +93,22 @@ class helper_plugin_siteexport extends DokuWiki_Plugin {
 		global $conf;
 		require_once(dirname(__FILE__)."/inc/functions.php");
 		$functions = new siteexport_functions(false);
-
+		
         $sites = $values = array();
         $page = null;
 		search($sites, $conf['datadir'], 'search_allpages', array(), $functions->getNamespaceFromID($ID, $page));
-        
         foreach( $sites as $site ) {
         	
         	if ( $ID == $site['id'] ) continue;
         	$sortIdentifier = intval(p_get_metadata($site['id'], 'mergecompare'));
-        	
-        	if ( $site['id'] == $newerThanPage ) {
-        		// If the ID matches a given page we use the sortidentifier for filtering
-	        	$newerThanPage = $sortIdentifier;
-        	}
-        	
             array_push($values, array(':' . $site['id'], $functions->getSiteTitle($site['id']), $sortIdentifier));
         }
         
         if ( $newerThanPage != null ) {
+            
         	// filter using the newerThanPage indicator
-	        $values = array_filter($values, array(new helper_plugin_siteexport_page_remove($newerThanPage), '_page_remove'));
+            $sortIdentifier = intval(p_get_metadata($newerThanPage, 'mergecompare'));
+	        $values = array_filter($values, array(new helper_plugin_siteexport_page_remove($sortIdentifier), '_page_remove'));
         }
         
         usort($values, array($this, '_page_sort'));
