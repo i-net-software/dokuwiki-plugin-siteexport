@@ -6,6 +6,7 @@
  * @author Thor Weinreich <thorweinreich@nefkom.net>
  * @author Gerry Weißbach <gweissbach@inetsoftware.de>
  * @author Gerry Weißbach <gerry.w@gammaproduction.de>
+ * @author Padhie <develop@padhie.de>
  */
 $lang['encoding']              = 'utf-8';
 $lang['direction']             = 'ltr';
@@ -33,6 +34,7 @@ $lang['start']                 = 'starten';
 $lang['status']                = 'Status';
 $lang['ns']                    = 'Start Namensraum für den Export (Elternelement)';
 $lang['ens']                   = 'Übergeordneter Namensraum, der exportiert werden soll';
+$lang['defaultLang']           = 'Standartsprache für Mehrspracheige Namespaces';
 $lang['disablePluginsOption']  = '(JS/CSS) Plugins während des Exports deaktivieren';
 $lang['depthType']             = 'Exporttyp';
 $lang['depth.pageOnly']        = 'nur diese Seite';
