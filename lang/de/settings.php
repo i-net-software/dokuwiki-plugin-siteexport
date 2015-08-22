@@ -5,6 +5,7 @@
  * 
  * @author Thor Weinreich <thorweinreich@nefkom.net>
  * @author Gerry Weißbach <gerry.w@gammaproduction.de>
+ * @author Padhie <develop@padhie.de>
  */
 $lang['depth']                 = 'Standard Export Tiefe';
 $lang['skipacl']               = 'Nichtöffentliche Seiten exportieren';
@@ -15,7 +16,6 @@ $lang['cachetime']             = 'Cachezeit für das exportierte Ergebnis';
 $lang['allowallusers']         = 'Allen Benutzern erlauben, Seiten zu exportieren';
 $lang['ignoreNon200']          = 'Nicht-200er Status ignorieren';
 $lang['ignoreAJAXError']       = 'Fehler während eines Exports ignorieren';
-
 $lang['debugFile']             = 'Debug Datei';
 $lang['debugLevel']            = 'Debug Level';
 $lang['debugLevel_o_5']        = 'Nicht debuggen';
@@ -23,6 +23,6 @@ $lang['debugLevel_o_4']        = 'Fehler';
 $lang['debugLevel_o_3']        = 'Warnen';
 $lang['debugLevel_o_2']        = 'Info';
 $lang['debugLevel_o_1']        = 'Debug';
-
-$lang['defaultAuthenticationUser']        = 'Benutzername für nicht öffentliche Seiten';
-$lang['defaultAuthenticationPassword']    = 'Password für nicht öffentliche Seiten';
+$lang['useOddEven']            = 'Erlaube unterschiedliche Einstellungen im Header und Footer auf jeder Seite. TOC wird aud jeder Seite gestartet.';
+$lang['defaultAuthenticationUser'] = 'Benutzername für nicht öffentliche Seiten';
+$lang['defaultAuthenticationPassword'] = 'Password für nicht öffentliche Seiten';
