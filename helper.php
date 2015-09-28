@@ -238,7 +238,13 @@ class helper_plugin_siteexport extends DokuWiki_Plugin {
             $form->addElement(form_makeCheckboxField('TOCMapWithoutTranslation', 1, $this->getLang('TOCMapWithoutTranslation') . ':', 'TOCMapWithoutTranslation'));
             $form->addElement(form_makeTag('br'));
         } else {
-            $form->addElement(form_makeListboxField('defaultLang', $translation->trans, $conf['lang'], $this->getLang('defaultLang') . ':', 'defaultLang'));
+
+            if ( !is_array($trans) ) {
+                $trans = array( $trans );
+            }
+            
+            $trans = array_unique(array_merge($trans, array( $conf['lang'] )));
+            $form->addElement(form_makeListboxField('defaultLang', $trans, $conf['lang'], $this->getLang('defaultLang') . ':', 'defaultLang'));
             $form->addElement(form_makeTag('br'));
         }
         $form->endFieldset();
