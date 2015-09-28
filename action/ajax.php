@@ -421,7 +421,7 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
             $data = array();
             foreach( $RAWdata as $entry )
             {
-                $tmpData = p_get_metadata($entry['id'], 'sitetoc siteexportTOC', true);
+                $tmpData = p_get_metadata($entry['id'], 'sitetoc siteexportTOC');
                 
                 if ( is_array($tmpData) )
                 {
