@@ -157,7 +157,7 @@ class siteexport_toc
         
         $currentLevel = array_shift($currentNSArray);
         if ( empty($DATA[$currentLevel]) ) {
-            $DATA[$currentLevel] = array();
+            $DATA[$currentLevel] = array( 'pages' => array(), 'element' => array() );
         }
         
         $this->__buildTOCTree($DATA[$currentLevel], $currentNSArray, $elemToAdd);
