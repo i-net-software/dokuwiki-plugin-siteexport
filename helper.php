@@ -12,14 +12,15 @@ if(!defined('DOKU_INC')) die();
 
     
 class helper_plugin_siteexport_page_remove {
-    private $newerThanPage;
+    private $start, $end;
 
-    function __construct($newerThanPage) {
-            $this->newerThanPage = $newerThanPage;
+    function __construct($start, $end=null) {
+        $this->start = $start;
+        $this->end = $end;
     }
 
     function _page_remove($elem) {
-    	return $elem[2] >= $this->newerThanPage;
+    	return $elem[2] >= $this->start && ( is_null( $this->end ) || $elem[2] <= $this->end);
     }
 }
 
@@ -88,7 +89,7 @@ class helper_plugin_siteexport extends DokuWiki_Plugin {
 	    return $a[2] > $b[2] ? -1 : 1;
     }
     
-    function __getOrderedListOfPagesForID($ID, $newerThanPage=null)
+    function __getOrderedListOfPagesForID($ID, $start=null)
 	{
 		global $conf;
 		require_once(dirname(__FILE__)."/inc/functions.php");
@@ -104,10 +105,10 @@ class helper_plugin_siteexport extends DokuWiki_Plugin {
             array_push($values, array(':' . $site['id'], $functions->getSiteTitle($site['id']), $sortIdentifier));
         }
         
-        if ( $newerThanPage != null ) {
+        if ( $start != null ) {
             
         	// filter using the newerThanPage indicator
-            $sortIdentifier = intval(p_get_metadata($newerThanPage, 'mergecompare'));
+            $sortIdentifier = intval(p_get_metadata($start, 'mergecompare'));
 	        $values = array_filter($values, array(new helper_plugin_siteexport_page_remove($sortIdentifier), '_page_remove'));
         }
         
@@ -116,6 +117,17 @@ class helper_plugin_siteexport extends DokuWiki_Plugin {
         return $values;
 	}
 	
+    function __getOrderedListOfPagesForStartEnd($ID, $start, $end)
+	{
+    	$values = $this->__getOrderedListOfPagesForID($ID);
+
+       	// filter using the newerThanPage indicator
+        $values = array_filter($values, array(new helper_plugin_siteexport_page_remove(intval($start), intval($end)), '_page_remove'));
+        
+        usort($values, array($this, '_page_sort'));
+        return $values;
+	}
+
 	function __siteexport_addpage() {
 		
         global $ID, $conf;
