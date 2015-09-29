@@ -52,8 +52,13 @@ class action_plugin_siteexport_aggregate extends DokuWiki_Action_Plugin {
         if ( !empty($_REQUEST['exportSelectedVersionOnly']) ) {
             // Strip down values
             $lookupNS = noNS($namespace) == $conf['start'] ? $namespace : $namespace . ':' . $conf['start'];
-            $values = $functions->__getOrderedListOfPagesForID($lookupNS, $exportBase);    
-            $values = array(end( $values )); // the list above has the $exportBase element at the very end
+            
+            if ( !empty( $_REQUEST['mergecompare_start'] ) && !empty( $_REQUEST['mergecompare_end'] ) ) {
+                 $values = $functions->__getOrderedListOfPagesForStartEnd($lookupNS, $_REQUEST['mergecompare_start'], $_REQUEST['mergecompare_end']);
+            } else {
+                $values = $functions->__getOrderedListOfPagesForID($lookupNS, $exportBase);
+                $values = array(end( $values )); // the list above has the $exportBase element at the very end
+            }
         }
         
     	$this->originalID = (string) $ID;
