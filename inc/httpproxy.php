@@ -30,7 +30,10 @@ class HTTPProxy extends DokuHTTPClient {
      */
     function __construct($functions){
         global $conf;
-        
+
+        // The proxy should only be used if configured.
+        // Usually the proxy will allow connections away from the current server.
+        // This is what we do not want in most cases.        
         if ( $functions->getConf('useProxy') ) {
             unset($conf['proxy']);
         }
