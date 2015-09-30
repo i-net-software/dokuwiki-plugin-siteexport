@@ -51,12 +51,6 @@ $lang['renderer'] = 'Render Engine';
 
 $lang['exportLinkedPages'] = 'Export Linked Pages';
 
-$lang['canOverwriteExisting'] = 'Overwrite existing Cron Job:';
-$lang['cronSaveProcess'] = 'Save as Cron Job';
-$lang['cronDescription'] = 'This allows to create cron-based jobs. They will be executed according to the server setting (you need command line access to the cron tool).';
-$lang['cronSaveAction'] = 'Save as Cron Job';
-$lang['cronDeleteAction'] = 'Delete Cron Job';
-
 $lang['customOptions'] = 'Custom Options';
 $lang['customOptionsDescription'] = 'You can add further custom options that will be considered while exporting';
 $lang['addCustomOption'] = 'add Option';

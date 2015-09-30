@@ -78,16 +78,12 @@
 	background-color: #FFD4D4;
 }
 
-#siteexport__cronList {
-	margin: 40px 0px 20px;
-}
-
 #siteexport__customActions {
 	margin: 0px;
 	padding: 0px;
 }
 
-#siteexport__cronList li, #siteexport__customActions li {
+#siteexport__customActions li {
 	list-style: none;
 	
 	border-bottom: 1px solid #ccc;
@@ -104,19 +100,19 @@
 	width: 45%;
 }
 
-#siteexport__cronList li:last-child, #siteexport__customActions li:last-child {
+#siteexport__customActions li:last-child {
 	border-bottom: none;
 }
 	
-#siteexport__cronList li:nth-child(odd), #siteexport__customActions li:nth-child(odd) {
+#siteexport__customActions li:nth-child(odd) {
 	background-color: #eee;
 }
 
-#siteexport__cronList li:nth-child(even), #siteexport__customActions li:nth-child(even) {
+#siteexport__customActions li:nth-child(even) {
 	background-color: #f0f0f0;
 }
 
-#siteexport__cronList li button, siteexport__customActions li button {
+#siteexport__customActions li button {
 	float: right;
 }
 

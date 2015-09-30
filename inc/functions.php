@@ -508,7 +508,6 @@ class siteexport_functions extends DokuWiki_Plugin
         unset($removeArray['base']);
         unset($removeArray['siteexport']);
         unset($removeArray['DokuWiki']);
-        unset($removeArray['cronOverwriteExisting']);
 
         if ( $removeArray['renderer'] == 'xhtml' ) {
             $removeArray['do'] = 'export_' . $removeArray['renderer'];
@@ -582,7 +581,7 @@ class siteexport_functions extends DokuWiki_Plugin
      * returns a hashed name for the parameters
      * @param $parameters
      */
-    public function cronJobNameForParameters($parameters)
+    public function hashNameForParameters($parameters)
     {
         return md5($parameters);
     }
@@ -607,7 +606,7 @@ class siteexport_functions extends DokuWiki_Plugin
     {
         $params = $this->urlToPathAndParams($this->prepare_POSTData($request));
         $this->debug->message("Calculated the following Cache Hash URL: ", $params, 2);
-        return $this->cronJobNameForParameters($params);
+        return $this->hashNameForParameters($params);
     }
 
     /**

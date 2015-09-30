@@ -369,53 +369,6 @@
                 $('<li/>').append(name).append(value).append(customOption).appendTo('#siteexport__customActions');
             };
             
-            _.cronAction = function(action, cronExists, successstatus) {
-                _.resetDataForNewRequest();
-                _.throbber(true);
-                
-                $.post( this.url, _.settings(action), function(data){
-                    _.updateCronStatusExists(cronExists, true);
-                    _.status('Successfully <b>'+successstatus+'</b> the Cron Job');
-                }).fail(function(jqXHR){
-                    _.errorLog(jqXHR.responseText);
-                }).always(function(){
-                    _.throbber(false);
-                });
-            };
-
-            _.saveCron = function() {
-                _.cronAction('__siteexport_savecron', true, 'saved');
-            };
-            
-            _.deleteCron = function() {
-                _.cronAction('__siteexport_deletecron', false, 'deleted');
-            };
-
-        
-            _.updateCronStatusExists = function(cronExists, updateDeleteButton) {
-        
-                // Cron is not enabled.
-                if (!$('form#siteexport :input[type=submit][name=do\\[cronSaveAction\\]]').size()) {
-                    return;
-                }
-        
-                if (!updateDeleteButton && updateDeleteButton !== false) {
-                    updateDeleteButton = true;
-                }
-        
-                $('#cronSaveAction').attr('disabled', cronExists);
-        
-                if (updateDeleteButton) {
-                    $('#cronDeleteAction').css( 'display', cronExists ? 'block' : 'none');
-        
-                    $('#cronOverwriteExisting').change(function(event) {
-                        event.stopPropagation();
-                        _.updateCronStatusExists($('form#siteexport :input[type=submit][name=do\\[cronSaveAction\\]]').attr(
-                                'disabled') != 'disabled', false);
-                    });
-                }
-            };
-            
             _.updateValue = function( elem, value ) {
                 if ( !elem.size() ) {
                     return;
@@ -476,47 +429,6 @@
                 }
                                 
                 _.suspendGenerate = false;
-            };
-            
-            _.showCronJobs = function() {
-                _.resetDataForNewRequest();
-                _.throbber(true);
-                
-                $.post( this.url, _.settings('__siteexport_showcron'), function(data){
-                    
-                    data = $.parseJSON(data);
-                    if ( data === null ) {
-                        _.errorLog("No Valid CronData given.");
-                        return;
-                    }
-                    
-                    if ( !$('#siteexport__cronList').size() ) {
-                        $('#showcronjobs').parent().append($('<ul id="siteexport__cronList"/>'));
-                    } else {
-                        $('#siteexport__cronList').html("");
-                    }
-                        
-                    var clickHandler = function(event) {
-                        event.stopPropagation();
-                        var values = data[this.getAttribute('pattern')];
-                        _.setValues(values);
-                        _.generate();
-                        
-                        return false;
-                    };
-                        
-                    for ( var pattern in data) {
-                    
-                        var name = $('<span/>').text(pattern + ' ' + data[pattern]['ns']);
-                        var show = $('<button/>').addClass('button').attr('pattern', pattern).text('view').click(clickHandler);
-                        $('<li/>').append(name).append(show).appendTo('#siteexport__cronList');
-                    }
-
-                }).fail(function(jqXHR){
-                    _.errorLog(jqXHR.responseText);
-                }).always(function(){
-                    _.throbber(false);
-                });
             };
             
         }(siteexportadmin.prototype));
@@ -591,22 +503,5 @@
             return false;
         });
         
-        $('form#siteexport :input[type=submit][name=do\\[cronDeleteAction\\]]').click(function(event){
-            event.stopPropagation();
-            $.siteexport().deleteCron();
-            return false;
-        });
-        
-        $('form#siteexport :input[type=submit][name=do\\[cronSaveAction\\]]').click(function(event){
-            event.stopPropagation();
-            $.siteexport().saveCron();
-            return false;
-        });
-        
-        $('form#siteexport a#showcronjobs').click(function(event){
-            event.stopPropagation();
-            $.siteexport().showCronJobs();
-            return false;
-        });
     });
 })(jQuery);

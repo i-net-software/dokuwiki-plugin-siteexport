@@ -135,7 +135,6 @@ class helper_plugin_siteexport extends DokuWiki_Plugin {
 	    $templateSwitching = false;
 	    $pdfExport = false;
 	    $usenumberedheading = false;
-	    $cronEnabled = false;
 	    $translation = null;
 	    $translationAvailable = false;
 	    $usenumberedheading = true;
@@ -151,10 +150,6 @@ class helper_plugin_siteexport extends DokuWiki_Plugin {
         // if ( $functions =& plugin_load('renderer', 'nodetailsxhtml' ) ) {
         // }
 
-        if ( $functions =& plugin_load('cron', 'siteexport' ) ) {
-            $cronEnabled = $functions->canWriteSettings();
-        }
-        
         if ( $translation =& plugin_load('helper', 'translation' ) ) {
             $translationAvailable = true;
         }
@@ -319,25 +314,7 @@ class helper_plugin_siteexport extends DokuWiki_Plugin {
 	        $form->addElement(form_makeCloseTag('span'));
 	        $form->endFieldset();
 	        $form->addElement(form_makeTag('br'));
-	
-	        if ( $cronEnabled )
-	        {
-	            $form->startFieldset( $this->getLang('cronSaveProcess') );
-	            $form->addElement(form_makeOpenTag('p'));
-	            $form->addElement( $this->getLang('cronDescription') );
-	            $form->addElement(form_makeCloseTag('p'));
-	
-	            $form->addElement(form_makeCheckboxField("cronOverwriteExisting", 1, $this->getLang('canOverwriteExisting'), "cronOverwriteExisting"));
-	            $form->addElement(form_makeTag('br', array('class'=>'clear')));
-	            $form->addElement(form_makeButton('submit', 'cronDeleteAction', $this->getLang('cronDeleteAction') , array('id' => 'cronDeleteAction', 'style' => 'float:left;display:none') ));
-	            $form->addElement(form_makeButton('submit', 'cronSaveAction', $this->getLang('cronSaveAction') , array('id' => 'cronSaveAction', 'style' => 'float:right;') ));
-	            $form->addElement(form_makeTag('br', array('class'=>'clear')));
-	            
-	            $form->addElement(form_makeOpenTag('a', array('href' => '#cronactions', 'alt' => 'show cron jobs', 'id' => 'showcronjobs', 'target' => '_blank', 'style' => 'float:right;')));
-	            $form->addElement('show all cron jobs');
-	            $form->addElement(form_makeCloseTag('a'));
-	        }
-	
+
 		} else {
 	        $form->startFieldset( $this->getLang('startProcess') );
 	        $form->addElement(form_makeButton('submit', 'siteexport', $this->getLang('useOptionsInEditor') , array('style' => 'width:100%;')));

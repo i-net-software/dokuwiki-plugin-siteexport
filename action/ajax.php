@@ -202,32 +202,6 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
     }
 
     /**
-     * Executes a Cron Job Action
-     * @param $event
-     */
-    function ajax_siteexport_cronaction( &$event )
-    {
-        $cronOverwriteExisting = intval($_REQUEST['cronOverwriteExisting']) == 1;
-        list($url, $combined) = $this->ajax_siteexport_prepareURL_and_POSTData($event);
-
-        if ( !$function =& plugin_load('cron', 'siteexport' ) )
-        {
-            $this->functions->debug->message("Tried to do an action with siteexport/cron, but the cron plugin is missing.", null, 4);
-        }
-
-        $status = null;
-        switch( $event->data ) {
-            case '__siteexport_savecron': $status = $function->saveCronDataWithParameters($combined, $cronOverwriteExisting); break;
-            case '__siteexport_deletecron': $status = $function->deleteCronDataWithParameters($combined); break;
-        }
-
-        if ( !empty($status) )
-        {
-            $this->functions->debug->message("Tried to do an action with siteexport/cron, but failed.", $status, 4);
-        }
-    }
-
-    /**
      * generate direct access URL
      **/
     function ajax_siteexport_generateurl( &$event ) {
@@ -257,13 +231,6 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
         echo "\n";
 
         $this->functions->debug->message("Checking for Cron parameters: ", $combined, 1);
-        if ( !$functions =& plugin_load('cron', 'siteexport' ) ||
-        !$functions->hasCronJobForParameters($combined) ) {
-            echo "false";
-        } else
-        {
-            echo "true";
-        }
 
         return;
     }
