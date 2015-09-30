@@ -19,4 +19,6 @@ $conf['useOddEven'] = 0;
 $conf['defaultAuthenticationUser'] = '';
 $conf['defaultAuthenticationPassword'] = '';
 
+$conf['useProxy'] = 0;
+
 //Setup VIM: ex: et ts=2 enc=utf-8 :

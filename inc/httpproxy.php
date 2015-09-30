@@ -30,6 +30,10 @@ class HTTPProxy extends DokuHTTPClient {
      */
     function __construct($functions){
         global $conf;
+        
+        if ( $functions->getConf('useProxy') ) {
+            unset($conf['proxy']);
+        }
 
         // call parent constructor
         $this->debugClass = $functions->debug;

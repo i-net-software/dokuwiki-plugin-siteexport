@@ -23,4 +23,6 @@ $meta['useOddEven'] = array('onoff');
 $meta['defaultAuthenticationUser'] = array('string');
 $meta['defaultAuthenticationPassword'] = array('password');
 
+$meta['useProxy'] = array('onoff');
+
 //Setup VIM: ex: et ts=2 enc=utf-8 :
