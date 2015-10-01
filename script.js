@@ -39,7 +39,6 @@
                     $('#copyurl').val(data[0]);
                     $('#wgeturl').val(data[1]);
                     $('#curlurl').val(data[2]);
-                    _.updateCronStatusExists(data[3] == 'true');
                 }).fail(function(jqXHR){
                     _.errorLog(jqXHR.responseText);
                 }).always(function(){
