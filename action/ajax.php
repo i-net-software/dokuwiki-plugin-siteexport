@@ -585,7 +585,7 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
 
         $this->functions->debug->message("Headers received", $http->resp_headers, 2);
 
-        if ( !$RECURSE ) {
+        if ( !$RECURSE && $this->functions->settings->exportLinkedPages ) {
             // Parse URI PATH and add "html"
             $this->functions->debug->message("========================================", null, 1);
             $this->functions->debug->message("Starting to recurse file '$URL'", null , 1);

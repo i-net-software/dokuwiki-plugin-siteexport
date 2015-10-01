@@ -172,11 +172,6 @@ class helper_plugin_siteexport extends DokuWiki_Plugin {
         $form->addElement(form_makeTextField('depth', $this->getConf('depth'), $this->getLang('depth') . ':', 'depth'));
         $form->addElement(form_makeCloseTag("div"));
 
-        $form->addElement(form_makeTag('br'));
-        $form->addElement(form_makeOpenTag("div", array('style' => 'display:none;', 'id' => 'depthContainer')));
-        $form->addElement(form_makeCheckboxField('exportLinkedPages', 1, $this->getLang('exportLinkedPages') . ':', 'exportLinkedPages'));
-        $form->addElement(form_makeCloseTag("div"));
-
         $form->endFieldset();
         $form->addElement(form_makeTag('br'));
 
@@ -185,6 +180,8 @@ class helper_plugin_siteexport extends DokuWiki_Plugin {
         $form->addElement(form_makeTag('br'));
         // The parameter needs lowercase
         $form->addElement(form_makeCheckboxField('exportbody', 1, $this->getLang('exportBody') . ':', 'exportbody'));
+        $form->addElement(form_makeTag('br'));
+        $form->addElement(form_makeCheckboxField('exportLinkedPages', 1, $this->getLang('exportLinkedPages') . ':', 'exportLinkedPages'));
         $form->addElement(form_makeTag('br'));
         $form->addElement(form_makeCheckboxField('disableCache', 1, $this->getLang('disableCache') . ':', 'disableCache'));
         $form->addElement(form_makeTag('br'));
