@@ -181,7 +181,7 @@ class helper_plugin_siteexport extends DokuWiki_Plugin {
         // The parameter needs lowercase
         $form->addElement(form_makeCheckboxField('exportbody', 1, $this->getLang('exportBody') . ':', 'exportbody'));
         $form->addElement(form_makeTag('br'));
-        $form->addElement(form_makeCheckboxField('exportLinkedPages', 1, $this->getLang('exportLinkedPages') . ':', 'exportLinkedPages'));
+        $form->addElement(form_makeCheckboxField('exportLinkedPages', 1, $this->getLang('exportLinkedPages') . ':', 'exportLinkedPages', null, array('checked' => 'checked' )));
         $form->addElement(form_makeTag('br'));
         $form->addElement(form_makeCheckboxField('disableCache', 1, $this->getLang('disableCache') . ':', 'disableCache'));
         $form->addElement(form_makeTag('br'));

@@ -17,7 +17,7 @@ class settings_plugin_siteexport_settings extends DokuWiki_Plugin
     var $addParams = false;
     var $origZipFile = '';
     var $downloadZipFile = '';
-    var $exportLinkedPages = false;
+    var $exportLinkedPages = true;
     var $additionalParameters = array();
     var $isAuthed = false;
     
@@ -74,7 +74,7 @@ class settings_plugin_siteexport_settings extends DokuWiki_Plugin
         $this->zipFile = mediaFN($this->downloadZipFile);
 
         $this->tmpDir = mediaFN(getNS($this->origZipFile));
-        $this->exportLinkedPages = intval($_REQUEST['exportLinkedPages']) == 1 ? true : false;
+        $this->exportLinkedPages = isset($_REQUEST['exportLinkedPages']) && intval($_REQUEST['exportLinkedPages']) == 1 ? true : false;
 
         $this->namespace = $functions->getNamespaceFromID($_REQUEST['ns'], $PAGE);
         $this->addParams = !empty($_REQUEST['addParams']);
