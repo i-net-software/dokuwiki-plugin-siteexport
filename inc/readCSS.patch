@@ -161,7 +161,34 @@ function ReadCSS($html) {
 	}
 
 	$CSSstr = preg_replace('/(<\!\-\-|\-\->)/s',' ',$CSSstr);
+	
+	// mPDF 5.7.4 URLs
+	// Characters "(" ")" and ";" in url() e.g. background-image, cause problems parsing the CSS string
+	// URLencode ( and ), but change ";" to a code which can be converted back after parsing (so as not to confuse ; 
+	// with a segment delimiter in the URI)
+	$tempmarker = '%ZZ';
+	if (strpos($CSSstr,'url(')!==false) {
+		preg_match_all( '/url\(\"(.*?)\"\)/', $CSSstr, $m);
+		for($i = 0; $i < count($m[1]) ; $i++) {
+			$tmp = str_replace(array('(',')',';'),array('%28','%29',$tempmarker),$m[1][$i]);
+			$CSSstr = preg_replace('/'.preg_quote($m[0][$i],'/').'/', 'url(\''.$tmp.'\')', $CSSstr);
+		}
+		preg_match_all( '/url\(\'(.*?)\'\)/', $CSSstr, $m);
+		for($i = 0; $i < count($m[1]) ; $i++) {
+			$tmp = str_replace(array('(',')',';'),array('%28','%29',$tempmarker),$m[1][$i]);
+			$CSSstr = preg_replace('/'.preg_quote($m[0][$i],'/').'/', 'url(\''.$tmp.'\')', $CSSstr);
+		}
+		preg_match_all( '/url\(([^\'\"].*?[^\'\"])\)/', $CSSstr, $m);
+		for($i = 0; $i < count($m[1]) ; $i++) {
+			$tmp = str_replace(array('(',')',';'),array('%28','%29',$tempmarker),$m[1][$i]);
+			$CSSstr = preg_replace('/'.preg_quote($m[0][$i],'/').'/', 'url(\''.$tmp.'\')', $CSSstr);
+		}
+	}
+	
+	
+		
 	if ($CSSstr ) {
+		$classproperties = array();	// mPDF 6
 		preg_match_all('/(.*?)\{(.*?)\}/',$CSSstr,$styles);
 		for($i=0; $i < count($styles[1]) ; $i++)  {
 			// SET array e.g. $classproperties['COLOR'] = '#ffffff';
@@ -170,7 +197,11 @@ function ReadCSS($html) {
 			foreach($stylearr AS $sta) {
 				if (trim($sta)) { 
 					// Changed to allow style="background: url('http://www.bpm1.com/bg.jpg')"
-					list($property,$value) = explode(':',$sta,2);
+					$tmp = explode(':',$sta,2);
+					$property = $tmp[0];
+					if (isset($tmp[1])) { $value = $tmp[1]; }
+					else { $value = ''; }
+					$value = str_replace($tempmarker,';',$value);	// mPDF 5.7.4 URLs
 					$property = trim($property);
 					$value = preg_replace('/\s*!important/i','',$value);
 					$value = trim($value);
@@ -188,6 +219,10 @@ function ReadCSS($html) {
 			$tagarr = explode(',',$tagstr);
 			$pageselectors = false;	// used to turn on $this->mpdf->mirrorMargins
 			foreach($tagarr AS $tg) {
+				// mPDF 5.7.4
+				if (preg_match('/NTH-CHILD\((\s*(([\-+]?\d*)N(\s*[\-+]\s*\d+)?|[\-+]?\d+|ODD|EVEN)\s*)\)/',$tg,$m) ) {
+					$tg = preg_replace('/NTH-CHILD\(.*\)/', 'NTH-CHILD('.str_replace(' ','',$m[1]).')', $tg);
+				}
 				$tags = preg_split('/\s+/',trim($tg));
 				$level = count($tags);
 				$t = '';
@@ -211,16 +246,19 @@ function ReadCSS($html) {
 					if (isset($this->CSS[$tag]) && $tag) { $this->CSS[$tag] = $this->array_merge_recursive_unique($this->CSS[$tag], $classproperties); }
 					else if ($tag) { $this->CSS[$tag] = $classproperties; }
 				}
-
 				else if ($level == 1) {		// e.g. p or .class or #id or p.class or p#id
 				if (isset($tags[0])) { $t = trim($tags[0]); }
 					if ($t) {
 						$tag = '';
 						if (preg_match('/^[.](.*)$/',$t,$m)) { $tag = 'CLASS>>'.$m[1]; }
 						else if (preg_match('/^[#](.*)$/',$t,$m)) { $tag = 'ID>>'.$m[1]; }
+						else if (preg_match('/^\[LANG=[\'\"]{0,1}([A-Z\-]{2,11})[\'\"]{0,1}\]$/',$t,$m)) { $tag = 'LANG>>'.strtolower($m[1]); }	// mPDF 6  Special case for lang as attribute selector
+						else if (preg_match('/^:LANG\([\'\"]{0,1}([A-Z\-]{2,11})[\'\"]{0,1}\)$/',$t,$m)) { $tag = 'LANG>>'.strtolower($m[1]); }	// mPDF 6  Special case for lang as attribute selector
 						else if (preg_match('/^('.$this->mpdf->allowedCSStags.')[.](.*)$/',$t,$m)) { $tag = $m[1].'>>CLASS>>'.$m[2]; }
 						else if (preg_match('/^('.$this->mpdf->allowedCSStags.')\s*:NTH-CHILD\((.*)\)$/',$t,$m)) { $tag = $m[1].'>>SELECTORNTHCHILD>>'.$m[2]; }
 						else if (preg_match('/^('.$this->mpdf->allowedCSStags.')[#](.*)$/',$t,$m)) { $tag = $m[1].'>>ID>>'.$m[2]; }
+						else if (preg_match('/^('.$this->mpdf->allowedCSStags.')\[LANG=[\'\"]{0,1}([A-Z\-]{2,11})[\'\"]{0,1}\]$/',$t,$m)) { $tag = $m[1].'>>LANG>>'.strtolower($m[2]); }	// mPDF 6  Special case for lang as attribute selector
+						else if (preg_match('/^('.$this->mpdf->allowedCSStags.'):LANG\([\'\"]{0,1}([A-Z\-]{2,11})[\'\"]{0,1}\)$/',$t,$m)) { $tag = $m[1].'>>LANG>>'.strtolower($m[2]); }	// mPDF 6  Special case for lang as attribute selector
 						else if (preg_match('/^('.$this->mpdf->allowedCSStags.')$/',$t)) { $tag= $t; }
 						if (isset($this->CSS[$tag]) && $tag) { $this->CSS[$tag] = $this->array_merge_recursive_unique($this->CSS[$tag], $classproperties); }
 						else if ($tag) { $this->CSS[$tag] = $classproperties; }
@@ -235,11 +273,14 @@ function ReadCSS($html) {
 							$tag = '';
 							if (preg_match('/^[.](.*)$/',$t,$m)) { $tag = 'CLASS>>'.$m[1]; }
 							else if (preg_match('/^[#](.*)$/',$t,$m)) { $tag = 'ID>>'.$m[1]; }
+							else if (preg_match('/^\[LANG=[\'\"]{0,1}([A-Z\-]{2,11})[\'\"]{0,1}\]$/',$t,$m)) { $tag = 'LANG>>'.strtolower($m[1]); }	// mPDF 6  Special case for lang as attribute selector
+							else if (preg_match('/^:LANG\([\'\"]{0,1}([A-Z\-]{2,11})[\'\"]{0,1}\)$/',$t,$m)) { $tag = 'LANG>>'.strtolower($m[1]); }	// mPDF 6  Special case for lang as attribute selector
 							else if (preg_match('/^('.$this->mpdf->allowedCSStags.')[.](.*)$/',$t,$m)) { $tag = $m[1].'>>CLASS>>'.$m[2]; }
 							else if (preg_match('/^('.$this->mpdf->allowedCSStags.')\s*:NTH-CHILD\((.*)\)$/',$t,$m)) { $tag = $m[1].'>>SELECTORNTHCHILD>>'.$m[2]; }
 							else if (preg_match('/^('.$this->mpdf->allowedCSStags.')[#](.*)$/',$t,$m)) { $tag = $m[1].'>>ID>>'.$m[2]; }
+							else if (preg_match('/^('.$this->mpdf->allowedCSStags.')\[LANG=[\'\"]{0,1}([A-Z\-]{2,11})[\'\"]{0,1}\]$/',$t,$m)) { $tag = $m[1].'>>LANG>>'.strtolower($m[2]); }	// mPDF 6  Special case for lang as attribute selector
+							else if (preg_match('/^('.$this->mpdf->allowedCSStags.'):LANG\([\'\"]{0,1}([A-Z\-]{2,11})[\'\"]{0,1}\)$/',$t,$m)) { $tag = $m[1].'>>LANG>>'.strtolower($m[2]); }	// mPDF 6  Special case for lang as attribute selector
 							else if (preg_match('/^('.$this->mpdf->allowedCSStags.')$/',$t)) { $tag= $t; }
-
 							if ($tag) $tmp[] = $tag;
 							else { break; }
 						}
