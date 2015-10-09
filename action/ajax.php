@@ -570,6 +570,7 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
         if( $getData === false ) { // || ($http->status != 200 && !$this->functions->settings->ignoreNon200) ) {
         
         	if ( $http->status != 200 && $this->functions->settings->ignoreNon200 ) {
+                $this->functions->debug->message("HTTP error:", $http->error, 3);
                 $this->functions->debug->message("HTTP status was '{$http->status}' - but I was told to ignore it by the settings.", $URL, 3);
 	        	return true;
         	}
