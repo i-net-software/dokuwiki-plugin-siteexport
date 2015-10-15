@@ -187,9 +187,8 @@ class renderer_plugin_siteexport_pdf extends Doku_Renderer_xhtml {
 
     function section_open($level) {
         $this->currentLevel = $level;
+        parent::section_open($level);
     }
-
-    function section_close() {}
     
     function p_open() {
         $this->doc .= DOKU_LF.'<p class="level' . $this->currentLevel . '">'.DOKU_LF;
