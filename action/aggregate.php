@@ -14,10 +14,6 @@ require_once(DOKU_PLUGIN.'action.php');
 
 class action_plugin_siteexport_aggregate extends DokuWiki_Action_Plugin {
 
-
-    private $instructions = null;
-    private $originalID = null;
-
     /**
 	* Register Plugin in DW
 	**/
@@ -60,7 +56,7 @@ class action_plugin_siteexport_aggregate extends DokuWiki_Action_Plugin {
             }
         }
         
-    	$this->originalID = (string) $ID;
+    	$originalID = (string) $ID;
 
         // Generate a TOC that can be exported
         $TOC = "<toc merge mergeheader>\n";
@@ -92,7 +88,7 @@ class action_plugin_siteexport_aggregate extends DokuWiki_Action_Plugin {
 
         @unlink(metaFN($ID, '.meta'));
 
-        $ID = (string) $this->originalID;
+        $ID = (string) $originalID;
         echo $html;
         return true;
 	}
