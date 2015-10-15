@@ -203,21 +203,11 @@ class renderer_plugin_siteexport_pdf extends Doku_Renderer_xhtml {
     }
 
     public function finishSectionEdit($end = null) {
-        global $INFO;
-        if ( $INFO['perm'] > AUTH_READ )
-        {
-            return parent::finishSectionEdit($end);
-        }
+        return ''
     }
 
     public function startSectionEdit($start, $type, $title = null) {
-        global $INFO;
-        if ( $INFO['perm'] > AUTH_READ )
-        {
-            return parent::startSectionEdit($start, $type, $title);
-        }
-
-        return "";
+        return '';
     }
 
     /**
