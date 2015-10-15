@@ -50,11 +50,11 @@ if ( !empty($_REQUEST['pdfExport']) && intval($_REQUEST['pdfExport']) == 1 && fi
             $this->img_dpi = 300;
 
             $mpdf->setBasePath(empty($this->functions->settings->depth) ? './' : $this->functions->settings->depth);
-            $mpdf->SetAutoFont(AUTOFONT_ALL);
 
             $mpdf->ignore_invalid_utf8 = true;
-            $mpdf->mirrorMargins = 0;	// don't mirror margins
-            $mpdf->useOddEven = $this->functions->getConf('useOddEven');
+            $mpdf->mirrorMargins = $this->functions->getConf('useOddEven'); // don't mirror margins
+            $mpdf->setAutoTopMargin = 'pad';
+            $mpdf->setAutoBottomMargin = 'pad';
 
             $mpdf->WriteHTML($html);
             $mpdf->Output($filename, "F");
@@ -126,7 +126,7 @@ if ( !empty($_REQUEST['pdfExport']) && intval($_REQUEST['pdfExport']) == 1 && fi
             /*/
             $contentText = $this->xmlEntities(preg_replace("/<\/?.*?>/s", '', $DATA[3])); // Double encoding - has to be decoded in mpdf once more.
             //*/
-            return '<tocentry content="' . $contentText . '" level="' . ($DATA[1]-1) . '" ><bookmark content="' . $contentText . '" level="' . ($DATA[1]-1) . '" ><h' . $DATA[1] . $DATA[2] . '>' . $DATA[3] . '</h' . $DATA[1] . '></bookmark></tocentry>';
+            return '<h' . $DATA[1] . $DATA[2] . '><tocentry content="' . $contentText . '" level="' . ($DATA[1]-1) . '" /><bookmark content="' . $contentText . '" level="' . ($DATA[1]-1) . '" />' . $DATA[3] . '</h' . $DATA[1] . '>';
         }
 
         private function __pdfHeaderCallbackPagebreak($DATA) {

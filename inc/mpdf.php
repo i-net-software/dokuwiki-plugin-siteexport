@@ -53,7 +53,6 @@ if ( file_exists(DOKU_PLUGIN . 'dw2pdf/mpdf/mpdf.php') ) {
     
             // we're always UTF-8
             parent::__construct($mode, $format);
-            $this->SetAutoFont(AUTOFONT_ALL);
             $this->ignore_invalid_utf8 = true;
             $this->tabSpaces = 4;
             $this->debugObj = $debug;
@@ -161,7 +160,7 @@ if ( file_exists(DOKU_PLUGIN . 'dw2pdf/mpdf/mpdf.php') ) {
             parent::MovePages($target_page, $start_page, $end_page);
         }
         
-        function OpenTag($tag, $attr) {
+        function OpenTag($tag,$attr,&$ahtml,&$ihtml) {
             switch($tag) {
                 case 'BOOKMARK':
                 case 'TOCENTRY':
@@ -171,7 +170,7 @@ if ( file_exists(DOKU_PLUGIN . 'dw2pdf/mpdf/mpdf.php') ) {
                     }
                     break;
             }
-            return parent::OpenTag($tag, $attr); 
+            return parent::OpenTag($tag,$attr,$ahtml,$ihtml); 
         }
     }
     
