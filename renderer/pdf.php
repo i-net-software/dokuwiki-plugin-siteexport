@@ -203,7 +203,7 @@ class renderer_plugin_siteexport_pdf extends Doku_Renderer_xhtml {
     }
 
     public function finishSectionEdit($end = null) {
-        return ''
+        return '';
     }
 
     public function startSectionEdit($start, $type, $title = null) {
