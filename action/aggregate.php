@@ -22,12 +22,11 @@ class action_plugin_siteexport_aggregate extends DokuWiki_Action_Plugin {
 	* Register Plugin in DW
 	**/
 	public function register(Doku_Event_Handler $controller) {
-		$controller->register_hook('ACTION_HEADERS_SEND', 'BEFORE',  $this, 'siteexport_aggregate_prepare');
 		$controller->register_hook('TPL_ACT_RENDER', 'BEFORE',  $this, 'siteexport_aggregate');
 		$controller->register_hook('TOOLBAR_DEFINE', 'AFTER', $this, 'siteexport_aggregate_button', array ());
 	}
 	
-	function siteexport_aggregate_prepare(&$event)
+	function siteexport_aggregate(&$event)
 	{
 	    global $ID, $INFO, $conf;
 
@@ -64,7 +63,7 @@ class action_plugin_siteexport_aggregate extends DokuWiki_Action_Plugin {
     	$this->originalID = (string) $ID;
 
         // Generate a TOC that can be exported
-        $TOC = "~~NOCACHE~~\n<toc merge mergeheader>\n";
+        $TOC = "<toc merge mergeheader>\n";
         $thema = array();
         foreach( $values as $value ) {
         	list($id, $title, $sort) = $value;
@@ -84,26 +83,18 @@ class action_plugin_siteexport_aggregate extends DokuWiki_Action_Plugin {
         $meta['current']['thema'] = implode(' - ', array_filter($thema));
         p_save_metadata($ID, $meta);
 
-        $this->instructions = $TOC;        
-	}
-	
-	function siteexport_aggregate(&$event)
-	{
-		global $ID, $INFO;
-
-        if ( empty($this->instructions) ) { return true; }
+        if ( empty($TOC) ) { return true; }
         $event->preventDefault();
         
-        $html = p_render('xhtml', p_get_instructions($this->instructions),$INFO);
+        $html = p_render('xhtml', p_get_instructions($TOC),$INFO);
         $html = html_secedit($html,false);
         if($INFO['prependTOC']) $html = tpl_toc(true).$html;
 
         @unlink(metaFN($ID, '.meta'));
 
         $ID = (string) $this->originalID;
-        
         echo $html;
-        return false;
+        return true;
 	}
 	
 	/**
