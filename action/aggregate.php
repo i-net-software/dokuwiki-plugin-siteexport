@@ -83,11 +83,11 @@ class action_plugin_siteexport_aggregate extends DokuWiki_Action_Plugin {
         $event->preventDefault();
         
         $html = p_render('xhtml', p_get_instructions($TOC),$INFO);
-        $html = html_secedit($html,false);
+        // $html = html_secedit($html,false);
         if($INFO['prependTOC']) $html = tpl_toc(true).$html;
 
         @unlink(metaFN($ID, '.meta'));
-
+        
         $ID = (string) $originalID;
         echo $html;
         return true;
