@@ -59,6 +59,7 @@ if ( file_exists(DOKU_PLUGIN . 'dw2pdf/mpdf/mpdf.php') ) {
             $this->debug = $debug !== false;
             $this->shrink_tables_to_fit = 1; // Does not shrink tables by default, only in emergency
             $this->use_kwt = true; // avoids page-breaking in H1-H6 if a table follows directly
+            $this->useSubstitutions = true;
         }
         
         function message($msg, $vars=null, $lvl=1)
