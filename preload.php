@@ -31,9 +31,14 @@ class preload_plugin_siteexport {
 		}
 
 		// define Template baseURL
-		if ( empty($tempREQUEST['template']) ) { return; }
-		$tplDir = DOKU_INC.'lib/tpl/'.$tempREQUEST['template'].'/';
-
+		$newTemplate = $tempREQUEST['template'];
+		// Make sure, that the template is set and the basename is equal to the template, alas there are no path definitions. see #48
+		if ( empty($newTemplate) || basename($newTemplate) != $newTemplate ) { return; }
+		$tplDir = DOKU_INC.'lib/tpl/'.$newTemplate;
+		// check if the directory is valid, has no more "../" in it and is equal to what we expect. DOKU_INC itself is absolute. see #48
+		if ( $tplDir != realpath($tplDir) ) { return; }
+		
+		// Use fileexists, because realpath is not always right.
 		if ( !file_exists($tplDir) ) { return; }
 		
 		// Set hint for Dokuwiki_Started event
