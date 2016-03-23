@@ -119,6 +119,7 @@ class siteexport_toc
 
         $TOCXML .= $this->__writeTOCTree($DATA) . "\n</toc>";
         $MAPXML .= "\n</map>";
+
 /*
         // http://documentation:81/documentation/clear-reports/remote-interface-help/configuration/configuration/index?JavaHelpDocZip=1&depthType=1&diInv=1&do=siteexport&ens=documentation%3Aclear-reports%3Aremote-interface-help%3Aconfiguration&renderer=&template=clearreports-setup&useTocFile=1
         print "<html><pre>";
@@ -145,8 +146,12 @@ class siteexport_toc
     
         if ( empty($currentNSArray) )
         {
-            // In Depth, let go!
-            $DATA[noNS($elemToAdd['id'])] = $elemToAdd;
+            // In Depth, let go! - Index elements do not have anything else below
+            if ( noNS($elemToAdd['id']) == $conf['start'] ) {
+                $DATA[noNS($elemToAdd['id'])] = $elemToAdd;
+            } else {
+                $DATA[noNS($elemToAdd['id'])]['element'] = $elemToAdd;
+            }
             return;
         } else if (count($currentNSArray) == 1 && $currentNSArray[0] == '' && noNS($elemToAdd['id']) == $conf['start'] )
         {
@@ -156,11 +161,14 @@ class siteexport_toc
         }
         
         $currentLevel = array_shift($currentNSArray);
-        if ( empty($DATA[$currentLevel]) ) {
-            $DATA[$currentLevel] = array( 'pages' => array(), 'element' => array() );
+        $nextLevel = &$DATA[$currentLevel];
+        if ( empty($nextLevel) ) {
+            $nextLevel = array( 'pages' => array(), 'element' => array() );
+        } else {
+            $nextLevel = &$DATA[$currentLevel]['pages'];
         }
         
-        $this->__buildTOCTree($DATA[$currentLevel], $currentNSArray, $elemToAdd);
+        $this->__buildTOCTree($nextLevel, $currentNSArray, $elemToAdd);
     }
     
     /**
@@ -208,9 +216,13 @@ class siteexport_toc
         if ( !empty($CURRENTNODE[$conf['start']]) )
         {
             // YAY! StartPage found.
-            $didOpenItem = !(count($CURRENTNODE) == 1);
+            $didOpenItem = !(count(empty($CURRENTNODE['pages'])?$CURRENTNODE:$CURRENTNODE['pages']) == 0);
             $XML .= $this->__TOCItem($CURRENTNODE[$conf['start']], $DEPTH, !$didOpenItem );
             unset($CURRENTNODE[$conf['start']]);
+        } else if ( !empty($CURRENTNODE['element'])) {
+            $didOpenItem = !(count($CURRENTNODE['pages']) == 0);
+            $XML .= $this->__TOCItem($CURRENTNODE['element'], $DEPTH, !$didOpenItem );
+            unset($CURRENTNODE['element']);
         } else if ($CURRENTNODENAME != null) {
             // We have a parent node for what is comming … lets honor that
             $didOpenItem = !(count($CURRENTNODE) == 0);
@@ -221,7 +233,7 @@ class siteexport_toc
         }
         
         // Circle through the entries
-        foreach ( $CURRENTNODE as $NODENAME => $ELEM )
+        foreach ( empty($CURRENTNODE['pages'])?$CURRENTNODE:$CURRENTNODE['pages'] as $NODENAME => $ELEM )
         {
             // a node should have more than only one entry … otherwise we will not tell our name!
             $XML .= $this->__writeTOCTree($ELEM, count($ELEM) >= 1 ? $NODENAME : null, $DEPTH+1);
