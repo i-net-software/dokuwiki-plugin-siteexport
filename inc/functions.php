@@ -688,8 +688,8 @@ class siteexport_functions extends DokuWiki_Plugin
         $meta = p_get_metadata($elemID, 'context', true);
 
         if ( empty($meta['id']) ) {
-            $title = empty( $meta['title'] ) ? $this->functions->getSiteTitle($elemID) : $meta['title'];
-            $meta['id'] = sectionID($this->functions->cleanId(strtolower($title)), $check);
+            $title = empty( $meta['title'] ) ? $this->getSiteTitle($elemID) : $meta['title'];
+            $meta['id'] = sectionID($this->cleanId(strtolower($title)), $check);
         }
 
         $mapID = explode('|', $meta['id']);
