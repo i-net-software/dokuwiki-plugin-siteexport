@@ -25,4 +25,6 @@ $meta['defaultAuthenticationPassword'] = array('password');
 
 $meta['useProxy'] = array('onoff');
 
+
+$meta['offSiteLinkTemplate'] = array('string');
 //Setup VIM: ex: et ts=2 enc=utf-8 :

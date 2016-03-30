@@ -90,7 +90,7 @@ class siteexport_toc
             }
 
 			// if not there, no map ids will be generated
-            $elem['mapID'] = intval($elem['exists']) == 1 ? $this->getMapID($elem, $check) : array();
+            $elem['mapID'] = intval($elem['exists']) == 1 ? $this->functions->getMapID($elem['id'], $elem['anchor'], $check) : array();
 
             if ( empty($elem['depth']) ) $elem['depth'] = count(explode('/', $elem['url']));            
             $CHECKDATA[] = $elem['url'];
@@ -250,27 +250,6 @@ class siteexport_toc
         if($prefix === false) $prefix = $key;
     
         $value = $value.$inner_glue.$prefix;
-    }
-    
-    function mapIDWithAnchor(&$n, $key, $postfix)
-    {
-        if ( empty($postfix) ) return;
-        $n .= '-' . $postfix;
-    }
-    
-    function getMapID($elem, &$check)
-    {
-        $meta = p_get_metadata($elem['id'], 'context', true);
-
-        if ( empty($meta['id']) ) {
-            $title = empty( $meta['title'] ) ? $this->functions->getSiteTitle($elem['id']) : $meta['title'];
-            $meta['id'] = sectionID($this->functions->cleanId(strtolower($title)), $check);
-        }
-
-        $mapID = explode('|', $meta['id']);
-        array_walk($mapID, array($this, 'mapIDWithAnchor'), $elem['anchor']);
-            
-        return $mapID;
     }
     
     /**
@@ -437,7 +416,7 @@ class siteexport_toc
             $TITLE = empty( $meta['title'] ) ? $this->functions->getSiteTitle($ID) : $meta['title'];
 
             // support more than one view IDs ... for more than one reference
-            $VIEWIDs = $this->getMapID($elem, $check);
+            $VIEWIDs = $this->functions->getMapID($elem['id'], $elem['anchor'], $check);
 
             $DESCRIPTION = $this->functions->xmlEntities(p_get_metadata($ID, 'description abstract'));
 

@@ -614,7 +614,7 @@ class siteexport_functions extends DokuWiki_Plugin
      * @param replaceURL - URL which will be made relative if needed
      * @param baseURL - URL which is the reference to be made relative against
      */
-    public function getRelativeURL($replaceURL, $baseURL)
+    public function getRelativeURL($replaceURL, $baseURL, $existingPageID = null)
     {
         // Base is always absolute without anything at the beginning
         if ( preg_match("#^(\.\./)+#", $baseURL) ) {
@@ -640,6 +640,7 @@ class siteexport_functions extends DokuWiki_Plugin
         $this->debug->message("State before kicking.", array($replaceParts, $baseParts), 1);
 
         // Kick all ../
+        $originalBasePartsCount = count( $baseParts );
         while( count($replaceParts) > 0 && count($baseParts) > 0 ) {
         
             if ( $baseParts[0] == $replaceParts[0] ) {
@@ -657,9 +658,46 @@ class siteexport_functions extends DokuWiki_Plugin
         // Remove everything that is identical
         $replaceParts[] = $fileName;
         
-        return str_repeat('../', count($baseParts)) . implode('/', $replaceParts);
+        // do the final link calculation
+        $finalLink = str_repeat('../', count($baseParts)) . implode('/', $replaceParts);
+        
+        // find out if this is outside of our own export context, becond the baseURL
+        if ( count($baseParts) == $originalBasePartsCount && $existingPageID != null && !empty( $this->getConf("offSiteLinkTemplate") ) ) {
+
+            $tpl = $this->getConf("offSiteLinkTemplate");
+            $tpl = str_replace('RAWID', $existingPageID, $tpl);
+            
+            $check = null;
+            $tpl = str_replace('CONTEXTID', array_pop( $this->getMapID($existingPageID, null, $check) ), $tpl);
+            $tpl = str_replace('LINK', $finalLink, $tpl);
+
+            $finalLink = $tpl;
+        }
+        
+        return $finalLink;
     }
 
+    function mapIDWithAnchor(&$n, $key, $postfix)
+    {
+        if ( empty($postfix) ) return;
+        $n .= '-' . $postfix;
+    }
+    
+    function getMapID($elemID, $postfix, &$check)
+    {
+        $meta = p_get_metadata($elemID, 'context', true);
+
+        if ( empty($meta['id']) ) {
+            $title = empty( $meta['title'] ) ? $this->functions->getSiteTitle($elemID) : $meta['title'];
+            $meta['id'] = sectionID($this->functions->cleanId(strtolower($title)), $check);
+        }
+
+        $mapID = explode('|', $meta['id']);
+        array_walk($mapID, array($this, 'mapIDWithAnchor'), $postfix);
+            
+        return $mapID;
+    }
+    
     public function hasAuthentication() {
         $user = $this->getConf('defaultAuthenticationUser');
         $password = $this->getConf('defaultAuthenticationPassword');

@@ -570,7 +570,6 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
         if( $getData === false ) { // || ($http->status != 200 && !$this->functions->settings->ignoreNon200) ) {
         
         	if ( $http->status != 200 && $this->functions->settings->ignoreNon200 ) {
-                $this->functions->debug->message("HTTP error:", $http->error, 3);
                 $this->functions->debug->message("HTTP status was '{$http->status}' - but I was told to ignore it by the settings.", $URL, 3);
 	        	return true;
         	}
@@ -938,7 +937,7 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
 
                     $this->functions->debug->message("This page really exists", $DATA, 1);
                     
-                    return $this->__rebuildLink($DATA);
+                    return $this->__rebuildLink($DATA, null, $ID);
                 } else {
                     $this->__rebuildDataForNormalFiles($DATA, $PARAMS, true);
                     $newAdditionalParameters = null; // 2014-06-27 - when using the "normal" files way we will not need any additional stuff.
@@ -1047,7 +1046,7 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
     /**
      * build the new link to be put in place for the donwloaded site
      **/
-    function __rebuildLink($DATA, $DEPTH = null) {
+    function __rebuildLink($DATA, $DEPTH = null, $existingPageID = null) {
         global $currentID, $currentParent;
 
         // depth is set, skip this one
@@ -1062,7 +1061,7 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
 
             $this->functions->debug->message("OK, this is not to be absolute: ", array($intermediateURL, $currentParent), 1);
             // Experimental
-            $intermediateURL = $this->functions->getRelativeURL($intermediateURL, $currentParent);
+            $intermediateURL = $this->functions->getRelativeURL($intermediateURL, $currentParent, $existingPageID);
         }
 /*/
         // Check if the URL has a ../../something/somethingelse
