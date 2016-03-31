@@ -662,16 +662,16 @@ class siteexport_functions extends DokuWiki_Plugin
         $finalLink = str_repeat('../', count($baseParts)) . implode('/', $replaceParts);
         
         // find out if this is outside of our own export context, becond the baseURL
-        if ( count($baseParts) == $originalBasePartsCount && $existingPageID != null && !empty( $this->getConf("offSiteLinkTemplate") ) ) {
+        $offsiteTemplate = $this->getConf("offSiteLinkTemplate");
+        if ( count($baseParts) == $originalBasePartsCount && $existingPageID != null && !empty( $offsiteTemplate ) ) {
 
-            $tpl = $this->getConf("offSiteLinkTemplate");
-            $tpl = str_replace('RAWID', $existingPageID, $tpl);
+            $offsiteTemplate = str_replace('RAWID', $existingPageID, $offsiteTemplate);
             
             $check = null;
-            $tpl = str_replace('CONTEXTID', array_pop( $this->getMapID($existingPageID, null, $check) ), $tpl);
-            $tpl = str_replace('LINK', $finalLink, $tpl);
+            $offsiteTemplate = str_replace('CONTEXTID', array_pop( $this->getMapID($existingPageID, null, $check) ), $offsiteTemplate);
+            $offsiteTemplate = str_replace('LINK', $finalLink, $offsiteTemplate);
 
-            $finalLink = $tpl;
+            $finalLink = $$offsiteTemplate;
         }
         
         return $finalLink;
