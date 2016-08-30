@@ -115,7 +115,7 @@
 
                 }).fail(function(jqXHR){
                     _.aggregatorStatus.addClass('error');
-                    _.status(jqXHR.responseText);
+                    _.status(jqXHR.responseText.replace("\n", "<br/>"));
                 }).always(function(){
                     throbber.prop('disabled', false);
                 });
