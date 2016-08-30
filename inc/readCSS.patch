@@ -77,6 +77,9 @@ function ReadCSS($html) {
 
 	while($match){
 		$path = $CSSext[$ind];
+
+		$path = htmlspecialchars_decode($path);	// mPDF 6
+
 		$this->mpdf->GetFullPath($path); 
 		$CSSextblock = $this->mpdf->_get_file($path);
 		if ($CSSextblock) {
@@ -149,7 +152,7 @@ function ReadCSS($html) {
 
 	// mPDF 5.5.13
 	// Replace any background: url(data:image... with temporary image file reference
-	preg_match_all("/(url\(data:image\/(jpeg|gif|png);base64,(.*)\))/si", $CSSstr, $idata);
+	preg_match_all("/(url\(data:image\/(jpeg|gif|png);base64,(.*?)\))/si", $CSSstr, $idata);	// mPDF 5.7.2
 	if (count($idata[0])) { 
 		for($i=0;$i<count($idata[0]);$i++) {
 			$file = _MPDF_TEMP_PATH.'_tempCSSidata'.RAND(1,10000).'_'.$i.'.'.$idata[2][$i];
@@ -161,7 +164,7 @@ function ReadCSS($html) {
 	}
 
 	$CSSstr = preg_replace('/(<\!\-\-|\-\->)/s',' ',$CSSstr);
-	
+
 	// mPDF 5.7.4 URLs
 	// Characters "(" ")" and ";" in url() e.g. background-image, cause problems parsing the CSS string
 	// URLencode ( and ), but change ";" to a code which can be converted back after parsing (so as not to confuse ; 
@@ -184,9 +187,9 @@ function ReadCSS($html) {
 			$CSSstr = preg_replace('/'.preg_quote($m[0][$i],'/').'/', 'url(\''.$tmp.'\')', $CSSstr);
 		}
 	}
-	
-	
-		
+
+
+
 	if ($CSSstr ) {
 		$classproperties = array();	// mPDF 6
 		preg_match_all('/(.*?)\{(.*?)\}/',$CSSstr,$styles);
@@ -246,6 +249,7 @@ function ReadCSS($html) {
 					if (isset($this->CSS[$tag]) && $tag) { $this->CSS[$tag] = $this->array_merge_recursive_unique($this->CSS[$tag], $classproperties); }
 					else if ($tag) { $this->CSS[$tag] = $classproperties; }
 				}
+
 				else if ($level == 1) {		// e.g. p or .class or #id or p.class or p#id
 				if (isset($tags[0])) { $t = trim($tags[0]); }
 					if ($t) {
@@ -281,6 +285,7 @@ function ReadCSS($html) {
 							else if (preg_match('/^('.$this->mpdf->allowedCSStags.')\[LANG=[\'\"]{0,1}([A-Z\-]{2,11})[\'\"]{0,1}\]$/',$t,$m)) { $tag = $m[1].'>>LANG>>'.strtolower($m[2]); }	// mPDF 6  Special case for lang as attribute selector
 							else if (preg_match('/^('.$this->mpdf->allowedCSStags.'):LANG\([\'\"]{0,1}([A-Z\-]{2,11})[\'\"]{0,1}\)$/',$t,$m)) { $tag = $m[1].'>>LANG>>'.strtolower($m[2]); }	// mPDF 6  Special case for lang as attribute selector
 							else if (preg_match('/^('.$this->mpdf->allowedCSStags.')$/',$t)) { $tag= $t; }
+
 							if ($tag) $tmp[] = $tag;
 							else { break; }
 						}
