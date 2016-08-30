@@ -99,14 +99,20 @@
                 var throbber = $('form#siteexport_site_aggregator :input[name=baseID], form#siteexport_site_aggregator :input[type=submit]').prop('disabled', true);
                 $.post( _.url, settings, function(data, textStatus, jqXHR) {
 
-                    _.downloadFile({
-                            id : 'siteexport_site_aggregator_downloader',
-                            src: window.location.origin + data,
-                            root: 'form#siteexport_site_aggregator',
-                            timeout: function(){
-                                _.aggregatorStatus.hide();
-                            }
-                    });
+                    if ( data.match( new RegExp( 'mpdf error', 'i' ) ) ) {
+                        _.aggregatorStatus.addClass('error');
+                        _.status(data);
+                    } else {
+                        _.downloadFile({
+                                id : 'siteexport_site_aggregator_downloader',
+                                src: window.location.origin + data,
+                                root: 'form#siteexport_site_aggregator',
+                                timeout: function(){
+                                    _.aggregatorStatus.hide();
+                                }
+                        });
+                    }
+
                 }).fail(function(jqXHR){
                     _.aggregatorStatus.addClass('error');
                     _.status(jqXHR.responseText);
