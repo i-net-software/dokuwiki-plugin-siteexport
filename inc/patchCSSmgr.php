@@ -9,7 +9,7 @@ class CSSMgrPatch {
     private $_code;
     
     public function __construct($include_file = null) {
-        if ( $include_file ) {
+        if ($include_file) {
             $this->includeCode($include_file);
         }
     }
@@ -20,10 +20,10 @@ class CSSMgrPatch {
     
     public function includeCode($path) {
     
-        $fp = fopen($path,'r');
+        $fp = fopen($path, 'r');
         $contents = fread($fp, filesize($path));
-        $contents = str_replace('<?php','',$contents);
-        $contents = str_replace('?>','',$contents);
+        $contents = str_replace('<?php', '', $contents);
+        $contents = str_replace('?>', '', $contents);
         fclose($fp);        
     
         $this->setCode($contents);
@@ -34,11 +34,11 @@ class CSSMgrPatch {
         preg_match('/function (.+)\(/', $new_function, $aryMatches);
         $func_name = trim($aryMatches[1]);
     
-        if ( preg_match('/(function '.$func_name.'[\w\W\n]+?)(function)/s', $this->_code, $aryMatches) ) {
+        if (preg_match('/(function ' . $func_name . '[\w\W\n]+?)(function)/s', $this->_code, $aryMatches)) {
     
             $search_code = $aryMatches[1];
     
-            $new_code = str_replace($search_code, $new_function."\n\n", $this->_code);
+            $new_code = str_replace($search_code, $new_function . "\n\n", $this->_code);
     
             $this->setCode($new_code);
     

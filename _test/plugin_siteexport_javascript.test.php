@@ -25,7 +25,7 @@ class SiteexportJavaScriptEvaluation extends DokuWikiTest {
         
     }
     
-    private function setUpJavascript($compress=1) {
+    private function setUpJavascript($compress = 1) {
         
         global $conf;
         

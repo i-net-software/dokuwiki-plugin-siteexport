@@ -12,7 +12,7 @@ class SiteexportFunctionsGetRelativeURLTest extends DokuWikiTest {
 
     public function test_functionsExist() {
         $this->assertFileExists(DOKU_PLUGIN . 'siteexport/inc/functions.php', 'The functions.php file could not be found.');
-        $this->assertTrue( class_exists('siteexport_functions'), 'The class for the functions could not be found.' );
+        $this->assertTrue(class_exists('siteexport_functions'), 'The class for the functions could not be found.');
     }
 
     /**
@@ -60,10 +60,10 @@ class SiteexportFunctionsGetRelativeURLTest extends DokuWikiTest {
             ),
         );
 
-        foreach($testMatrix as $test) {
+        foreach ($testMatrix as $test) {
             $result = $functions->getRelativeURL($test['relative'], $test['base']);
             $this->assertTrue($test['expected'] == $result, "Result '{$result}' did not match expected result '{$test['expected']}' (base: '{$test['base']}', relative: '{$test['relative']}')");
         }
-   }
+    }
 
 }

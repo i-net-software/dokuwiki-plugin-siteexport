@@ -8,14 +8,14 @@
  */
 
 // must be run within Dokuwiki
-if(!defined('DOKU_INC')) define('DOKU_INC',realpath(dirname(__FILE__).'/../../').'/');
-if(!defined('DOKU_PLUGIN')) define('DOKU_PLUGIN',DOKU_INC.'lib/plugins/');
+if (!defined('DOKU_INC')) define('DOKU_INC', realpath(dirname(__FILE__) . '/../../') . '/');
+if (!defined('DOKU_PLUGIN')) define('DOKU_PLUGIN', DOKU_INC . 'lib/plugins/');
 
-if ( file_exists(DOKU_PLUGIN . 'dw2pdf/mpdf/mpdf.php') ) {
+if (file_exists(DOKU_PLUGIN . 'dw2pdf/mpdf/mpdf.php')) {
 
     global $conf;
-    if(!defined('_MPDF_TEMP_PATH')) define('_MPDF_TEMP_PATH', $conf['tmpdir'].'/dwpdf/'.rand(1,1000).'/');
-    if(!defined('_MPDF_TTFONTDATAPATH')) define('_MPDF_TTFONTDATAPATH',$conf['cachedir'].'/mpdf_ttf/');
+    if (!defined('_MPDF_TEMP_PATH')) define('_MPDF_TEMP_PATH', $conf['tmpdir'] . '/dwpdf/' . rand(1, 1000) . '/');
+    if (!defined('_MPDF_TTFONTDATAPATH')) define('_MPDF_TTFONTDATAPATH', $conf['cachedir'] . '/mpdf_ttf/');
 
     require_once(DOKU_PLUGIN . 'dw2pdf/mpdf/mpdf.php');
 
@@ -23,13 +23,13 @@ if ( file_exists(DOKU_PLUGIN . 'dw2pdf/mpdf/mpdf.php') ) {
     
         private $debugObj = false;
 
-		function __construct($debug) {
+        function __construct($debug) {
             global $INPUT;
             global $conf;
 		
             $dw2pdf = plugin_load('action', 'dw2pdf');
 		
-		    // decide on the paper setup from param or config
+            // decide on the paper setup from param or config
             $pagesize    = $INPUT->str('pagesize', $dw2pdf->getConf('pagesize'), true);
             $orientation = $INPUT->str('orientation', $dw2pdf->getConf('orientation'), true);
     
@@ -37,9 +37,9 @@ if ( file_exists(DOKU_PLUGIN . 'dw2pdf/mpdf/mpdf.php') ) {
             io_mkdir_p(_MPDF_TEMP_PATH);
     
             $format = $pagesize;
-            if($orientation == 'landscape') $format .= '-L';
+            if ($orientation == 'landscape') $format .= '-L';
     
-            switch($conf['lang']) {
+            switch ($conf['lang']) {
                 case 'zh':
                 case 'zh-tw':
                 case 'ja':
@@ -62,16 +62,16 @@ if ( file_exists(DOKU_PLUGIN . 'dw2pdf/mpdf/mpdf.php') ) {
             $this->useSubstitutions = true;
         }
         
-        function message($msg, $vars=null, $lvl=1)
+        function message($msg, $vars = null, $lvl = 1)
         {
-            if ( $this->debugObj !== false ) {
+            if ($this->debugObj !== false) {
                 $this->debugObj->message($msg, $vars, $lvl);
             }
         }
 
         function Error($msg)
         {
-            if ( $this->debugObj !== false && method_exists($this->debugObj, 'runtimeException') ) {
+            if ($this->debugObj !== false && method_exists($this->debugObj, 'runtimeException')) {
                 $this->debugObj->runtimeException($msg);
             } else {
                 parent::Error($msg);
@@ -121,65 +121,65 @@ if ( file_exists(DOKU_PLUGIN . 'dw2pdf/mpdf/mpdf.php') ) {
         
         function GetFullPath(&$path,$basepath='') {
         
-        	// Full Path might return a doubled path like /~gamma/documentation/lib//~gamma/documentation/lib/tpl/clearreports/./_print-images/background-bottom.jpg
+            // Full Path might return a doubled path like /~gamma/documentation/lib//~gamma/documentation/lib/tpl/clearreports/./_print-images/background-bottom.jpg
         	
-			$path = str_replace("\\","/",$path); //If on Windows
-			$path = preg_replace('/^\/\//','http://',$path);	// mPDF 5.6.27
-			$regexp = '|^./|';	// Inadvertently corrects "./path/etc" and "//www.domain.com/etc"
-			$path = preg_replace($regexp,'',$path);
+            $path = str_replace("\\","/",$path); //If on Windows
+            $path = preg_replace('/^\/\//','http://',$path);	// mPDF 5.6.27
+            $regexp = '|^./|';	// Inadvertently corrects "./path/etc" and "//www.domain.com/etc"
+            $path = preg_replace($regexp,'',$path);
 		
-        	if ( preg_match("/^.+\/\.\.\//", $path) ) {
-        		// ../ not at the beginning
-	        	$newpath = array();
-	        	$oldpath = explode('/', $path);
+            if ( preg_match("/^.+\/\.\.\//", $path) ) {
+                // ../ not at the beginning
+                $newpath = array();
+                $oldpath = explode('/', $path);
 	        	
-	        	foreach( $oldpath as $slice ) {
-		        	if ( $slice == ".." && count($newpath) > 0 ) {
-			        	array_pop($newpath);
-			        	continue;
-		        	}
+                foreach( $oldpath as $slice ) {
+                    if ( $slice == ".." && count($newpath) > 0 ) {
+                        array_pop($newpath);
+                        continue;
+                    }
 		        	
-		        	$newpath[] = $slice;
-	        	}
+                    $newpath[] = $slice;
+                }
 	        	
-	        	$path = implode('/', $newpath);
-        	}
+                $path = implode('/', $newpath);
+            }
         	
-        	parent::GetFullPath($path, $basepath);
+            parent::GetFullPath($path, $basepath);
 
-        	$regex = "/^(". preg_quote(DOKU_BASE, '/') .".+)\\1/";
-        	if ( preg_match($regex, $path, $matches) ) {
-        		$path = preg_replace($regex, "\\1", $path);
-        	}
+            $regex = "/^(". preg_quote(DOKU_BASE, '/') .".+)\\1/";
+            if ( preg_match($regex, $path, $matches) ) {
+                $path = preg_replace($regex, "\\1", $path);
+            }
 
         }
         
         /*
           Only when the toc is being generated  
         */
-        function MovePages($target_page, $start_page, $end_page=-1) {
+        function MovePages($target_page, $start_page, $end_page = -1) {
             parent::MovePages($target_page, $start_page, $end_page);
         }
         
-        function OpenTag($tag,$attr,&$ahtml,&$ihtml) {
-            switch($tag) {
+        function OpenTag($tag, $attr, &$ahtml, &$ihtml) {
+            switch ($tag) {
                 case 'BOOKMARK':
                 case 'TOCENTRY':
-                    if ( $attr['CONTENT'] ) {
+                    if ($attr['CONTENT']) {
                         // resolve double encoding
                         $attr['CONTENT'] = htmlspecialchars_decode($attr['CONTENT'], ENT_QUOTES);
                     }
                     break;
             }
-            return parent::OpenTag($tag,$attr,$ahtml,$ihtml); 
+            return parent::OpenTag($tag, $attr, $ahtml, $ihtml); 
         }
     }
     
-    if ( file_exists(DOKU_PLUGIN . 'dw2pdf/mpdf/classes/cssmgr.php') && !class_exists('cssmgr', false)) {
+    if (file_exists(DOKU_PLUGIN . 'dw2pdf/mpdf/classes/cssmgr.php') && !class_exists('cssmgr', false)) {
 //*        
         require_once(DOKU_PLUGIN . 'siteexport/inc/patchCSSmgr.php');
         $objPatch = new CSSMgrPatch(DOKU_PLUGIN . 'dw2pdf/mpdf/classes/cssmgr.php');
-        if ( $objPatch->redefineFunction(file_get_contents(DOKU_PLUGIN . 'siteexport/inc/readCSS.patch')) ) {
+        if ($objPatch->redefineFunction(file_get_contents(DOKU_PLUGIN . 'siteexport/inc/readCSS.patch'))) {
             eval($objPatch->getCode());
         }
 /*/

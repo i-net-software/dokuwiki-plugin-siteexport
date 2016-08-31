@@ -1,7 +1,7 @@
 <?php
 
-if(!defined('DOKU_PLUGIN')) die('meh');
-require_once(DOKU_PLUGIN.'siteexport/inc/toc.php');
+if (!defined('DOKU_PLUGIN')) die('meh');
+require_once(DOKU_PLUGIN . 'siteexport/inc/toc.php');
 
 class siteexport_javahelp
 {
@@ -13,12 +13,16 @@ class siteexport_javahelp
     private $tocName = 'toc.xml';
     private $mapName = 'map.xml';
     
+    /**
+     * @param siteexport_functions $functions
+     * @param siteexport_zipfilewriter $filewriter
+     */
     public function siteexport_javahelp($functions, $filewriter, $NS)
     {
         $this->NS = $NS;
         $this->functions = $functions;
         $this->filewriter = $filewriter;
-        $this->translation = & plugin_load('helper', 'translation' );
+        $this->translation = & plugin_load('helper', 'translation');
     }
 
     public function createTOCFiles($data)
@@ -28,10 +32,10 @@ class siteexport_javahelp
         // Split Tree for translation
         $translationHSFiles = array();
 
-        for ($i=0; $i<count($data); $i++)
+        for ($i = 0; $i < count($data); $i++)
         {
             $lang = '';
-            if ( $this->translation )
+            if ($this->translation)
             {
                 $this->translation->tns = $this->translation->setupTNS($data[$i]['id']);
                 $lang = $this->translation->getLangPart($data[$i]['id']);
@@ -43,7 +47,7 @@ class siteexport_javahelp
         
         $toc = new siteexport_toc($this->functions, $this->NS);
         // +":" at the end becaus this is already a namespace
-        $baseNameSpace = str_replace('/', ':', $this->translation && !empty($this->translation->tns) ? $this->translation->tns : $this->NS . ':' );
+        $baseNameSpace = str_replace('/', ':', $this->translation && !empty($this->translation->tns) ? $this->translation->tns : $this->NS . ':');
         $translationRoot = curNS($baseNameSpace);
         $hsPrename = curNS(getNS($baseNameSpace));
                 
@@ -55,10 +59,10 @@ class siteexport_javahelp
         $check = array();
         $last_key = end(array_keys($translationHSFiles));
         
-        foreach( $translationHSFiles as $lang => $data )
+        foreach ($translationHSFiles as $lang => $data)
         {
             // Prepare Translations
-            if ( !empty($lang) && !$this->functions->settings->TOCMapWithoutTranslation )
+            if (!empty($lang) && !$this->functions->settings->TOCMapWithoutTranslation)
             {
                 $toc->translation = &$this->translation;
                 $rootNode = cleanID($this->translation->tns . $lang) . ':';
@@ -72,16 +76,16 @@ class siteexport_javahelp
             
             // Create toc and map for each lang
             list($tocData, $mapData, $startPageID) = $toc->__getJavaHelpTOCXML($data);
-            $this->filewriter->__moveDataToZip($tocData, $tsRootPath . ( empty($lang) ? '' : $lang . '/') . $this->tocName);
-            $this->filewriter->__moveDataToZip($mapData, $tsRootPath . ( empty($lang) ? '' : $lang . '/') . $this->mapName);
+            $this->filewriter->__moveDataToZip($tocData, $tsRootPath . (empty($lang) ? '' : $lang . '/') . $this->tocName);
+            $this->filewriter->__moveDataToZip($mapData, $tsRootPath . (empty($lang) ? '' : $lang . '/') . $this->mapName);
 
             // Create HS File
             // array_shift($toc->getMapID($rootNode, &$check))
-            $HS = $this->getHSXML( $startPageID, $this->functions->getSiteTitle($rootNode), $lang, $tsRootPath );
-            $this->filewriter->__moveDataToZip($HS, $translationRoot . ( empty($lang) ? '' : '_' . $lang ) . '.hs');
+            $HS = $this->getHSXML($startPageID, $this->functions->getSiteTitle($rootNode), $lang, $tsRootPath);
+            $this->filewriter->__moveDataToZip($HS, $translationRoot . (empty($lang) ? '' : '_' . $lang) . '.hs');
             
             // Default Lang
-            if ( $lang == $this->functions->settings->defaultLang || $lang == $last_key )
+            if ($lang == $this->functions->settings->defaultLang || $lang == $last_key)
             {
                 $this->functions->debug->message("Writing Default HS File for Language:", $lang, 3);
                 $this->filewriter->__moveDataToZip($HS, $translationRoot . '.hs');
@@ -92,7 +96,7 @@ class siteexport_javahelp
     
     private function translationRootPath($translationRoot = '')
     {
-        if ( !empty($translationRoot) )
+        if (!empty($translationRoot))
         {
             return $translationRoot . '/';
         }
@@ -100,11 +104,11 @@ class siteexport_javahelp
         return $translationRoot;
     }
     
-    private function getHSXML($rootID, $title, $lang='', $translationRoot='')
+    private function getHSXML($rootID, $title, $lang = '', $translationRoot = '')
     {
-        if ( empty($lang) && substr($translationRoot, -1) != '/') {
+        if (empty($lang) && substr($translationRoot, -1) != '/') {
             $translationRoot .= '/';
-        } else if ( !empty($lang) && substr($lang, -1) != '/' ) {
+        } else if (!empty($lang) && substr($lang, -1) != '/') {
             $lang .= '/';
         }
 

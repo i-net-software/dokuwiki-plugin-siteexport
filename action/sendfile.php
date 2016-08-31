@@ -8,13 +8,13 @@
  */
 
 // must be run within Dokuwiki
-if(!defined('DOKU_INC')) die();
+if (!defined('DOKU_INC')) die();
 
-if(!defined('DOKU_PLUGIN')) define('DOKU_PLUGIN',DOKU_INC.'lib/plugins/');
+if (!defined('DOKU_PLUGIN')) define('DOKU_PLUGIN', DOKU_INC . 'lib/plugins/');
 
-require_once(DOKU_PLUGIN.'action.php');
-require_once(DOKU_PLUGIN.'siteexport/inc/debug.php');
-require_once(DOKU_PLUGIN.'siteexport/inc/functions.php');
+require_once(DOKU_PLUGIN . 'action.php');
+require_once(DOKU_PLUGIN . 'siteexport/inc/debug.php');
+require_once(DOKU_PLUGIN . 'siteexport/inc/functions.php');
 
 class action_plugin_siteexport_sendfile extends DokuWiki_Action_Plugin {
 
@@ -31,7 +31,7 @@ class action_plugin_siteexport_sendfile extends DokuWiki_Action_Plugin {
     function siteexport_sendfile(&$event, $args) {
         global $conf;
 
-        if ( empty($_REQUEST['siteexport']) /* || $event->data['orig'] != $this->getConf('zipfilename') */ ) {
+        if (empty($_REQUEST['siteexport']) /* || $event->data['orig'] != $this->getConf('zipfilename') */) {
             return;
         }
 
@@ -61,7 +61,7 @@ class action_plugin_siteexport_sendfile extends DokuWiki_Action_Plugin {
 
     function siteexport_sendfile_not_found(&$event, $args)
     {
-        if ( empty($_REQUEST['siteexport']) ||
+        if (empty($_REQUEST['siteexport']) ||
         /**
         $event->data['media'] != $this->getConf('zipfilename')
         /*/

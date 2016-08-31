@@ -14,22 +14,26 @@ require_once(DOKU_PLUGIN.'siteexport/preload.php');
 class helper_plugin_siteexport_page_remove {
     private $start, $end;
 
+    /**
+     * @param integer $start
+     * @param integer $end
+     */
     function __construct($start, $end=null) {
         $this->start = $start;
         $this->end = $end;
     }
 
     function _page_remove($elem) {
-    	return $elem[2] >= $this->start && ( is_null( $this->end ) || $elem[2] <= $this->end);
+        return $elem[2] >= $this->start && ( is_null( $this->end ) || $elem[2] <= $this->end);
     }
 }
 
 class helper_plugin_siteexport extends DokuWiki_Plugin {
 
-	/**
-	 * for backward compatability
-	 * @see inc/DokuWiki_Plugin#getInfo()
-	 */
+    /**
+     * for backward compatability
+     * @see inc/DokuWiki_Plugin#getInfo()
+     */
     function getInfo(){
         if ( method_exists(parent, 'getInfo')) {
             $info = parent::getInfo();
@@ -49,12 +53,20 @@ class helper_plugin_siteexport extends DokuWiki_Plugin {
 		$_pattern = '/^[\w-]+$/';
 		if ($dh = @opendir($_dir)) {
 			while (false !== ($entry = readdir($dh))) {
-				if ($entry == '.' || $entry == '..') continue;
-				if ($entry == '.' || $entry == '..') continue;
-				if ($_pattern && !preg_match($_pattern,$entry)) continue;
+				if ($entry == '.' || $entry == '..') {
+				    continue;
+				}
+				if ($entry == '.' || $entry == '..') {
+				    continue;
+				}
+				if ($_pattern && !preg_match($_pattern,$entry)) {
+				    continue;
+				}
 
 				$file = (is_link($_dir.$entry)) ? readlink($_dir.$entry) : $entry;
-				if (is_dir($_dir.$file)) $list[] = $entry;
+				if (is_dir($_dir.$file)) {
+				    $list[] = $entry;
+				}
 			}
 			closedir($dh);
 		}
@@ -71,9 +83,9 @@ class helper_plugin_siteexport extends DokuWiki_Plugin {
 	    global $plugin_controller;
 	    
 	    $allPlugins = array();
-	    foreach($plugin_controller->getList(null,true) as $plugin ) { // All plugins
+	    foreach ($plugin_controller->getList(null, true) as $plugin) { // All plugins
 	    	// check for CSS or JS
-	    	if ( !file_exists(DOKU_PLUGIN."$plugin/script.js") && !file_exists(DOKU_PLUGIN."$plugin/style.css") && !file_exists(DOKU_PLUGIN."$plugin/print.css") ) { continue; }
+	    	if (!file_exists(DOKU_PLUGIN . "$plugin/script.js") && !file_exists(DOKU_PLUGIN . "$plugin/style.css") && !file_exists(DOKU_PLUGIN . "$plugin/print.css")) { continue; }
 	    	$allPlugins[] = $plugin;
 	    }
 	    
@@ -100,7 +112,9 @@ class helper_plugin_siteexport extends DokuWiki_Plugin {
 		search($sites, $conf['datadir'], 'search_allpages', array(), $functions->getNamespaceFromID($ID, $page));
         foreach( $sites as $site ) {
         	
-        	if ( $ID == $site['id'] ) continue;
+        	if ( $ID == $site['id'] ) {
+        	    continue;
+        	}
         	$sortIdentifier = intval(p_get_metadata($site['id'], 'mergecompare'));
             array_push($values, array(':' . $site['id'], $functions->getSiteTitle($site['id']), $sortIdentifier));
         }
@@ -140,32 +154,32 @@ class helper_plugin_siteexport extends DokuWiki_Plugin {
 	    $usenumberedheading = true;
 	    
         $preload = plugin_load('preload', 'siteexport');
-        if ( $preload && $preload->__create_preload_function() ) {
+        if ($preload && $preload->__create_preload_function()) {
             $templateSwitching = true;
         }
 
-        $dw2pdf = plugin_load('action', 'dw2pdf' );
-        if ( $dw2pdf ) {
+        $dw2pdf = plugin_load('action', 'dw2pdf');
+        if ($dw2pdf) {
             $pdfExport = true;
         }
 
-        $translation = plugin_load('helper', 'translation' );
-        if ( $translation ) {
+        $translation = plugin_load('helper', 'translation');
+        if ($translation) {
             $translationAvailable = true;
         }
 
         $regenerateScript = '';
-        print $this->locale_xhtml(( defined('DOKU_SITEEXPORT_MANAGER') ? 'manager' : '') . 'intro');
+        print $this->locale_xhtml((defined('DOKU_SITEEXPORT_MANAGER') ? 'manager' : '') . 'intro');
 
         $form = new Doku_Form('siteexport', null, 'post');
-        $form->startFieldset( $this->getLang('startingNamespace') );
+        $form->startFieldset($this->getLang('startingNamespace'));
 
         $form->addElement(form_makeTextField('ns', $ID, $this->getLang('ns') . ':', 'ns'));
         $form->addElement(form_makeTag('br'));
         $form->addElement(form_makeTextField('ens', $ID, $this->getLang('ens') . ':', 'ens'));
 
         $form->addElement(form_makeTag('br'));
-        $form->addElement(form_makeListboxField('depthType', array( "0.0" => $this->getLang('depth.pageOnly'), "1.0" => $this->getLang('depth.allSubNameSpaces'), "2.0" => $this->getLang('depth.specifiedDepth') ), (empty($_REQUEST['depthType']) ? $this->getLang('depth.allSubNameSpaces') : $_REQUEST['depthType']), $this->getLang('depthType') . ':', 'depthType', null, array_merge(array('class' => 'edit'))));
+        $form->addElement(form_makeListboxField('depthType', array("0.0" => $this->getLang('depth.pageOnly'), "1.0" => $this->getLang('depth.allSubNameSpaces'), "2.0" => $this->getLang('depth.specifiedDepth')), (empty($_REQUEST['depthType']) ? $this->getLang('depth.allSubNameSpaces') : $_REQUEST['depthType']), $this->getLang('depthType') . ':', 'depthType', null, array_merge(array('class' => 'edit'))));
 
         $form->addElement(form_makeTag('br'));
         $form->addElement(form_makeOpenTag("div", array('style' => 'display:' . ($_REQUEST['depthType'] == "2" ? "block" : "none") . ';', 'id' => 'depthContainer')));
@@ -175,37 +189,37 @@ class helper_plugin_siteexport extends DokuWiki_Plugin {
         $form->endFieldset();
         $form->addElement(form_makeTag('br'));
 
-        $form->startFieldset( $this->getLang('selectYourOptions') );
+        $form->startFieldset($this->getLang('selectYourOptions'));
         $form->addElement(form_makeCheckboxField('absolutePath', 1, $this->getLang('absolutePath') . ':', 'absolutePath'));
         $form->addElement(form_makeTag('br'));
         // The parameter needs lowercase
         $form->addElement(form_makeCheckboxField('exportbody', 1, $this->getLang('exportBody') . ':', 'exportbody'));
         $form->addElement(form_makeTag('br'));
-        $form->addElement(form_makeCheckboxField('exportLinkedPages', 1, $this->getLang('exportLinkedPages') . ':', 'exportLinkedPages', null, array('checked' => 'checked' )));
+        $form->addElement(form_makeCheckboxField('exportLinkedPages', 1, $this->getLang('exportLinkedPages') . ':', 'exportLinkedPages', null, array('checked' => 'checked')));
         $form->addElement(form_makeTag('br'));
         $form->addElement(form_makeCheckboxField('disableCache', 1, $this->getLang('disableCache') . ':', 'disableCache'));
         $form->addElement(form_makeTag('br'));
-        $form->addElement(form_makeCheckboxField('addParams', 1, $this->getLang('addParams') . ':', 'addParams', null, array_merge(array('checked' => ($conf['userewrite'] != 1 ? 'checked' : '' ) ))));
+        $form->addElement(form_makeCheckboxField('addParams', 1, $this->getLang('addParams') . ':', 'addParams', null, array_merge(array('checked' => ($conf['userewrite'] != 1 ? 'checked' : '')))));
         $form->addElement(form_makeTag('br'));
         $form->addElement(form_makeTag('br'));
-        $form->addElement(form_makeListboxField('renderer', array_merge(array('','xhtml'), plugin_list('renderer')), '', $this->getLang('renderer') . ':', 'renderer', null, array_merge(array('class' => 'edit'))));
+        $form->addElement(form_makeListboxField('renderer', array_merge(array('', 'xhtml'), plugin_list('renderer')), '', $this->getLang('renderer') . ':', 'renderer', null, array_merge(array('class' => 'edit'))));
 
         $form->addElement(form_makeTag('br'));
-        if ( $templateSwitching ) {
+        if ($templateSwitching) {
             $form->addElement(form_makeListboxField('template', $this->__getTemplates(), $conf['template'], $this->getLang('template') . ':', 'template', null, array_merge(array('class' => 'edit'))));
             $form->addElement(form_makeTag('br'));
         } else
         {
             $form->addElement(form_makeTag('br'));
-            $form->addElement(form_makeOpenTag('p', array('style' => 'color: #a00;' )));
-            $form->addElement('Can\'t create preload file in \'inc\' directory. Template switching is not available. Plugin disabling is not available.' );
+            $form->addElement(form_makeOpenTag('p', array('style' => 'color: #a00;')));
+            $form->addElement('Can\'t create preload file in \'inc\' directory. Template switching is not available. Plugin disabling is not available.');
             $form->addElement(form_makeCloseTag('p'));
         }
         
         $form->addElement(form_makeTag('br'));
-        $form->addElement(form_makeCheckboxField('pdfExport', 1, $this->getLang('pdfExport') . ':', 'pdfExport', null, $pdfExport ? array() : array_merge(array('disabled' => 'disabled')) ));
-        if ( !$pdfExport ) {
-            $form->addElement(form_makeOpenTag('p', array('style' => 'color: #a00;' )));
+        $form->addElement(form_makeCheckboxField('pdfExport', 1, $this->getLang('pdfExport') . ':', 'pdfExport', null, $pdfExport ? array() : array_merge(array('disabled' => 'disabled'))));
+        if (!$pdfExport) {
+            $form->addElement(form_makeOpenTag('p', array('style' => 'color: #a00;')));
             $form->addElement('In order to use the PDF export, please ');
             $form->addElement(form_makeOpenTag('a', array('href' => 'http://www.dokuwiki.org/plugin:dw2pdf', 'alt' => 'install plugin', 'target' => '_blank')));
             $form->addElement('install the dw2pdf plugin.');
@@ -214,11 +228,11 @@ class helper_plugin_siteexport extends DokuWiki_Plugin {
         }
 
         $form->addElement(form_makeTag('br'));
-        $form->addElement(form_makeCheckboxField('usenumberedheading', 1, $this->getLang('usenumberedheading') . ':', 'usenumberedheading', null, $usenumberedheading && $pdfExport ? array() : array_merge(array('disabled' => 'disabled')) ));
+        $form->addElement(form_makeCheckboxField('usenumberedheading', 1, $this->getLang('usenumberedheading') . ':', 'usenumberedheading', null, $usenumberedheading && $pdfExport ? array() : array_merge(array('disabled' => 'disabled'))));
         $form->addElement(form_makeTag('br'));
         
-        if ( !$usenumberedheading ) {
-            $form->addElement(form_makeOpenTag('p', array('style' => 'color: #a00;' )));
+        if (!$usenumberedheading) {
+            $form->addElement(form_makeOpenTag('p', array('style' => 'color: #a00;')));
             $form->addElement('In order to use numbered headings, please ');
             $form->addElement(form_makeOpenTag('a', array('href' => 'http://www.dokuwiki.org/plugin:nodetailsxhtml', 'alt' => 'install plugin', 'target' => '_blank')));
             $form->addElement('install the nodetailsxhtml plugin.');
@@ -229,7 +243,7 @@ class helper_plugin_siteexport extends DokuWiki_Plugin {
         $form->endFieldset();
         $form->addElement(form_makeTag('br'));
 
-        $form->startFieldset( $this->getLang('helpCreationOptions') );
+        $form->startFieldset($this->getLang('helpCreationOptions'));
         $form->addElement(form_makeCheckboxField('eclipseDocZip', 1, $this->getLang('eclipseDocZip') . ':', 'eclipseDocZip'));
         $form->addElement(form_makeTag('br'));
         $form->addElement(form_makeCheckboxField('JavaHelpDocZip', 1, $this->getLang('JavaHelpDocZip') . ':', 'JavaHelpDocZip'));
@@ -238,33 +252,33 @@ class helper_plugin_siteexport extends DokuWiki_Plugin {
         $form->addElement(form_makeTag('br'));
         $form->addElement(form_makeCheckboxField('emptyTocElem', 1, $this->getLang('emptyTocElem') . ':', 'emptyTocElem'));
         $form->addElement(form_makeTag('br'));
-        if ( !$translationAvailable ) {
+        if (!$translationAvailable) {
             $form->addElement(form_makeCheckboxField('TOCMapWithoutTranslation', 1, $this->getLang('TOCMapWithoutTranslation') . ':', 'TOCMapWithoutTranslation'));
             $form->addElement(form_makeTag('br'));
         } else {
 
-            if ( !is_array($trans) ) {
-                $trans = array( $trans );
+            if (!is_array($trans)) {
+                $trans = array($trans);
             }
             
-            $trans = array_unique(array_merge($trans, array( $conf['lang'] )));
+            $trans = array_unique(array_merge($trans, array($conf['lang'])));
             $form->addElement(form_makeListboxField('defaultLang', $trans, $conf['lang'], $this->getLang('defaultLang') . ':', 'defaultLang'));
             $form->addElement(form_makeTag('br'));
         }
         $form->endFieldset();
         $form->addElement(form_makeTag('br'));
 
-        if ( $templateSwitching )
+        if ($templateSwitching)
         {
-            $form->startFieldset( $this->getLang('disablePluginsOption') );
+            $form->startFieldset($this->getLang('disablePluginsOption'));
             	
             $form->addElement(form_makeCheckboxField("disableall", 1, 'Disable All:', "disableall", 'forceVisible'));
             $form->addElement(form_makeTag('br'));
             $form->addElement(form_makeTag('br'));
 
             list($allPlugins, $enabledPlugins) = $this->__getPluginList();
-            foreach ( $allPlugins as $plugin ) {
-                $form->addElement(form_makeCheckboxField("disableplugin[]", $plugin, $plugin . ':', "disableplugin_$plugin", null, (!in_array($plugin, $enabledPlugins) ? array('checked' => 'checked', 'disabled' => 'disabled') : array() )));
+            foreach ($allPlugins as $plugin) {
+                $form->addElement(form_makeCheckboxField("disableplugin[]", $plugin, $plugin . ':', "disableplugin_$plugin", null, (!in_array($plugin, $enabledPlugins) ? array('checked' => 'checked', 'disabled' => 'disabled') : array())));
                 $form->addElement(form_makeTag('br'));
             }
             	
@@ -285,41 +299,41 @@ class helper_plugin_siteexport extends DokuWiki_Plugin {
         $form->endFieldset();
         $form->addElement(form_makeTag('br'));
 
-		if ( !defined('DOKU_SITEEXPORT_MANAGER') ) {
+        if ( !defined('DOKU_SITEEXPORT_MANAGER') ) {
 			
         
-	        $form->startFieldset( $this->getLang('startProcess') );
-	        $form->addElement(form_makeTextField('copyurl', "", $this->getLang('directDownloadLink') . ':', 'copyurl', null, array('readonly' => 'readonly') ));
-	        $form->addElement(form_makeTag('br'));
-	        $form->addElement(form_makeTextField('wgeturl', "", $this->getLang('wgetURLLink') . ':', 'wgeturl', null, array('readonly' => 'readonly') ));
-	        $form->addElement(form_makeTag('br'));
-	        $form->addElement(form_makeTextField('curlurl', "", $this->getLang('curlURLLink') . ':', 'curlurl', null, array('readonly' => 'readonly') ));
-	        $form->addElement(form_makeTag('br', array('class'=>'clear')));
-	        $form->addElement(form_makeButton('submit', 'siteexport', $this->getLang('start') , array('style' => 'float:right;')));
-	        $form->endFieldset();
-	        $form->addElement(form_makeTag('br'));
+            $form->startFieldset( $this->getLang('startProcess') );
+            $form->addElement(form_makeTextField('copyurl', "", $this->getLang('directDownloadLink') . ':', 'copyurl', null, array('readonly' => 'readonly') ));
+            $form->addElement(form_makeTag('br'));
+            $form->addElement(form_makeTextField('wgeturl', "", $this->getLang('wgetURLLink') . ':', 'wgeturl', null, array('readonly' => 'readonly') ));
+            $form->addElement(form_makeTag('br'));
+            $form->addElement(form_makeTextField('curlurl', "", $this->getLang('curlURLLink') . ':', 'curlurl', null, array('readonly' => 'readonly') ));
+            $form->addElement(form_makeTag('br', array('class'=>'clear')));
+            $form->addElement(form_makeButton('submit', 'siteexport', $this->getLang('start') , array('style' => 'float:right;')));
+            $form->endFieldset();
+            $form->addElement(form_makeTag('br'));
 	
-	        $form->endFieldset();
-			$form->addElement(form_makeTag('br'));
+            $form->endFieldset();
+            $form->addElement(form_makeTag('br'));
 
-	        $form->startFieldset( $this->getLang('status') );
-	        $form->addElement(form_makeOpenTag('span', array('id' => 'siteexport__out')));
+            $form->startFieldset( $this->getLang('status') );
+            $form->addElement(form_makeOpenTag('span', array('id' => 'siteexport__out')));
 	
-	        $form->addElement(form_makeCloseTag('span'));
-	        $form->addElement(form_makeOpenTag('span', array('class' => 'siteexport__throbber')));
-	        $form->addElement(form_makeTag('img', array('src' => DOKU_BASE.'lib/images/loading.gif', 'id' => 'siteexport__throbber')));
-	        $form->addElement(form_makeCloseTag('span'));
-	        $form->endFieldset();
-	        $form->addElement(form_makeTag('br'));
+            $form->addElement(form_makeCloseTag('span'));
+            $form->addElement(form_makeOpenTag('span', array('class' => 'siteexport__throbber')));
+            $form->addElement(form_makeTag('img', array('src' => DOKU_BASE.'lib/images/loading.gif', 'id' => 'siteexport__throbber')));
+            $form->addElement(form_makeCloseTag('span'));
+            $form->endFieldset();
+            $form->addElement(form_makeTag('br'));
 
-		} else {
-	        $form->startFieldset( $this->getLang('startProcess') );
-	        $form->addElement(form_makeButton('submit', 'siteexport', $this->getLang('useOptionsInEditor') , array('style' => 'width:100%;')));
-		}
+        } else {
+            $form->startFieldset( $this->getLang('startProcess') );
+            $form->addElement(form_makeButton('submit', 'siteexport', $this->getLang('useOptionsInEditor') , array('style' => 'width:100%;')));
+        }
 
         $form->endFieldset();
         $form->addElement(form_makeTag('br'));
 
         $form->printForm();
-	}
+    }
 }
