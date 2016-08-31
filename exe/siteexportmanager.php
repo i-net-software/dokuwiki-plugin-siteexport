@@ -8,7 +8,9 @@
  * @author     Gerry Weissbach <gweissbach@inetsoftware.de>
  * @license  GPL 2 (http://www.gnu.org/licenses/gpl.html)
  */
-if(!defined('DOKU_INC')) define('DOKU_INC',dirname(__FILE__).'/../../../../');
+if(!defined('DOKU_INC')) {
+    define('DOKU_INC',dirname(__FILE__).'/../../../../');
+}
 define('DOKU_SITEEXPORT_MANAGER',1);
 
     require_once(DOKU_INC.'inc/init.php');
@@ -18,24 +20,24 @@ define('DOKU_SITEEXPORT_MANAGER',1);
     $NS = cleanID($INPUT->str('ns'));
     
     if ( empty($ID) ) {
-    	if ( empty($conf['basedir']) ) {
+        if ( empty($conf['basedir']) ) {
     	
-    		$path = str_replace(array('/', '\\'), DIRECTORY_SEPARATOR, dirname(parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH)).'/../../../../');
-		    $parts = array_filter(explode(DIRECTORY_SEPARATOR, $path), 'strlen');
-		    $absolutes = array();
-		    foreach ($parts as $part) {
-		        if ('.'  == $part) continue;
-		        if ('..' == $part) {
-		            array_pop($absolutes);
-		        } else {
-		            $absolutes[] = $part;
-		        }
-		    }
-		    $conf['basedir']='/'.implode(DIRECTORY_SEPARATOR, $absolutes);
-    	}
+            $path = str_replace(array('/', '\\'), DIRECTORY_SEPARATOR, dirname(parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH)).'/../../../../');
+            $parts = array_filter(explode(DIRECTORY_SEPARATOR, $path), 'strlen');
+            $absolutes = array();
+            foreach ($parts as $part) {
+                if ('.'  == $part) continue;
+                if ('..' == $part) {
+                    array_pop($absolutes);
+                } else {
+                    $absolutes[] = $part;
+                }
+            }
+            $conf['basedir']='/'.implode(DIRECTORY_SEPARATOR, $absolutes);
+        }
 
-    	$_SERVER['REQUEST_URI'] = $_SERVER['HTTP_REFERER'];
-    	$ID = $NS . ':' . getID();
+        $_SERVER['REQUEST_URI'] = $_SERVER['HTTP_REFERER'];
+        $ID = $NS . ':' . getID();
     }
     
     $INFO = !empty($INFO) ? array_merge($INFO, mediainfo()) : mediainfo();
@@ -44,7 +46,7 @@ define('DOKU_SITEEXPORT_MANAGER',1);
 
     // do not display the manager if user does not have read access
     if($AUTH < AUTH_READ) {
-       	http_status(403);
+            http_status(403);
         die($lang['accessdenied']);
     }
 
@@ -69,8 +71,8 @@ define('DOKU_SITEEXPORT_MANAGER',1);
     <div id="siteexport__manager" class="dokuwiki">
         <?php html_msgarea() ?>
         <?php        
-			$functions=& plugin_load('helper', 'siteexport');
-			$functions->__siteexport_addpage();	        
+            $functions=& plugin_load('helper', 'siteexport');
+            $functions->__siteexport_addpage();	        
         ?>        
     </div>
     <!--[if ( lte IE 7 | IE 8 ) ]></div><![endif]-->

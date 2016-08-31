@@ -1,6 +1,6 @@
 <?php 
 
-if(!defined('DOKU_PLUGIN')) die('meh');
+if (!defined('DOKU_PLUGIN')) die('meh');
 class settings_plugin_siteexport_settings extends DokuWiki_Plugin
 {
     var $fileType = 'html';
@@ -33,20 +33,23 @@ class settings_plugin_siteexport_settings extends DokuWiki_Plugin
     
     var $defaultLang = 'en';
     
+    /**
+     * @param siteexport_functions $functions
+     */
     function settings_plugin_siteexport_settings($functions) {
         global $ID, $conf;
         
-        $functions->debug->setDebugFile ($this->getConf('debugFile'));
-        if ( !empty( $_REQUEST['debug'] ) && intval($_REQUEST['debug']) >= 0 && intval($_REQUEST['debug']) <= 5) {
+        $functions->debug->setDebugFile($this->getConf('debugFile'));
+        if (!empty($_REQUEST['debug']) && intval($_REQUEST['debug']) >= 0 && intval($_REQUEST['debug']) <= 5) {
             $functions->debug->setDebugLevel(intval($_REQUEST['debug']));
         } else 
         {
-    		$functions->debug->setDebugLevel($this->getConf('debugLevel'));
+            $functions->debug->setDebugLevel($this->getConf('debugLevel'));
         }
         
         $functions->debug->isAJAX = $this->getConf('ignoreAJAXError') ? false : $functions->debug->isAJAX;
 
-        if ( empty($_REQUEST['pattern']) )
+        if (empty($_REQUEST['pattern']))
         {
             $params = $_REQUEST;
             $this->pattern = $functions->requestParametersToCacheHash($params);
@@ -59,7 +62,7 @@ class settings_plugin_siteexport_settings extends DokuWiki_Plugin
         
         $this->cachetime = $this->getConf('cachetime');
         if ( !empty( $_REQUEST['disableCache'] ) ) {
-	        $this->cachetime = intval($_REQUEST['disableCache']) == 1 ? 0 : $this->cachetime;
+            $this->cachetime = intval($_REQUEST['disableCache']) == 1 ? 0 : $this->cachetime;
         }
         
         // Load Variables
@@ -83,7 +86,7 @@ class settings_plugin_siteexport_settings extends DokuWiki_Plugin
 
         // set export Namespace - which is a virtual Root
         $pg = noNS($ID);
-        if ( empty( $this->namespace ) ) { $this->namespace = $functions->getNamespaceFromID(getNS($ID), $pg); }
+        if (empty($this->namespace)) { $this->namespace = $functions->getNamespaceFromID(getNS($ID), $pg); }
         $this->exportNamespace = !empty($_REQUEST['ens']) && preg_match("%^" . preg_quote($functions->getNamespaceFromID($_REQUEST['ens'], $pg), '%') . "%", $this->namespace) ? $functions->getNamespaceFromID($_REQUEST['ens'], $pg) : $this->namespace;
 
         $this->TOCMapWithoutTranslation = intval($_REQUEST['TOCMapWithoutTranslation']) == 1 ? true : false;

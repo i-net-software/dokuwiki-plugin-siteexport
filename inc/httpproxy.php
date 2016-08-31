@@ -17,8 +17,8 @@
  * THIS FILE SHOULD NOT BE MODIFIED
  ******************************************************************** */
 
-if(!defined('DOKU_INC')) die('meh');
-require_once( DOKU_INC . 'inc/HTTPClient.php');
+if (!defined('DOKU_INC')) die('meh');
+require_once(DOKU_INC . 'inc/HTTPClient.php');
 
 class HTTPProxy extends DokuHTTPClient {
 	
@@ -27,14 +27,15 @@ class HTTPProxy extends DokuHTTPClient {
     
     /**
      * Constructor.
+     * @param siteexport_functions $functions
      */
-    function __construct($functions){
+    function __construct($functions) {
         global $conf;
 
         // The proxy should only be used if configured.
         // Usually the proxy will allow connections away from the current server.
         // This is what we do not want in most cases.        
-        if ( $functions->getConf('useProxy') ) {
+        if ($functions->getConf('useProxy')) {
             unset($conf['proxy']);
         }
 
@@ -48,12 +49,12 @@ class HTTPProxy extends DokuHTTPClient {
         $this->status = -1;
         $this->debug = true;
 
-		if ( $this->settings->cookie == null ) {
+		if ($this->settings->cookie == null) {
 			$this->_debug("Has to re-authenticate request.");
-			if ( !$this->authenticate() ) {
+			if (!$this->authenticate()) {
                 
                 $this->_debug("Trying other Authentication (auth.php):"); // Try again.
-    		    if ( !(auth_setup() && $this->authenticate(true)) )	{
+    		    if (!(auth_setup() && $this->authenticate(true))) {
                     $this->_debug("Trying other Authentication (config):", $functions->authenticate() && $this->authenticate(true) ? 'authenticated' : 'not authenticated'); // Try again.
     		    } else {
                     $this->_debug("Ok, using default auth.php"); // Try again.
@@ -76,7 +77,7 @@ class HTTPProxy extends DokuHTTPClient {
 	/**
 	 * Authenticate using currently logged in user
 	 */
-	private function authenticate($secondAttempt=false) {
+	private function authenticate($secondAttempt = false) {
 		
 		global $auth, $INPUT;
 		
@@ -84,7 +85,7 @@ class HTTPProxy extends DokuHTTPClient {
 		list($this->user, $sticky, $this->pass) = auth_getCookie();
 
 		// Logged in in second attempt is now in Session.	
-		if ( $secondAttempt && !isset($this->user) && $INPUT->str('u') && $INPUT->str('p') ) {
+		if ($secondAttempt && !isset($this->user) && $INPUT->str('u') && $INPUT->str('p')) {
 
 			// We hacked directly into the login mechanism which provides the login information without encryption via $INPUT
 			$this->user = $INPUT->str('u');
@@ -103,10 +104,10 @@ class HTTPProxy extends DokuHTTPClient {
 	 */	
 	private function auth_decrypt($pass, $secret) {
 
-		if ( function_exists('auth_decrypt') ) {
+		if (function_exists('auth_decrypt')) {
 			// Binky
 			return auth_decrypt($pass, $secret);
-		} else if ( function_exists('PMA_blowfish_decrypt') ) {
+		} else if (function_exists('PMA_blowfish_decrypt')) {
 			// Weatherwax
 			return PMA_blowfish_decrypt($pass, $secret);
 		} else {
@@ -117,10 +118,10 @@ class HTTPProxy extends DokuHTTPClient {
 	/**
 	 * Remeber HTTPClient Cookie after successfull authentication
 	 */	
-	function sendRequest($url,$data='',$method='GET') {
+	function sendRequest($url, $data = '', $method = 'GET') {
 		
-		$returnCode = parent::sendRequest($url,$data,$method);
-		if ( $this->settings->cookie == null ) {
+		$returnCode = parent::sendRequest($url, $data, $method);
+		if ($this->settings->cookie == null) {
 			$this->settings->cookie = $this->cookies;
 		}
 		
@@ -129,10 +130,11 @@ class HTTPProxy extends DokuHTTPClient {
 	
 	 /**
 	 * print debug info to file if exists
+	 * @param string $info
 	 */
-	public function _debug($info,$var=null){
+	public function _debug($info, $var = null) {
 		
-		if ( !$this->debugClass ) {
+		if (!$this->debugClass) {
 			return;
 		}
 

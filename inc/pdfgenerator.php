@@ -1,36 +1,36 @@
 <?php
 
-if(!defined('DOKU_PLUGIN')) die('meh');
+if (!defined('DOKU_PLUGIN')) die('meh');
 
-if ( !empty($_REQUEST['pdfExport']) && intval($_REQUEST['pdfExport']) == 1 && file_exists(DOKU_PLUGIN . 'dw2pdf/mpdf/mpdf.php') ) {
+if (!empty($_REQUEST['pdfExport']) && intval($_REQUEST['pdfExport']) == 1 && file_exists(DOKU_PLUGIN . 'dw2pdf/mpdf/mpdf.php')) {
 
     require_once(DOKU_PLUGIN . 'siteexport/inc/mpdf.php');
     class siteexport_pdfgenerator
     {
         private $functions;
 
-        public function siteexport_pdfgenerator( $functions=null )
+        public function siteexport_pdfgenerator($functions = null)
         {
             $this->functions = $functions;
         }
 
         function createPDFFromFile($filename, &$NAME) {
 
-            if ( !preg_match("/" . $this->settings->fileType . "$/", $NAME) ) {
+            if (!preg_match("/" . $this->settings->fileType . "$/", $NAME)) {
                 $this->functions->debug->message("Filetype {$this->settings->fileType} did not match filename '$NAME'", null, 4);
                 return false;
             }
 
             $mpdf = new siteexportPDF($this->functions->debug);
 
-            if ( !$mpdf ) {
+            if (!$mpdf) {
                 $this->functions->debug->message("Could not instantiate MPDF", null, 4);
                 return false;
             }
 
             $html = @file_get_contents($filename);
 
-            if ( !strstr($html, "<html") ) {
+            if (!strstr($html, "<html")) {
                 $this->functions->debug->message("Filecontent had no HTML starting tag", null, 4);
                 return false;
             }
@@ -66,7 +66,7 @@ if ( !empty($_REQUEST['pdfExport']) && intval($_REQUEST['pdfExport']) == 1 && fi
             return $html;
         }
 
-        function arrangeHtml(&$html, $norendertags = '' )
+        function arrangeHtml(&$html, $norendertags = '')
         {
             global $conf;
 
@@ -82,9 +82,9 @@ if ( !empty($_REQUEST['pdfExport']) && intval($_REQUEST['pdfExport']) == 1 && fi
             $html = preg_replace_callback("/<a href=\"mailto:(.*?)\".*?>(.*?)<\/a>/s", array($this, '__pdfMailtoCallback'), $html);
             /**/
 
-            $standardReplacer = array (
+            $standardReplacer = array(
             // insert a pagebreak for support of WRAP and PAGEBREAK plugins
-        							'<br style="page-break-after:always;">' => '<pagebreak />',
+                                    '<br style="page-break-after:always;">' => '<pagebreak />',
                                     '<div class="wrap_pagebreak"></div>' => '<pagebreak />',
                                     '<sup>' => '<sup class="sup">',
                                     '<sub>' => '<sub class="sub">',
@@ -94,14 +94,14 @@ if ( !empty($_REQUEST['pdfExport']) && intval($_REQUEST['pdfExport']) == 1 && fi
 
             // thanks to Jared Ong
             // Customized to strip all span tags so that the wiki <code> SQL would display properly
-            $norender = explode(',',$norendertags);
-            $html = $this->strip_only($html, $norender ); //array('span','acronym'));
+            $norender = explode(',', $norendertags);
+            $html = $this->strip_only($html, $norender); //array('span','acronym'));
             $html = $this->strip_htmlencodedchars($html);
             // Customized to strip all span tags so that the wiki <code> SQL would display properly
         }
 
         private function __pdfMailtoCallback($DATA) {
-            if ( $DATA[1] == $DATA[2] ) {
+            if ($DATA[1] == $DATA[2]) {
                 $DATA[2] = $this->deobfuscate($DATA[2]);
             }
             $DATA[1] = $this->deobfuscate($DATA[1]);
@@ -116,8 +116,8 @@ if ( !empty($_REQUEST['pdfExport']) && intval($_REQUEST['pdfExport']) == 1 && fi
             return "\n<pre" . $DATA[1] . ">\n" . $code . "\n</pre>\n";
         }
 
-        private function __pdfPreWhitespacesCallback( $DATA ) {
-            return $DATA[1] . "\n" . str_repeat("&nbsp;", strlen($DATA[2])-($DATA[2]{0}=="\n"?1:0) ) . $DATA[3];
+        private function __pdfPreWhitespacesCallback($DATA) {
+            return $DATA[1] . "\n" . str_repeat("&nbsp;", strlen($DATA[2])-($DATA[2]{0} == "\n" ? 1 : 0)) . $DATA[3];
         }
 
         private function __pdfHeaderCallback($DATA) {
@@ -135,12 +135,12 @@ if ( !empty($_REQUEST['pdfExport']) && intval($_REQUEST['pdfExport']) == 1 && fi
         // thanks to Jared Ong
         // Custom function for help in stripping span tags
         private function strip_only($str, $tags) {
-            if(!is_array($tags)) {
+            if (!is_array($tags)) {
                 $tags = (strpos($str, '>') !== false ? explode('>', str_replace('<', '', $tags)) : array($tags));
-                if(end($tags) == '') array_pop($tags);
+                if (end($tags) == '') array_pop($tags);
             }
 
-            foreach($tags as $tag) $str = preg_replace('#</?'.$tag.'[^>]*>#is', '', $str);
+            foreach ($tags as $tag) $str = preg_replace('#</?' . $tag . '[^>]*>#is', '', $str);
             return $str;
         }
         // Custom function for help in stripping span tags
@@ -170,8 +170,8 @@ if ( !empty($_REQUEST['pdfExport']) && intval($_REQUEST['pdfExport']) == 1 && fi
                 case 'hex' :
                     $encode = '';
                     $len = strlen($email);
-                    for ($x=0; $x < $len; $x+=6){
-                        $encode .= chr(hexdec($email{$x+3}.$email{($x+4)}));
+                    for ($x = 0; $x < $len; $x += 6) {
+                        $encode .= chr(hexdec($email{$x+3} . $email{($x+4)}));
                     }
                     return $encode;
 
@@ -185,7 +185,7 @@ if ( !empty($_REQUEST['pdfExport']) && intval($_REQUEST['pdfExport']) == 1 && fi
          * Encoding ()taken from DW - but without needing the renderer
          **/
         private function xmlEntities($string) {
-            return htmlspecialchars($string,ENT_QUOTES,'UTF-8');
+            return htmlspecialchars($string, ENT_QUOTES, 'UTF-8');
         }
     }
 }

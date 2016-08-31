@@ -49,7 +49,7 @@ class siteexport_debug
      */
     public function setDebugFile($file = null)
     {
-        if ( !$file || empty($file) )
+        if (!$file || empty($file))
         {
             $file = null;
         }
@@ -67,19 +67,19 @@ class siteexport_debug
      */
     public function message($info,$var=null,$level=4){
 
-		$ajaxCanLog = $this->isAJAX && $level == 4;
+        $ajaxCanLog = $this->isAJAX && $level == 4;
         if( $this->debugLevel > $level && !$ajaxCanLog  ) return; // only log certain Debug Levels
         
         if ( empty($this->debugFile) ) {
             $this->runtimeException("DebugFile not properly configured. Make sure, it is set, readable and writable. We suggest to use a file in the DokuWiki's media directory.", true);
             $this->debugLevel = 5; // shutdown debug
         } else {
-	        $fh = @fopen($this->debugFile, "a+");
-	        if ( !$fh && !$ajaxCanLog ) {
-	            $this->runtimeException("Could not create/open/append logfile: '{$this->debugFile}'", true);
-	            $this->debugLevel = 5; // shutdown debug
-	            return;
-	        }
+            $fh = @fopen($this->debugFile, "a+");
+            if ( !$fh && !$ajaxCanLog ) {
+                $this->runtimeException("Could not create/open/append logfile: '{$this->debugFile}'", true);
+                $this->debugLevel = 5; // shutdown debug
+                return;
+            }
         }
 
         switch($level) {
@@ -94,15 +94,15 @@ class siteexport_debug
         $log = $prepend . str_replace("\n", "\n" . $prepend . "\t", trim($info)) . "\n";
         
         if ( $fh ) {
-	        fwrite($fh, $log);
+            fwrite($fh, $log);
         }
-		if ( $ajaxCanLog ) {
-			if ( !headers_sent() ) {
-				header("HTTP/1.0 500 Internal Server Error", true, 500);
-				header("Status: 500 Internal Server Error", true, 500);
-			}
-	        echo $log;
-		}
+        if ( $ajaxCanLog ) {
+            if ( !headers_sent() ) {
+                header("HTTP/1.0 500 Internal Server Error", true, 500);
+                header("Status: 500 Internal Server Error", true, 500);
+            }
+            echo $log;
+        }
 
         if ( !empty($var) ) {
 
@@ -116,17 +116,17 @@ class siteexport_debug
             }
 
             $log = $prepend . "\t" . str_replace("\n", "\n" . $prepend . "\t", str_replace("\r\n", "\n", trim($content))) . "\n";
-	        if ( $fh ) {
-		        fwrite($fh, $log);
-	        }
-			if ( $ajaxCanLog ) {
-		        echo $log;
-			}
+            if ( $fh ) {
+                fwrite($fh, $log);
+            }
+            if ( $ajaxCanLog ) {
+                echo $log;
+            }
         }
 
-		if ( $fh ) {
-	        fclose($fh);
-		}
+        if ( $fh ) {
+            fclose($fh);
+        }
     }
 
     function runtimeException($message, $wasDebug=false) {
@@ -136,14 +136,14 @@ class siteexport_debug
         if ( !$this->isAJAX ) {
             ob_start();
         } else if ( !headers_sent() ) {
-			header("HTTP/1.0 500 Internal Server Error", true, 500);
-			header("Status: 500 Internal Server Error", true, 500);
+            header("HTTP/1.0 500 Internal Server Error", true, 500);
+            header("Status: 500 Internal Server Error", true, 500);
         }
 
         if ( !$this->isAJAX ) {
-	        if ( $this->firstRE ) {
-	            print 'Runtime Error' . "\n";
-	        }
+            if ( $this->firstRE ) {
+                print 'Runtime Error' . "\n";
+            }
 	
             print '<b>'.$message.'</b><br />' . "\n";
             if ( $this->firstRE ) {
@@ -153,13 +153,13 @@ class siteexport_debug
             if ( !$wasDebug ) {
                 $this->message('Runtime Error: ' . $message, null, 4);
             } else {
-	            print 'Runtime Error: ' . $message . "\n";
+                print 'Runtime Error: ' . $message . "\n";
             }
         }
 
         $this->firstRE = false;
 
-        if ( !$this->isAJAX ) {
+        if (!$this->isAJAX) {
             $this->runtimeErrors .= ob_get_contents();
             ob_end_clean();
         }

@@ -1,6 +1,6 @@
 <?php 
 
-if(!defined('DOKU_PLUGIN')) die('meh');
+if (!defined('DOKU_PLUGIN')) die('meh');
 
 class siteexport_toc
 {
@@ -20,20 +20,20 @@ class siteexport_toc
     {
         // Mandatory: we allways want '/' insteadf of ':' here
         $inputURL = str_replace(':', '/', $inputURL);
-        $checkArray = $this->translation ? $this->translation->trans : array( array_pop(explode(':', $this->NS )) );
+        $checkArray = $this->translation ? $this->translation->trans : array(array_pop(explode(':', $this->NS)));
         
         $url = explode('/', $inputURL);
         
-        for( $i=0; $i<count($url); $i++ )
+        for ($i = 0; $i < count($url); $i++)
         {
-            if ( in_array($url[$i], $checkArray ) )
+            if (in_array($url[$i], $checkArray))
             {
                 // Rauswerfen und weg
                 $url[$i] = '';
                 break;
             }
             
-            if ( !$deepSearch )
+            if (!$deepSearch)
             {
                 break;
             }
@@ -45,7 +45,7 @@ class siteexport_toc
         $inputURL = implode('/', $url);
         $inputURL = preg_replace("$\/+$", "/", $inputURL);
         
-        if ( strlen($inputURL) > 0 && substr($inputURL, 0, 1) == '/' )
+        if (strlen($inputURL) > 0 && substr($inputURL, 0, 1) == '/')
         {
             $inputURL = substr($inputURL, 1);
         }
@@ -58,7 +58,7 @@ class siteexport_toc
      **/
     public function __getJavaHelpTOCXML($DATA) {
 
-        if ( count ( $DATA) == 0 ) {
+        if (count($DATA) == 0) {
             return false;
         }
         
@@ -75,7 +75,7 @@ class siteexport_toc
 
         foreach ( $nData as $elem )
         {
-			// Check if available
+            // Check if available
             $anchor = ( !empty($elem['anchor']) ? '#' . $elem['anchor'] : '' );
             $elem['url'] = $this->functions->getSiteName($elem['id'], true); // Override - we need a clean name
             $elem['mapURL'] = $elem['url'];
@@ -89,10 +89,12 @@ class siteexport_toc
                 $this->functions->debug->message("EXISTS previously not set.", $elem, 1);
             }
 
-			// if not there, no map ids will be generated
+            // if not there, no map ids will be generated
             $elem['mapID'] = intval($elem['exists']) == 1 ? $this->functions->getMapID($elem['id'], $elem['anchor'], $check) : array();
 
-            if ( empty($elem['depth']) ) $elem['depth'] = count(explode('/', $elem['url']));            
+            if ( empty($elem['depth']) ) {
+                $elem['depth'] = count(explode('/', $elem['url']));
+            }
             $CHECKDATA[] = $elem['url'];
             
             if ( $startPageID == null )
@@ -101,7 +103,7 @@ class siteexport_toc
             }
             
             if ( empty( $elem['name'] ) || $elem['name'] == noNs($elem['id']) ) {
-	            $elem['name'] = $this->functions->getSiteTitle($elem['id']);
+                $elem['name'] = $this->functions->getSiteTitle($elem['id']);
             }
 
             // Go on building mapXML
@@ -144,16 +146,16 @@ class siteexport_toc
     {
         global $conf;
     
-        if ( empty($currentNSArray) )
+        if (empty($currentNSArray))
         {
             // In Depth, let go! - Index elements do not have anything else below
-            if ( noNS($elemToAdd['id']) == $conf['start'] ) {
+            if (noNS($elemToAdd['id']) == $conf['start']) {
                 $DATA[noNS($elemToAdd['id'])] = $elemToAdd;
             } else {
                 $DATA[noNS($elemToAdd['id'])]['element'] = $elemToAdd;
             }
             return;
-        } else if (count($currentNSArray) == 1 && $currentNSArray[0] == '' && noNS($elemToAdd['id']) == $conf['start'] )
+        } else if (count($currentNSArray) == 1 && $currentNSArray[0] == '' && noNS($elemToAdd['id']) == $conf['start'])
         {
             // Wird gebraucht um die erste Ebene sauber zu bauen … kann aber irgendwelche Nebeneffekte haben
             $DATA[noNS($elemToAdd['id'])] = $elemToAdd;
@@ -162,8 +164,8 @@ class siteexport_toc
         
         $currentLevel = array_shift($currentNSArray);
         $nextLevel = &$DATA[$currentLevel];
-        if ( empty($nextLevel) ) {
-            $nextLevel = array( 'pages' => array(), 'element' => array() );
+        if (empty($nextLevel)) {
+            $nextLevel = array('pages' => array(), 'element' => array());
         } else {
             $nextLevel = &$DATA[$currentLevel]['pages'];
         }
@@ -174,13 +176,13 @@ class siteexport_toc
     /**
      * Create a single TOC Item
      **/
-    private function __TOCItem($item, $depth, $selfClosed=true)
+    private function __TOCItem($item, $depth, $selfClosed = true)
     {
         $targetID = $item['mapID'][0];
-        if ( empty($targetID) ) {
+        if (empty($targetID)) {
             $targetID = strtolower($item['name']);
         }
-        return "\n" . str_repeat("\t", max($depth, 0)+1) . "<tocitem target=\"$targetID\"" . (intval($item['exists']) == 1 ? " text=\"" . $item['name'] . "\"" : "") . ($selfClosed?'/':'') . ">";
+        return "\n" . str_repeat("\t", max($depth, 0)+1) . "<tocitem target=\"$targetID\"" . (intval($item['exists']) == 1 ? " text=\"" . $item['name'] . "\"" : "") . ($selfClosed ? '/' : '') . ">";
     }
     
     /**
@@ -194,62 +196,62 @@ class siteexport_toc
     /**
      * Write the whole TOC TREE
      **/
-    private function __writeTOCTree($CURRENTNODE, $CURRENTNODENAME = null, $DEPTH=0) {
+    private function __writeTOCTree($CURRENTNODE, $CURRENTNODENAME = null, $DEPTH = 0) {
         global $conf;
     
         $XML = '';
         $didOpenItem = false;
-        if ( !is_array($CURRENTNODE) || empty($CURRENTNODE) )
+        if (!is_array($CURRENTNODE) || empty($CURRENTNODE))
         {
             // errr … no.
             return $XML;
         }
 
         // This is an element!        
-        if ( !empty($CURRENTNODE['id']) )
+        if (!empty($CURRENTNODE['id']))
         {
             // This has to be an item!
             return $this->__TOCItem($CURRENTNODE, $DEPTH);
         }
         
         // Look for start page
-        if ( !empty($CURRENTNODE[$conf['start']]) )
+        if (!empty($CURRENTNODE[$conf['start']]))
         {
             // YAY! StartPage found.
-            $didOpenItem = !(count(empty($CURRENTNODE['pages'])?$CURRENTNODE:$CURRENTNODE['pages']) == 0);
-            $XML .= $this->__TOCItem($CURRENTNODE[$conf['start']], $DEPTH, !$didOpenItem );
+            $didOpenItem = !(count(empty($CURRENTNODE['pages']) ? $CURRENTNODE : $CURRENTNODE['pages']) == 0);
+            $XML .= $this->__TOCItem($CURRENTNODE[$conf['start']], $DEPTH, !$didOpenItem);
             unset($CURRENTNODE[$conf['start']]);
-        } else if ( !empty($CURRENTNODE['element'])) {
+        } else if (!empty($CURRENTNODE['element'])) {
             $didOpenItem = !(count($CURRENTNODE['pages']) == 0);
-            $XML .= $this->__TOCItem($CURRENTNODE['element'], $DEPTH, !$didOpenItem );
+            $XML .= $this->__TOCItem($CURRENTNODE['element'], $DEPTH, !$didOpenItem);
             unset($CURRENTNODE['element']);
         } else if ($CURRENTNODENAME != null) {
             // We have a parent node for what is comming … lets honor that
             $didOpenItem = !(count($CURRENTNODE) == 0);
-            $XML .= $this->__TOCItem(array('name' => ucwords($CURRENTNODENAME)), $DEPTH, !$didOpenItem );
+            $XML .= $this->__TOCItem(array('name' => ucwords($CURRENTNODENAME)), $DEPTH, !$didOpenItem);
         } else {
             // Woohoo … empty node? do not count up!
-            $DEPTH --;
+            $DEPTH--;
         }
         
         // Circle through the entries
-        foreach ( empty($CURRENTNODE['pages'])?$CURRENTNODE:$CURRENTNODE['pages'] as $NODENAME => $ELEM )
+        foreach (empty($CURRENTNODE['pages']) ? $CURRENTNODE : $CURRENTNODE['pages'] as $NODENAME => $ELEM)
         {
             // a node should have more than only one entry … otherwise we will not tell our name!
             $XML .= $this->__writeTOCTree($ELEM, count($ELEM) >= 1 ? $NODENAME : null, $DEPTH+1);
         }
         
         // Close and return
-        return $XML . ($didOpenItem?$this->__TOCItemClose($DEPTH):'');
+        return $XML . ($didOpenItem ? $this->__TOCItemClose($DEPTH) : '');
     }
     
     
-    function post(&$value, $key, array $additional){
+    function post(&$value, $key, array $additional) {
         $inner_glue = $additional[0];
-        $prefix = isset($additional[1])? $additional[1] : false;
-        if($prefix === false) $prefix = $key;
+        $prefix = isset($additional[1]) ? $additional[1] : false;
+        if ($prefix === false) $prefix = $key;
     
-        $value = $value.$inner_glue.$prefix;
+        $value = $value . $inner_glue . $prefix;
     }
     
     /**
@@ -265,10 +267,10 @@ class siteexport_toc
         $depthA = explode(':', getNS($idA));
         $depthB = explode(':', getNS($idB));
         
-        for ( $i=0; $i < min(count($depthA), count($depthB)); $i++ )
+        for ($i = 0; $i < min(count($depthA), count($depthB)); $i++)
         {
             $NSCMP = strcmp($depthA[$i], $depthB[$i]);
-            if ( $NSCMP != 0 )
+            if ($NSCMP != 0)
             {
                 // Something is different!
                 return $NSCMP;
@@ -276,16 +278,16 @@ class siteexport_toc
         }
         
         // There is mor in B, than in A!
-        if ( count($depthA) < count($depthB) )
+        if (count($depthA) < count($depthB))
         {
             return -1;
-        } else if ( count($depthA) > count($depthB) )
+        } else if (count($depthA) > count($depthB))
         {
             // there is more in A than in B
             return 1;
         }
 
-        if ( $NSCMP == 0 )
+        if ($NSCMP == 0)
         {
             // Something is different!
             return strcmp(noNS($idA), noNS($idB));
@@ -297,18 +299,18 @@ class siteexport_toc
     /**
      * Build the Eclipse Documentation TOC XML
      **/
-    public function __getTOCXML($DATA, $XML="<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<?NLS TYPE=\"org.eclipse.help.toc\"?>\n") {
+    public function __getTOCXML($DATA, $XML = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<?NLS TYPE=\"org.eclipse.help.toc\"?>\n") {
 
         $pagesArray = array();
 
         // Go through the pages
-        foreach ( $DATA as $elem ) {
+        foreach ($DATA as $elem) {
 
             $site = $elem['id'];
             $elems = explode('/', $this->functions->getSiteName($site));
 
             // Strip Site
-            array_pop( $elems );
+            array_pop($elems);
              
             // build the topic Tree
             $this->__buildTopicTree($pagesArray, $elems, $site);
@@ -323,20 +325,20 @@ class siteexport_toc
     /**
      * Load the topic Tree for the TOC - recursive
      **/
-    private function __buildTopicTree( &$PAGES, $DATA, $SITE, $INSERTDATA = null ) {
+    private function __buildTopicTree(&$PAGES, $DATA, $SITE, $INSERTDATA = null) {
 
-        if ( empty( $DATA ) || !is_array($DATA) ) {
+        if (empty($DATA) || !is_array($DATA)) {
             
-            if ( $INSERTDATA == null )
+            if ($INSERTDATA == null)
             {
                 $INSERTDATA = $SITE;
             }
         
             // This is already a namespace
-            if ( is_array($PAGES[noNS($SITE)]) ) {
+            if (is_array($PAGES[noNS($SITE)])) {
                 // The root already exists!
-                if ( !empty($PAGES[noNS($SITE)][noNS($SITE)]) ) {
-                    if ( strstr($PAGES[noNS($SITE)][noNS($SITE)], $SITE) ) {
+                if (!empty($PAGES[noNS($SITE)][noNS($SITE)])) {
+                    if (strstr($PAGES[noNS($SITE)][noNS($SITE)], $SITE)) {
                         // The SITE is in the parent Namespace, and the current Namespace has an index with same name
                         $PAGES['__' . noNS($SITE)] = $INSERTDATA;
                     } else {
@@ -354,8 +356,8 @@ class siteexport_toc
         }
 
         $NS = array_shift($DATA);
-        if ( !is_array( $PAGES[$NS] ) ) $PAGES[$NS] = empty($PAGES[$NS]) ? array() : array($PAGES[$NS]);
-        $this->__buildTopicTree( $PAGES[$NS], $DATA, $SITE, $INSERTDATA );
+        if (!is_array($PAGES[$NS])) $PAGES[$NS] = empty($PAGES[$NS]) ? array() : array($PAGES[$NS]);
+        $this->__buildTopicTree($PAGES[$NS], $DATA, $SITE, $INSERTDATA);
 
         return;
     }
@@ -363,35 +365,35 @@ class siteexport_toc
     /**
      * Build the Topic Tree for TOC.xml
      **/
-    private function __addXMLTopic($DATA, $ITEM='topic', $LEVEL=0, $NODENAME='') {
+    private function __addXMLTopic($DATA, $ITEM = 'topic', $LEVEL = 0, $NODENAME = '') {
         global $conf;
 
         $DEPTH = str_repeat("\t", $LEVEL);
 
-        if ( !is_array($DATA) ) {
-            return $DEPTH . '<' . $ITEM . ' label="' . $this->functions->getSiteTitle($DATA) . '" ' . ($ITEM != 'topic' ? 'topic' : 'href' ) . '="' . $this->functions->getSiteName($DATA) . "\" />\n";
+        if (!is_array($DATA)) {
+            return $DEPTH . '<' . $ITEM . ' label="' . $this->functions->getSiteTitle($DATA) . '" ' . ($ITEM != 'topic' ? 'topic' : 'href') . '="' . $this->functions->getSiteName($DATA) . "\" />\n";
         }
         // Is array from this point on
         list($indexTitle, $indexFile) = $this->__getIndexItem($DATA, $NODENAME);
 
-        if ( empty( $indexTitle) ) $indexTitle = $this->functions->getSiteTitle( $conf['start'] );
-        if ( !empty( $indexFile) ) $indexFile = ($ITEM != 'topic' ? 'topic' : 'href' ) . "=\"$indexFile\"";
+        if (empty($indexTitle)) $indexTitle = $this->functions->getSiteTitle($conf['start']);
+        if (!empty($indexFile)) $indexFile = ($ITEM != 'topic' ? 'topic' : 'href') . "=\"$indexFile\"";
 
         $isEmptyNode = count($DATA) == 1 && empty($indexFile);
 
-        if ( !$isEmptyNode && ($this->emptyNSToc || count($DATA) > 0) )
+        if (!$isEmptyNode && ($this->emptyNSToc || count($DATA) > 0))
         $XML = "$DEPTH<$ITEM label=\"$indexTitle\" $indexFile>";
 
-        if ( !$isEmptyNode && count ($DATA) > 0 ) $XML .= "\n";
+        if (!$isEmptyNode && count($DATA) > 0) $XML .= "\n";
 
-        foreach( $DATA as $NODENAME => $NS ) {
+        foreach ($DATA as $NODENAME => $NS) {
 
-            $XML .= $this->__addXMLTopic($NS, ( !($this->emptyNSToc || count($DATA) > 1) && $ITEM != 'topic' ? $ITEM : 'topic' ), $LEVEL+(!$isEmptyNode ? 1 : 0), $NODENAME);
+            $XML .= $this->__addXMLTopic($NS, (!($this->emptyNSToc || count($DATA) > 1) && $ITEM != 'topic' ? $ITEM : 'topic'), $LEVEL+(!$isEmptyNode ? 1 : 0), $NODENAME);
 
         }
 
-        if ( !$isEmptyNode && count ($DATA) > 0 ) $XML .= "$DEPTH";
-        if ( !$isEmptyNode && ($this->emptyNSToc || count($DATA) > 0) ) {
+        if (!$isEmptyNode && count($DATA) > 0) $XML .= "$DEPTH";
+        if (!$isEmptyNode && ($this->emptyNSToc || count($DATA) > 0)) {
             $XML .= "</$ITEM>\n";
         }
 
@@ -407,13 +409,13 @@ class siteexport_toc
         $XML = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<?NLS TYPE=\"org.eclipse.help.context\"?>\n<contexts>\n";
 
         $check = array();
-        foreach ( $DATA as $elem )
+        foreach ($DATA as $elem)
         {
             $ID = $elem['id'];
             $meta = p_get_metadata($ID, 'context', true);
-            if ( empty( $meta['id'] ) ) { continue; }
+            if (empty($meta['id'])) { continue; }
 
-            $TITLE = empty( $meta['title'] ) ? $this->functions->getSiteTitle($ID) : $meta['title'];
+            $TITLE = empty($meta['title']) ? $this->functions->getSiteTitle($ID) : $meta['title'];
 
             // support more than one view IDs ... for more than one reference
             $VIEWIDs = $this->functions->getMapID($elem['id'], $elem['anchor'], $check);
@@ -424,20 +426,20 @@ class siteexport_toc
             $url = $this->functions->getSiteName($ID);
             $this->shortenByTranslation($url);
 
-            $TOPICS = array( $url => $TITLE . " (Details)" );
+            $TOPICS = array($url => $TITLE . " (Details)");
             $REFS = p_get_metadata($ID, 'relation references', true);
-            if ( is_array($REFS) )
-            foreach ( $REFS as $REL => $EXISTS ) {
-                if ( !$EXISTS ) { continue; }
+            if (is_array($REFS))
+            foreach ($REFS as $REL => $EXISTS) {
+                if (!$EXISTS) { continue; }
                 $TOPICS[$this->functions->getSiteName($REL)] = $this->functions->getSiteTitle($REL);
             }
             
             // build XML - include multi view IDs
-            foreach ( $VIEWIDs as $VIEWID ) {
+            foreach ($VIEWIDs as $VIEWID) {
                 $XML .= "\t<context id=\"$VIEWID\" title=\"$TITLE\">\n";
                 $XML .= "\t\t<description>$DESCRIPTION</description>\n";
 
-                foreach ( $TOPICS as $URL => $LABEL ) {
+                foreach ($TOPICS as $URL => $LABEL) {
                     $XML .= "\t\t<topic label=\"$LABEL\" href=\"$URL\" />\n";
                 }
 
@@ -453,28 +455,28 @@ class siteexport_toc
     /**
      * Determine if this is an index - and if so, find its Title
      **/
-    private function __getIndexItem(&$DATA, $NODENAME='') {
+    private function __getIndexItem(&$DATA, $NODENAME = '') {
         global $conf;
 
-        if ( !is_array($DATA) ) { return; }
+        if (!is_array($DATA)) { return; }
 
         $indexTitle = '';
         $indexFile = '';
-        foreach ( $DATA as $NODE => $indexSearch) {
+        foreach ($DATA as $NODE => $indexSearch) {
             // Skip next Namespaces
-            if ( is_array($indexSearch) ) { continue; }
+            if (is_array($indexSearch)) { continue; }
 
             // Skip if this is not a start
-            if ( $NODE != $conf['start'] ) { continue; }
+            if ($NODE != $conf['start']) { continue; }
 
-            $indexTitle = $this->functions->getSiteTitle( $indexSearch );
+            $indexTitle = $this->functions->getSiteTitle($indexSearch);
             $indexFile = $indexSearch;
             unset($DATA[$NODE]);
             break;
         }
 
-        if ( empty($indexFile) && !empty($DATA[$NODENAME]) ) {
-            $indexTitle = $this->functions->getSiteTitle( $DATA[$NODENAME] );
+        if (empty($indexFile) && !empty($DATA[$NODENAME])) {
+            $indexTitle = $this->functions->getSiteTitle($DATA[$NODENAME]);
             $indexFile = $DATA[$NODENAME];
             unset($DATA[$NODENAME]);
         }
