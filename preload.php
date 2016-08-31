@@ -33,7 +33,7 @@ class preload_plugin_siteexport {
 		}
 
 		// define Template baseURL
-		$newTemplate = $tempREQUEST['template'];
+		$newTemplate = array_key_exists('template', $tempREQUEST) ? $tempREQUEST['template'] : null;
 		// Make sure, that the template is set and the basename is equal to the template, alas there are no path definitions. see #48
 		if ( empty($newTemplate) || basename($newTemplate) != $newTemplate ) { return; }
 		$tplDir = DOKU_INC.'lib/tpl/'.$newTemplate;
