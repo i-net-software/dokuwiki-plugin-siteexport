@@ -9,8 +9,8 @@
 
 // must be run within Dokuwiki
 if(!defined('DOKU_INC')) die();
+require_once(DOKU_PLUGIN.'siteexport/preload.php');
 
-    
 class helper_plugin_siteexport_page_remove {
     private $start, $end;
 
@@ -138,19 +138,19 @@ class helper_plugin_siteexport extends DokuWiki_Plugin {
 	    $translation = null;
 	    $translationAvailable = false;
 	    $usenumberedheading = true;
-	
-        if ( $functions=& plugin_load('preload', 'siteexport') && $functions->__create_preload_function() ) {
+	    
+        $preload = plugin_load('preload', 'siteexport');
+        if ( $preload && $preload->__create_preload_function() ) {
             $templateSwitching = true;
         }
 
-        if ( $functions =& plugin_load('action', 'dw2pdf' ) ) {
+        $dw2pdf = plugin_load('action', 'dw2pdf' );
+        if ( $dw2pdf ) {
             $pdfExport = true;
         }
 
-        // if ( $functions =& plugin_load('renderer', 'nodetailsxhtml' ) ) {
-        // }
-
-        if ( $translation =& plugin_load('helper', 'translation' ) ) {
+        $translation = plugin_load('helper', 'translation' );
+        if ( $translation ) {
             $translationAvailable = true;
         }
 
@@ -198,7 +198,7 @@ class helper_plugin_siteexport extends DokuWiki_Plugin {
         {
             $form->addElement(form_makeTag('br'));
             $form->addElement(form_makeOpenTag('p', array('style' => 'color: #a00;' )));
-            $form->addElement('Can\'t create preload file in \'inc\' directory. Template switching is not available. Plugin disabling is not available.');
+            $form->addElement('Can\'t create preload file in \'inc\' directory. Template switching is not available. Plugin disabling is not available.' );
             $form->addElement(form_makeCloseTag('p'));
         }
         

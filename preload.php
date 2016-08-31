@@ -1,5 +1,5 @@
 <?php
-if(!defined('DOKU_INC')) define('DOKU_INC',fullpath(dirname(__FILE__).'/../../../').'/');
+if(!defined('DOKU_INC')) define('DOKU_INC',realpath(dirname(__FILE__).'/../../../').'/');
 
 @include_once(DOKU_INC . 'inc/plugincontroller.class.php');
 
@@ -8,6 +8,7 @@ class preload_plugin_siteexport {
 	function __register_template() {
 	
 		global $conf;
+		global $error;
 	
 		if ( !empty($_REQUEST['q']) ) {
 
@@ -112,12 +113,14 @@ OUTPUT;
 		if ( file_exists($PRELOADFILE) ) {
 
 			if ( ! is_readable($PRELOADFILE) ) {
-				msg("Preload File locked. It exists, but it can't be read.", -1);
+    			$this->error = "Preload File locked. It exists, but it can't be read.";
+				msg($this->error, -1);
 				return false;
 			}
 
 			if ( !is_writeable($PRELOADFILE) ) {
-				msg("Preload File locked. It exists and is readable, but it can't be written.", -1);
+    			$this->error = "Preload File locked. It exists and is readable, but it can't be written.";
+				msg($this->error, -1);
 				return false;
 			}
 
@@ -125,6 +128,9 @@ OUTPUT;
 			if ( !strstr(implode("", $fileContent), $CONTENT) ) {
 
 				$fp = fopen($PRELOADFILE, "a");
+				if ( !strstr(implode("", $fileContent), "<?" )) {
+    				fputs($fp, "<?php\n");
+				}
 				fputs($fp, "\n".$CONTENT);
 				fclose($fp);
 			}
@@ -142,7 +148,8 @@ OUTPUT;
 			return true;
 		}
 
-		msg("Could not create/modify preload.php. Please check the write permissions for your DokuWiki/inc directory.", -1);
+		$this->error = "Could not create/modify preload.php. Please check the write permissions for your DokuWiki/inc directory.";
+		msg($this->error, -1);
 		return false;
 	}
 
