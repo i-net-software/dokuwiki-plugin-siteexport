@@ -10,6 +10,7 @@ class preload_plugin_siteexport {
 	function __register_template() {
 	
 		global $conf;
+        $tempREQUEST = array();
 	
 		if ( !empty($_REQUEST['q']) ) {
 
@@ -17,7 +18,7 @@ class preload_plugin_siteexport {
 			$json = new JSON();
 			$tempREQUEST = (array)$json->dec(stripslashes($_REQUEST['q']));
 
-		} else if ( !empty( $_REQUEST['template'] ) ) {
+		} else if ( array_key_exists('template', $_REQUEST ) ) {
 			$tempREQUEST = $_REQUEST;
 		} else if ( preg_match("/(js|css)\.php$/", $_SERVER['SCRIPT_NAME']) && isset($_SERVER['HTTP_REFERER']) ) {
 			// this is a css or script, nothing before matched and we have a referrer.
