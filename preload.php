@@ -5,10 +5,11 @@ if(!defined('DOKU_INC')) define('DOKU_INC',realpath(dirname(__FILE__).'/../../..
 
 class preload_plugin_siteexport {
 
+    var $error;
+
 	function __register_template() {
 	
 		global $conf;
-		global $error;
 	
 		if ( !empty($_REQUEST['q']) ) {
 
