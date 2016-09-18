@@ -9,7 +9,7 @@ class siteexport_toc
     private $NS = null;
     public $translation = null;
     
-    public function siteexport_toc($functions, $NS)
+    public function __construct($functions, $NS)
     {
         $this->emptyNSToc = !empty($_REQUEST['emptyTocElem']);
         $this->functions = $functions;
@@ -485,4 +485,3 @@ class siteexport_toc
     }
 }
 
-?>

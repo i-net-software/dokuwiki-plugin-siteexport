@@ -9,7 +9,7 @@ if (!empty($_REQUEST['pdfExport']) && intval($_REQUEST['pdfExport']) == 1 && fil
     {
         private $functions;
 
-        public function siteexport_pdfgenerator($functions = null)
+        public function __construct($functions = null)
         {
             $this->functions = $functions;
         }
@@ -189,4 +189,3 @@ if (!empty($_REQUEST['pdfExport']) && intval($_REQUEST['pdfExport']) == 1 && fil
         }
     }
 }
-?>

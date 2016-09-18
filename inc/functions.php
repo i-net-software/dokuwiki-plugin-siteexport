@@ -9,7 +9,7 @@ class siteexport_functions extends DokuWiki_Plugin
     public $debug = null;
     public $settings = null;
 
-    public function siteexport_functions($init = true, $isAJAX = false)
+    public function __construct($init = true, $isAJAX = false)
     {
         if ($init)
         {
@@ -723,4 +723,3 @@ class siteexport_functions extends DokuWiki_Plugin
     }
 }
 
-?>
