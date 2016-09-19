@@ -17,7 +17,7 @@ class siteexport_javahelp
      * @param siteexport_functions $functions
      * @param siteexport_zipfilewriter $filewriter
      */
-    public function siteexport_javahelp($functions, $filewriter, $NS)
+    public function __construct($functions, $filewriter, $NS)
     {
         $this->NS = $NS;
         $this->functions = $functions;
