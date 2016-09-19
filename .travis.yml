@@ -12,6 +12,7 @@ before_install:
   - "wget https://raw.github.com/splitbrain/dokuwiki-travis/master/travis.sh"
   - "wget https://raw.github.com/mark-rushakoff/OpenPhantomScripts/master/phantom-qunit.js -P _test"
 install:
+  - "mv req-travis.txt requirements.txt"
   - "sh travis.sh"
 script:
   - "cd _test && phpunit --stderr --group plugin_siteexport"
