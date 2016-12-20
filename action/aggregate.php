@@ -91,7 +91,6 @@ class action_plugin_siteexport_aggregate extends DokuWiki_Action_Plugin {
         @unlink(metaFN($ID, '.meta'));
         
         $ID = (string) $originalID;
-        print_r($INFO);
         echo $html;
         return true;
     }
