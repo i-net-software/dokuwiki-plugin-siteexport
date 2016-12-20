@@ -71,14 +71,16 @@ class action_plugin_siteexport_aggregate extends DokuWiki_Action_Plugin {
         $TOC .= "</toc>";
         
         // Only get first and last element
-        $thema = array_unique(array(reset($thema), end($thema)));
+        $thema = array_reverse(array_unique(array(reset($thema), end($thema))));
         
-        $meta = p_read_metadata($ID);
-        $ID = (string) cleanID($ID . '-toc-' . implode('-', array_filter($thema)));
+        $meta = p_read_metadata($originalID);
+        // Temporary ID for rendering a document.
+        $ID = (string) cleanID($originalID . '-toc-' . implode('-', array_filter($thema)));
         
         $meta['current']['thema'] = implode(' - ', array_filter($thema));
+        p_save_metadata($originalID, $meta);
         p_save_metadata($ID, $meta);
-
+        
         if (empty($TOC)) { return true; }
         $event->preventDefault();
         
@@ -89,6 +91,7 @@ class action_plugin_siteexport_aggregate extends DokuWiki_Action_Plugin {
         @unlink(metaFN($ID, '.meta'));
         
         $ID = (string) $originalID;
+        print_r($INFO);
         echo $html;
         return true;
     }
