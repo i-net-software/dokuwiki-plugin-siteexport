@@ -65,7 +65,7 @@ $lang['toolbarButton'] = 'Insert Siteexporter';
 $lang['useOptionsInEditor'] = 'Use these options and insert {{siteAggregator}} element';
 $lang['NoEntriesFoundHint'] = 'No pages have been found for aggregation.';
 
-$lang['js']['loadingpage'] = 'Loading';
+$lang['js']['loadingpage'] = 'Creating document';
 $lang['js']['startdownload'] = 'Starting Download';
 $lang['js']['downloadfinished'] = 'Finished Download';
 $lang['js']['finishedbutdownloadfailed'] = 'Finished but download failed.';
