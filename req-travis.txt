@@ -1,0 +1,2 @@
+# we need additional plugin(s) for testing
+https://github.com/michitux/dokuwiki-plugin-move.git lib/plugins/move

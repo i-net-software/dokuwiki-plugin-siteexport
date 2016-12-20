@@ -11,7 +11,7 @@ class siteexport_zipfilewriter
     private $pdfGenerator = false;
     private $functions = null;
 
-    public function siteexport_zipfilewriter($functions = null)
+    public function __construct($functions = null)
     {
         $this->functions = $functions;
         if (class_exists('siteexport_pdfgenerator'))
@@ -231,4 +231,3 @@ class siteexport_zipfilewriter
     }
 }
 
-?>
