@@ -436,6 +436,31 @@ class renderer_plugin_siteexport_pdf extends Doku_Renderer_xhtml {
     	
         return null;
     }
+
+    /**
+     * Render a page local link
+     *
+     * @param string $hash       hash link identifier
+     * @param string $name       name for the link
+     * @param bool   $returnonly whether to return html or write to doc attribute
+     * @return void|string writes to doc attribute or returns html depends on $returnonly
+     */
+    function locallink($hash, $name = null, $returnonly = false) {
+        global $ID;
+        $name  = $this->_getLinkTitle($name, $hash, $isImage);
+        $hash  = $this->_headerToLink($hash);
+        $title = $name;
+
+        $doc = '<a href="#'.$hash.'" title="'.$title.'" class="wikilink1">';
+        $doc .= $name;
+        $doc .= '</a>';
+
+        if($returnonly) {
+          return $doc;
+        } else {
+          $this->doc .= $doc;
+        }
+    }
 }
 
 //Setup VIM: ex: et ts=4 enc=utf-8 :
