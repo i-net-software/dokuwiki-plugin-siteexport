@@ -22,7 +22,8 @@
         (function(_){
             
             _.url = DOKU_BASE + 'lib/exe/ajax.php';
-            _.suspendGenerate = $('form#siteexport_site_aggregator').size() > 0;
+            _.aggregateForm = $('form#siteexport_site_aggregator');
+            _.suspendGenerate = _.aggregateForm.size() > 0;
             _.allElements = 'form#siteexport :input:not([readonly]):not([disabled]):not([type=submit]):not(button):not(.dummy), form#siteexport_site_aggregator :input:not([type=submit]):not(button)';
             _.isManager = $('div#siteexport__manager').size() > 0;
             _.forbidden_options = [ 'call', 'sectok' ];
@@ -95,6 +96,7 @@
 
                 _.status(LANG.plugins.siteexport.loadingpage);
                 _.aggregatorStatus.removeClass('error').show();
+                _.aggregateForm.addClass('loading');
                 var settings = _.settings('__siteexport_aggregate');
                 var throbber = $('form#siteexport_site_aggregator :input[name=baseID], form#siteexport_site_aggregator :input[type=submit]').prop('disabled', true);
                 $.post( _.url, settings, function(data, textStatus, jqXHR) {
@@ -118,12 +120,14 @@
                     _.status(jqXHR.responseText.replace("\n", "<br/>"));
                 }).always(function(){
                     throbber.prop('disabled', false);
+                    _.aggregateForm.removeClass('loading');
                 });
             };
             
             _.downloadFile = function(iframeProps) {
 
                     _.status(LANG.plugins.siteexport.startdownload);
+                    _.aggregateForm.addClass('download');
                     if ( $.fileDownload ) {
                         
                         $.fileDownload(iframeProps.src).done(function(){
@@ -135,6 +139,8 @@
                             
                         }).fail(function(){
                             _.error(LANG.plugins.siteexport.finishedbutdownloadfailed);
+                        }).always(function(){
+                            _.aggregateForm.removeClass('download');
                         });
                         
                         return;
@@ -167,6 +173,7 @@
                             }).show();
                             
                             frame.remove();
+                            _.aggregateForm.removeClass('download');
 
                             var viewer = new $.popupviewer();
                             viewer.showViewer();
