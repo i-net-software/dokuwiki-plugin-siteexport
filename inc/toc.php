@@ -11,6 +11,7 @@ class siteexport_toc
     
     public function __construct($functions, $NS)
     {
+        $this->doDebug = !empty($_REQUEST['tocDebug']);
         $this->emptyNSToc = !empty($_REQUEST['emptyTocElem']);
         $this->functions = $functions;
         $this->NS = $NS;
@@ -113,7 +114,8 @@ class siteexport_toc
             }
 
             $elem['tocNS'] = getNS(cleanID($elem['url']));
-            $elem['tocNS'] = explode('/', $this->shortenByTranslation($elem['tocNS'], true));
+            $elem['tocNS'] = $this->shortenByTranslation($elem['tocNS'], true);
+            $elem['tocNS'] = strlen($elem['tocNS']) > 0 ? explode('/', $elem['tocNS']) : array();
             $this->functions->debug->message("This will be the TOC elements data:", $elem, 1);
 
             $this->__buildTOCTree($DATA, $elem['tocNS'], $elem);
@@ -122,21 +124,11 @@ class siteexport_toc
         $TOCXML .= $this->__writeTOCTree($DATA) . "\n</toc>";
         $MAPXML .= "\n</map>";
 
-/*
-        // http://documentation:81/documentation/clear-reports/remote-interface-help/configuration/configuration/index?JavaHelpDocZip=1&depthType=1&diInv=1&do=siteexport&ens=documentation%3Aclear-reports%3Aremote-interface-help%3Aconfiguration&renderer=&template=clearreports-setup&useTocFile=1
-        print "<html><pre>";
-        print_r($DATA);
-        $TOCXML = str_replace("<", "&lt;", str_replace(">", "&gt;", $TOCXML));
-        print "$TOCXML\n\n";
+        $this->debug($DATA);
+        $this->debug($TOCXML);
+        $this->debug($MAPXML, true);
 
-        $MAPXML = str_replace("<", "&lt;", str_replace(">", "&gt;", $MAPXML));
-        print "$MAPXML";
-
-        print "</pre></html>";
-        exit;
-/*/
         return array($TOCXML, $MAPXML, $startPageID);
-//*/
     }
     
     /**
@@ -146,18 +138,8 @@ class siteexport_toc
     {
         global $conf;
     
-        if (empty($currentNSArray))
-        {
-            // In Depth, let go! - Index elements do not have anything else below
-            if (noNS($elemToAdd['id']) == $conf['start']) {
-                $DATA[noNS($elemToAdd['id'])] = $elemToAdd;
-            } else {
-                $DATA[noNS($elemToAdd['id'])]['element'] = $elemToAdd;
-            }
-            return;
-        } else if (count($currentNSArray) == 1 && $currentNSArray[0] == '' && noNS($elemToAdd['id']) == $conf['start'])
-        {
-            // Wird gebraucht um die erste Ebene sauber zu bauen … kann aber irgendwelche Nebeneffekte haben
+        // Actual level
+        if (empty($currentNSArray)) {
             $DATA[noNS($elemToAdd['id'])] = $elemToAdd;
             return;
         }
@@ -165,7 +147,7 @@ class siteexport_toc
         $currentLevel = array_shift($currentNSArray);
         $nextLevel = &$DATA[$currentLevel];
         if (empty($nextLevel)) {
-            $nextLevel = array('pages' => array(), 'element' => array());
+            $nextLevel = array('pages' => array());
         } else {
             $nextLevel = &$DATA[$currentLevel]['pages'];
         }
@@ -483,5 +465,28 @@ class siteexport_toc
 
         return array($indexTitle, $this->functions->getSiteName($indexFile));
     }
-}
 
+    private $doDebug = false;
+    private static $didDebug = false;
+    private function debug($data, $final = false) {
+        if ( ! $this->doDebug ) { return; }
+        
+        if ( !$this->didDebug ) {
+            print "<html><pre>";
+            $this->didDebug = true;
+        }
+        
+        if ( is_array($data) ) {
+            print_r($data);
+        } else {
+            print str_replace("<", "&lt;", str_replace(">", "&gt;", $data));;
+        }
+        
+        print "\n\n";
+
+        if ( $final ) {
+            print "</pre></html>";
+            exit;
+        }
+    }
+}
