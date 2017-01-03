@@ -4,7 +4,7 @@
 (function($){
     $(function(){
             
-        if ( !$('form#siteexport, form#siteexport_site_aggregator').size() ) {
+        if ( !$('form#siteexport, form#siteexport_site_aggregator, form#siteexport_siteexporter').size() ) {
             return;
         }
         
@@ -22,9 +22,9 @@
         (function(_){
             
             _.url = DOKU_BASE + 'lib/exe/ajax.php';
-            _.aggregateForm = $('form#siteexport_site_aggregator');
+            _.aggregateForm = $('form#siteexport_site_aggregator, form#siteexport_siteexporter');
             _.suspendGenerate = _.aggregateForm.size() > 0;
-            _.allElements = 'form#siteexport :input:not([readonly]):not([disabled]):not([type=submit]):not(button):not(.dummy), form#siteexport_site_aggregator :input:not([type=submit]):not(button)';
+            _.allElements = 'form#siteexport :input:not([readonly]):not([disabled]):not([type=submit]):not(button):not(.dummy), form#siteexport_site_aggregator :input:not([type=submit]):not(button), form#siteexport_siteexporter :input:not([type=submit]):not(button)';
             _.isManager = $('div#siteexport__manager').size() > 0;
             _.forbidden_options = [ 'call', 'sectok' ];
 
@@ -91,14 +91,14 @@
                 this.resetDataForNewRequest();
                 
                 if ( _.aggregatorStatus == null ) {
-                    _.aggregatorStatus = $('<span id="siteexport__out"/>').appendTo("form#siteexport_site_aggregator");
+                    _.aggregatorStatus = $('<span id="siteexport__out"/>').appendTo("form#siteexport_site_aggregator, form#siteexport_siteexporter");
                 }
 
                 _.status(LANG.plugins.siteexport.loadingpage);
                 _.aggregatorStatus.removeClass('error').show();
                 _.aggregateForm.addClass('loading');
                 var settings = _.settings('__siteexport_aggregate');
-                var throbber = $('form#siteexport_site_aggregator :input[name=baseID], form#siteexport_site_aggregator :input[type=submit]').prop('disabled', true);
+                var throbber = $('form#siteexport_site_aggregator :input[name=baseID], form#siteexport_site_aggregator :input[type=submit], form#siteexport_siteexporter :input[type=submit]').prop('disabled', true);
                 $.post( _.url, settings, function(data, textStatus, jqXHR) {
 
                     if ( data.match( new RegExp( 'mpdf error', 'i' ) ) ) {
@@ -108,7 +108,7 @@
                         _.downloadFile({
                                 id : 'siteexport_site_aggregator_downloader',
                                 src: window.location.origin + data,
-                                root: 'form#siteexport_site_aggregator',
+                                root: 'div.siteexporter',
                                 timeout: function(){
                                     _.aggregatorStatus.hide();
                                 }
@@ -468,7 +468,7 @@
             return false;
         });
         
-        $('form#siteexport_site_aggregator :input[type=submit][name~=do\\[siteexport\\]]').click(function(event){
+        $('form#siteexport_site_aggregator :input[type=submit][name~=do\\[siteexport\\]], form#siteexport_siteexporter :input[type=submit][name~=do\\[siteexport\\]]').click(function(event){
             event.stopPropagation();
             $.siteexport().runAggregator();
             return false;

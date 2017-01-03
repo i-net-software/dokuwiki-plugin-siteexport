@@ -24,7 +24,8 @@ class syntax_plugin_siteexport_aggregate extends DokuWiki_Syntax_Plugin {
     function getSort() { return 300; }
 
     function connectTo($mode) {
-        $this->Lexer->addSpecialPattern('\{\{(?=siteexport|siteexportAGGREGATOR).*?\}\}', $mode, 'plugin_siteexport_aggregate');
+        // $this->Lexer->addSpecialPattern('\{\{(?=siteexport|siteexportAGGREGATOR).*?\}\}', $mode, 'plugin_siteexport_aggregate');
+        $this->Lexer->addSpecialPattern('\{\{siteexportAGGREGATOR .*?\}\}', $mode, 'plugin_siteexport_aggregate');
     }
 
     function handle($match, $state, $pos, Doku_Handler $handler) {
@@ -36,7 +37,8 @@ class syntax_plugin_siteexport_aggregate extends DokuWiki_Syntax_Plugin {
     function render($mode, Doku_Renderer $renderer, $data) {
         global $ID, $conf;
 
-        $isAggregator = (array_shift($data) == 'siteexportAGGREGATOR');
+        // $isAggregator = (array_shift($data) == 'siteexportAGGREGATOR');
+        $isAggregator = true;
         $namespace = $ID;
         foreach( $data as $option ) {
             

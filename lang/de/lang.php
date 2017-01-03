@@ -57,3 +57,4 @@ $lang['js']['loadingpage']     = 'Dokument wird erstellt';
 $lang['js']['startdownload']   = 'Download beginnen';
 $lang['js']['downloadfinished'] = 'Download beendet';
 $lang['js']['finishedbutdownloadfailed'] = 'Laden beendet, aber der Download war fehlerhaft.';
+$lang['SiteSubmitLabel']        = 'Als PDF speichern';

@@ -61,6 +61,7 @@ $lang['toc'] = 'Table of Contents';
 
 $lang['AggregateSubmitLabel'] = 'Download';
 $lang['AggragateExportPages'] = 'Starting page for merger:';
+$lang['SiteSubmitLabel'] = 'Download as PDF';
 $lang['toolbarButton'] = 'Insert Siteexporter';
 $lang['useOptionsInEditor'] = 'Use these options and insert {{siteAggregator}} element';
 $lang['NoEntriesFoundHint'] = 'No pages have been found for aggregation.';

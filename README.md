@@ -165,6 +165,13 @@ pagebreak | inserts a pagebreak after each page defined by the namespace
 
 You have to define the options like this: <code>&lt;toc notoc merge&gt;</code>
 
+##Siteexport
+Add a download button for the current page - or any other page
+
+<pre>
+{{siteexport [options]}}
+</pre>
+
 ##Siteexport Aggregator
 There is the additional syntax: aggregator. This allows an in-page selection of an ordered list of pages in the current namespace and sub-namespaces. Once selected and submitted, that page will be generated with the options provided - and merged back up the list (it actually starts merging top down). (What?!)
 
