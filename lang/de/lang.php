@@ -2,7 +2,7 @@
 
 /**
  * @license    GPL 2 (http://www.gnu.org/licenses/gpl.html)
- * 
+ *
  * @author Thor Weinreich <thorweinreich@nefkom.net>
  * @author Gerry Weißbach <gweissbach@inetsoftware.de>
  * @author Gerry Weißbach <gerry.w@gammaproduction.de>
@@ -11,7 +11,7 @@
 $lang['encoding']              = 'utf-8';
 $lang['direction']             = 'ltr';
 $lang['menu']                  = 'Site Export';
-$lang['absolutePath']          = 'Absolute Pfad exportieren';
+$lang['absolutePath']          = 'Absolute Pfade exportieren';
 $lang['pdfExport']             = 'Als PDF exportieren';
 $lang['usenumberedheading']    = 'Nummerierte Überschriften';
 $lang['template']              = 'Export Vorlage';
@@ -30,13 +30,13 @@ $lang['startProcess']          = 'Starten des Exports';
 $lang['directDownloadLink']    = 'Link für den direkten Download';
 $lang['wgetURLLink']           = 'wget Download URL';
 $lang['curlURLLink']           = 'curl Download URL';
-$lang['start']                 = 'starten';
+$lang['start']                 = 'Starten';
 $lang['status']                = 'Status';
 $lang['ns']                    = 'Start Namensraum für den Export (Elternelement)';
 $lang['ens']                   = 'Übergeordneter Namensraum, der exportiert werden soll';
 $lang['defaultLang']           = 'Standartsprache für Mehrspracheige Namespaces';
 $lang['disablePluginsOption']  = '(JS/CSS) Plugins während des Exports deaktivieren';
-$lang['depthType']             = 'Exporttyp';
+$lang['depthType']             = 'Export-Typ';
 $lang['depth.pageOnly']        = 'nur diese Seite';
 $lang['depth.allSubNameSpaces'] = 'alle untergeordneten Namensräume';
 $lang['depth.specifiedDepth']  = 'festgelegte Tiefe';
@@ -50,11 +50,11 @@ $lang['search']                = 'Suche';
 $lang['toc']                   = 'Übersicht';
 $lang['AggregateSubmitLabel']  = 'Download';
 $lang['AggragateExportPages']  = 'Anfangsseite für das zusammenfügen';
+$lang['SiteSubmitLabel']       = 'Als PDF speichern';
 $lang['toolbarButton']         = 'Site Exporter einfügen';
 $lang['useOptionsInEditor']    = 'Ein {{siteAggregator}} Element mit diesen Einstellungen erzeugen';
 $lang['NoEntriesFoundHint']    = 'Es wurden keine Seiten zum Zusammenfassen gefunden';
 $lang['js']['loadingpage']     = 'Dokument wird erstellt';
-$lang['js']['startdownload']   = 'Download beginnen';
+$lang['js']['startdownload']   = 'Download beginnt';
 $lang['js']['downloadfinished'] = 'Download beendet';
 $lang['js']['finishedbutdownloadfailed'] = 'Laden beendet, aber der Download war fehlerhaft.';
-$lang['SiteSubmitLabel']        = 'Als PDF speichern';
