@@ -2,7 +2,7 @@
 
 /**
  * @license    GPL 2 (http://www.gnu.org/licenses/gpl.html)
- * 
+ *
  * @author Thor Weinreich <thorweinreich@nefkom.net>
  * @author Gerry Weißbach <gerry.w@gammaproduction.de>
  * @author Padhie <develop@padhie.de>
