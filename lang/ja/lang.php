@@ -2,7 +2,7 @@
 
 /**
  * @license    GPL 2 (http://www.gnu.org/licenses/gpl.html)
- * 
+ *
  * @author Hideaki SAWADA <chuno@live.jp>
  */
 $lang['encoding']              = 'utf-8';
@@ -47,6 +47,7 @@ $lang['search']                = '検索';
 $lang['toc']                   = '目次';
 $lang['AggregateSubmitLabel']  = 'ダウンロード';
 $lang['AggragateExportPages']  = '統合するページの開始：';
+$lang['SiteSubmitLabel']       = 'PDF ファイルとしてダウンロードする';
 $lang['toolbarButton']         = 'サイトエクスポートを挿入';
 $lang['useOptionsInEditor']    = 'これらのオプションを使用し {{siteAggregator}} 要素を挿入する';
 $lang['NoEntriesFoundHint']    = '統合されるページがありません';
