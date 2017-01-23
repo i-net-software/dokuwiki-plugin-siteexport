@@ -190,12 +190,12 @@ class siteexport_toc
         }
 
         // This is an element!        
-        if (!empty($CURRENTNODE['id']))
+        if (!empty($CURRENTNODE['id']) && empty($CURRENTNODE['pages']))
         {
-            // This has to be an item!
+            // This has to be an item - only -!
             return $this->__TOCItem($CURRENTNODE, $DEPTH);
         }
-        
+
         // Look for start page
         if (!empty($CURRENTNODE[$conf['start']]))
         {
