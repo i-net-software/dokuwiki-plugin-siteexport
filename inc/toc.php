@@ -105,6 +105,7 @@ class siteexport_toc
             
             if ( empty( $elem['name'] ) || $elem['name'] == noNs($elem['id']) ) {
                 $elem['name'] = $this->functions->getSiteTitle($elem['id']);
+                $this->debug($elem);
             }
 
             // Go on building mapXML
@@ -121,7 +122,9 @@ class siteexport_toc
             $this->__buildTOCTree($DATA, $elem['tocNS'], $elem);
         }
 
+        $this->debug("#### Writing TOC Tree ####");
         $TOCXML .= $this->__writeTOCTree($DATA) . "\n</toc>";
+        $this->debug("#### DONE: Writing TOC Tree ####");
         $MAPXML .= "\n</map>";
 
         $this->debug($DATA);
@@ -160,6 +163,7 @@ class siteexport_toc
      **/
     private function __TOCItem($item, $depth, $selfClosed = true)
     {
+        $this->debug($item);
         $targetID = $item['mapID'][0];
         if (empty($targetID)) {
             $targetID = strtolower($item['name']);
@@ -220,7 +224,7 @@ class siteexport_toc
         foreach (empty($CURRENTNODE['pages']) ? $CURRENTNODE : $CURRENTNODE['pages'] as $NODENAME => $ELEM)
         {
             // a node should have more than only one entry … otherwise we will not tell our name!
-            $XML .= $this->__writeTOCTree($ELEM, count($ELEM) >= 1 ? $NODENAME : null, $DEPTH+1);
+            $XML .= $this->__writeTOCTree($ELEM, count($ELEM) >= 1 ? ( !empty($ELEM['name']) ? $ELEM['name'] : $NODENAME ) : null, $DEPTH+1);
         }
         
         // Close and return
