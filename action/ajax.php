@@ -824,6 +824,7 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
                 $this->functions->debug->message("This is CSS file", array($DATA, $noDeepReplace, $fileName, $newDepth, $newAdditionalParameters), 2);
 
                 break;
+            case 'jquery.php'   :
             case 'js.php'	:	// $DATA[2] .= ( !$this->functions->settings->addParams || empty($PARAMS) ? '' : '.' . $this->functions->cleanID(preg_replace("/(=|\?|&amp;)/", ".", $PARAMS))) . '.js';
                 $DATA[2] .= '.t.' . $this->functions->cleanID($_REQUEST['template']) . '.js'; // allways put parameters behind
                 // set Template
