@@ -96,7 +96,7 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
 
         // Fake security Token if none given
         if (empty($_REQUEST['sectok'])) {
-            $_REQUEST['sectok'] = getSecurityToken();
+            $_REQUEST['sectok'] = $this->functions->getSecurityToken();
         }
 
         // The timer will be used to do redirects if needed to prevent timeouts
@@ -149,7 +149,7 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
 
         $this->cleanCacheFiles();
 
-        $URL = ml($this->functions->settings->origZipFile, array('cache' => 'nocache', 'siteexport' => $this->functions->settings->pattern, 'sectok' => getSecurityToken()), true, '&');
+        $URL = ml($this->functions->settings->origZipFile, array('cache' => 'nocache', 'siteexport' => $this->functions->settings->pattern, 'sectok' => $this->functions->getSecurityToken()), true, '&');
         $this->functions->debug->message("Redirecting to final file", $URL, 2);
 
         $this->handleRuntimeErrorOutput();

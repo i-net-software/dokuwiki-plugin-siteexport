@@ -221,7 +221,7 @@ class preload_plugin_siteexport_controller extends Doku_Plugin_Controller {
    
     public function hasSiteexportHeaders() {
         $headers = function_exists('getallheaders') ? getallheaders() : null;
-        return is_array($headers) && array_key_exists('X-Site-Exporter', $headers) && $headers['X-Site-Exporter'] = getSecurityToken();
+        return is_array($headers) && array_key_exists('X-Site-Exporter', $headers) /* && $headers['X-Site-Exporter'] = getSecurityToken() */;
     }
    
     /**

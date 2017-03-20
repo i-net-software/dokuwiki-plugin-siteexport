@@ -721,5 +721,39 @@ class siteexport_functions extends DokuWiki_Plugin
         
         return false;
     }
-}
 
+    /**
+     * Check the secret CSRF token, regardless of the current authorization
+     *
+     * @param null|string $token security token
+     * @param null|boolean $softfail if a message is to be thrown.
+     * @return bool success if the token matched
+     */
+    function checkSecurityToken($token = null, $softfail = true) {
+        /** @var Input $INPUT */
+        $secToken = $this->getSecurityToken();
+        if ( empty( $secToken) && empty ( $token ) ) return false;
+        if($secToken != $token) {
+            if ( !$softfail ) msg('Security Token did not match. Possible CSRF attack.', -1);
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * Return a secret token to be used for CSRF attack prevention
+     * This is known to be flawed by default
+     *
+     * @author  Andreas Gohr <andi@splitbrain.org>
+     * @link    http://en.wikipedia.org/wiki/Cross-site_request_forgery
+     * @link    http://christ1an.blogspot.com/2007/04/preventing-csrf-efficiently.html
+     * @link    https://github.com/splitbrain/dokuwiki/issues/1883
+     *
+     * @return  string
+     */
+     function getSecurityToken() {
+        /** @var Input $INPUT */
+        global $INPUT;
+        return PassHash::hmac('md5', session_id().'siteexport', 'siteexport_salt'.auth_cookiesalt());
+    }
+}
