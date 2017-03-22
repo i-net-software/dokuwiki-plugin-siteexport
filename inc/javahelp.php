@@ -22,7 +22,7 @@ class siteexport_javahelp
         $this->NS = $NS;
         $this->functions = $functions;
         $this->filewriter = $filewriter;
-        $this->translation = & plugin_load('helper', 'translation');
+        $this->translation = & plugin_load('helper', 'autotranslation');
     }
 
     public function createTOCFiles($data)

@@ -1,6 +1,6 @@
 <?php
 /**
- * Translation Plugin: Simple multilanguage plugin
+ * Siteexport Plugin helper
  *
  * @license    GPL 2 (http://www.gnu.org/licenses/gpl.html)
  * @author     i-net software <tools@inetsoftware.de>
@@ -163,7 +163,7 @@ class helper_plugin_siteexport extends DokuWiki_Plugin {
             $pdfExport = true;
         }
 
-        $translation = plugin_load('helper', 'translation');
+        $translation = plugin_load('helper', 'autotranslation');
         if ($translation) {
             $translationAvailable = true;
         }
