@@ -37,8 +37,13 @@ class siteexport_javahelp
             $lang = '';
             if ($this->translation)
             {
-                $this->translation->tns = $this->translation->setupTNS($data[$i]['id']);
+                $this->translation->translationsNs = $this->translation->setupTNS($data[$i]['id']);
                 $lang = $this->translation->getLangPart($data[$i]['id']);
+                $this->functions->debug->message("Setting up translation:", array(
+                    'id' => $data[$i]['id'],
+                    'tns' => $this->translation->translationsNs,
+                    'lang' => $lang
+                ), 3);
             }
 
             // get all the relative URLs
@@ -47,14 +52,13 @@ class siteexport_javahelp
         
         $toc = new siteexport_toc($this->functions, $this->NS);
         // +":" at the end becaus this is already a namespace
-        $baseNameSpace = str_replace('/', ':', $this->translation && !empty($this->translation->tns) ? $this->translation->tns : $this->NS . ':');
+        $baseNameSpace = str_replace('/', ':', $this->translation && !empty($this->translation->translationsNs) ? $this->translation->translationsNs : $this->NS . ':');
         $translationRoot = curNS($baseNameSpace);
         $hsPrename = curNS(getNS($baseNameSpace));
                 
         $this->functions->debug->message("HelpSetPre-Name: {$hsPrename}", null, 3);
         $this->functions->debug->message("Translation-Root: {$translationRoot}", null, 3);
         $this->functions->debug->message("HSFiles:", $translationHSFiles, 1);
-        
         
         $check = array();
         $last_key = end(array_keys($translationHSFiles));
@@ -65,7 +69,7 @@ class siteexport_javahelp
             if (!empty($lang) && !$this->functions->settings->TOCMapWithoutTranslation)
             {
                 $toc->translation = &$this->translation;
-                $rootNode = cleanID($this->translation->tns . $lang) . ':';
+                $rootNode = cleanID($this->translation->translationsNs . $lang) . ':';
             } else {
                 $toc->translation = null;
                 $rootNode = '';
