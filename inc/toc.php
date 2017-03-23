@@ -129,7 +129,7 @@ class siteexport_toc
 
         $this->debug($DATA);
         $this->debug($TOCXML);
-        $this->debug($MAPXML, true);
+        $this->debug($MAPXML);
 
         return array($TOCXML, $MAPXML, $startPageID);
     }
@@ -221,6 +221,9 @@ class siteexport_toc
             // Woohoo … empty node? do not count up!
             $DEPTH--;
         }
+        
+        $this->debug("-- This is the current node --");
+        $this->debug($CURRENTNODE);
         
         // Circle through the entries
         foreach (empty($CURRENTNODE['pages']) ? $CURRENTNODE : $CURRENTNODE['pages'] as $NODENAME => $ELEM)
@@ -474,7 +477,7 @@ class siteexport_toc
 
     private $doDebug = false;
     private static $didDebug = false;
-    private function debug($data, $final = false) {
+    public function debug($data, $final = false) {
         if ( ! $this->doDebug ) { return; }
         
         if ( !$this->didDebug ) {

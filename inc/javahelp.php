@@ -22,7 +22,8 @@ class siteexport_javahelp
         $this->NS = $NS;
         $this->functions = $functions;
         $this->filewriter = $filewriter;
-        $this->translation = & plugin_load('helper', 'autotranslation');
+        $translation = plugin_load('helper', 'autotranslation');
+        $this->translation = &$translation;
     }
 
     public function createTOCFiles($data)
@@ -96,6 +97,8 @@ class siteexport_javahelp
                 $last_key = null;
             }
         }
+        
+        $toc->debug("THE END", true);
     }
     
     private function translationRootPath($translationRoot = '')
