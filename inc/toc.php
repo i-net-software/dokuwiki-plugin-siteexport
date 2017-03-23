@@ -21,7 +21,7 @@ class siteexport_toc
     {
         // Mandatory: we allways want '/' insteadf of ':' here
         $inputURL = str_replace(':', '/', $inputURL);
-        $checkArray = $this->translation ? $this->translation->trans : array(array_pop(explode(':', $this->NS)));
+        $checkArray = $this->translation ? $this->translation->translations : array(array_pop(explode(':', $this->NS)));
         
         $url = explode('/', $inputURL);
         
@@ -143,7 +143,9 @@ class siteexport_toc
     
         // Actual level
         if (empty($currentNSArray)) {
-            $DATA[noNS($elemToAdd['id'])] = $elemToAdd;
+            $elemToAdd['isStartPage'] = noNS($elemToAdd['id']) == $conf['start'];
+            $key = empty($elemToAdd['name']) ? noNS($elemToAdd['id']) : $elemToAdd['name'];
+            $DATA[$key] = $elemToAdd;
             return;
         }
         
