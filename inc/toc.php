@@ -144,8 +144,8 @@ class siteexport_toc
         // Actual level
         if (empty($currentNSArray)) {
             $elemToAdd['isStartPage'] = noNS($elemToAdd['id']) == $conf['start'];
-            $key = empty($elemToAdd['name']) ? noNS($elemToAdd['id']) : $elemToAdd['name'];
-            $DATA[$key] = $elemToAdd;
+            // $key = empty($elemToAdd['name']) || 1==1? noNS($elemToAdd['id']) : $elemToAdd['name'];
+            $DATA[$key] = noNS($elemToAdd['id']);
             return;
         }
         
