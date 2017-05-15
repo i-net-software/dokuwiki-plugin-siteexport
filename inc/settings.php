@@ -3,42 +3,42 @@
 if (!defined('DOKU_PLUGIN')) die('meh');
 class settings_plugin_siteexport_settings extends DokuWiki_Plugin
 {
-    var $fileType = 'html';
-    var $exportNamespace = '';
-    var $pattern = null;
-    
-    var $isCLI = false;
+    public $fileType = 'html';
+    public  $exportNamespace = '';
+    public  $pattern = null;
 
-    var $depth = '';
+    public  $isCLI = false;
 
-    var $zipFile = '';    
-//    var $origEclipseZipFile = 'doc.zip';
-//    var $eclipseZipFile = '';
-    var $addParams = false;
-    var $origZipFile = '';
-    var $downloadZipFile = '';
-    var $exportLinkedPages = true;
-    var $additionalParameters = array();
-    var $isAuthed = false;
-    
-    var $TOCMapWithoutTranslation = false;
-    
-    var $cachetime = 0;
-    var $hasValidCacheFile = false;
-    
-    var $useTOCFile = false;
-    var $cookie = null;
-    
-    var $ignoreNon200 = true;
-    
-    var $defaultLang = 'en';
-    
+    public  $depth = '';
+
+    public  $zipFile = '';    
+//    public  $origEclipseZipFile = 'doc.zip';
+//    public  $eclipseZipFile = '';
+    public  $addParams = false;
+    public  $origZipFile = '';
+    public  $downloadZipFile = '';
+    public  $exportLinkedPages = true;
+    public  $additionalParameters = array();
+    public  $isAuthed = false;
+
+    public  $TOCMapWithoutTranslation = false;
+
+    public  $cachetime = 0;
+    public  $hasValidCacheFile = false;
+
+    public  $useTOCFile = false;
+    public  $cookie = null;
+
+    public  $ignoreNon200 = true;
+
+    public  $defaultLang = 'en';
+
     /**
      * @param siteexport_functions $functions
      */
     function __construct($functions) {
         global $ID, $conf;
-        
+
         $functions->debug->setDebugFile($this->getConf('debugFile'));
         if (!empty($_REQUEST['debug']) && intval($_REQUEST['debug']) >= 0 && intval($_REQUEST['debug']) <= 5) {
             $functions->debug->setDebugLevel(intval($_REQUEST['debug']));
@@ -46,7 +46,7 @@ class settings_plugin_siteexport_settings extends DokuWiki_Plugin
         {
             $functions->debug->setDebugLevel($this->getConf('debugLevel'));
         }
-        
+
         $functions->debug->isAJAX = $this->getConf('ignoreAJAXError') ? false : $functions->debug->isAJAX;
 
         if (empty($_REQUEST['pattern']))
@@ -57,23 +57,23 @@ class settings_plugin_siteexport_settings extends DokuWiki_Plugin
             // Set the pattern
             $this->pattern = $_REQUEST['pattern'];
         }
-        
+
         $this->isCLI = (!$_SERVER['REMOTE_ADDR'] && 'cli' == php_sapi_name());
-        
+
         $this->cachetime = $this->getConf('cachetime');
         if ( !empty( $_REQUEST['disableCache'] ) ) {
             $this->cachetime = intval($_REQUEST['disableCache']) == 1 ? 0 : $this->cachetime;
         }
-        
-        // Load Variables
+
+        // Load variables
         $this->origZipFile = $this->getConf('zipfilename');
-        
+
         $this->ignoreNon200 = $this->getConf('ignoreNon200');
 
         // ID
         $this->downloadZipFile = $functions->getSpecialExportFileName($this->origZipFile, $this->pattern);
         //        $this->eclipseZipFile = $functions->getSpecialExportFileName(getNS($this->origZipFile) . ':' . $this->origEclipseZipFile, $this->pattern);
-        
+
         $this->zipFile = mediaFN($this->downloadZipFile);
 
         $this->tmpDir = mediaFN(getNS($this->origZipFile));
@@ -81,7 +81,7 @@ class settings_plugin_siteexport_settings extends DokuWiki_Plugin
 
         $this->namespace = $functions->getNamespaceFromID($_REQUEST['ns'], $PAGE);
         $this->addParams = !empty($_REQUEST['addParams']);
-        
+
         $this->useTOCFile = !empty($_REQUEST['useTocFile']);
 
         // set export Namespace - which is a virtual Root
@@ -98,4 +98,3 @@ class settings_plugin_siteexport_settings extends DokuWiki_Plugin
         $functions->removeWikiVariables($this->additionalParameters, true);
     }
 }
-

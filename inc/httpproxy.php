@@ -21,10 +21,10 @@ if (!defined('DOKU_INC')) die('meh');
 require_once(DOKU_INC . 'inc/HTTPClient.php');
 
 class HTTPProxy extends DokuHTTPClient {
-	
-    var $debugClass = null;
-    var $setttings = null;
-    
+
+    public $debugClass = null;
+    public $setttings = null;
+
     /**
      * Constructor.
      * @param siteexport_functions $functions
@@ -43,103 +43,103 @@ class HTTPProxy extends DokuHTTPClient {
         $this->debugClass = $functions->debug;
         $this->settings = $functions->settings;
         parent::__construct();
-        
+
         $this->timeout = 60; //max. 25 sec
         $this->headers['If-Modified-Since'] = gmdate('r', 0);
         $this->status = -1;
         $this->debug = true;
 
-		if ($this->settings->cookie == null) {
-			$this->_debug("Has to re-authenticate request.");
-			if (!$this->authenticate()) {
-                
+        if ($this->settings->cookie == null) {
+            $this->_debug("Has to re-authenticate request.");
+            if (!$this->authenticate()) {
+
                 $this->_debug("Trying other Authentication (auth.php):"); // Try again.
-    		    if (!(auth_setup() && $this->authenticate(true))) {
+                if (!(auth_setup() && $this->authenticate(true))) {
                     $this->_debug("Trying other Authentication (config):", $functions->authenticate() && $this->authenticate(true) ? 'authenticated' : 'not authenticated'); // Try again.
-    		    } else {
+                } else {
                     $this->_debug("Ok, using default auth.php"); // Try again.
-    		    }
-			}
+                }
+            }
 
-			$this->_debug("Using Authentication:", array('user' => $this->user, 'password' => '*****'));
-			
-		} else {
-			$this->cookies = $this->settings->cookie;
-		}
+            $this->_debug("Using Authentication:", array('user' => $this->user, 'password' => '*****'));
 
-		$this->headers['X-Real-Ip'] = clientIP(true);
-		$this->headers['X-Site-Exporter'] = $functions->getSecurityToken();
-		$this->headers['Accept-Encoding'] = $_SERVER['HTTP_ACCEPT_ENCODING'];
-		$this->headers['Accept-Charset'] = $_SERVER['HTTP_ACCEPT_CHARSET'];
-		$this->agent = $_SERVER['HTTP_USER_AGENT'] . ' DokuWiki/SiteExport';
-	}
-	
-	/**
-	 * Authenticate using currently logged in user
-	 */
-	private function authenticate($secondAttempt = false) {
-		
-		global $auth, $INPUT;
-		
-		// Ok, this is evil. We read the login information of the current user and forward it to the HTTPClient
-		list($this->user, $sticky, $this->pass) = auth_getCookie();
+        } else {
+            $this->cookies = $this->settings->cookie;
+        }
 
-		// Logged in in second attempt is now in Session.	
-		if ($secondAttempt && !isset($this->user) && $INPUT->str('u') && $INPUT->str('p')) {
+        $this->headers['X-Real-Ip'] = clientIP(true);
+        $this->headers['X-Site-Exporter'] = $functions->getSecurityToken();
+        $this->headers['Accept-Encoding'] = $_SERVER['HTTP_ACCEPT_ENCODING'];
+        $this->headers['Accept-Charset'] = $_SERVER['HTTP_ACCEPT_CHARSET'];
+        $this->agent = $_SERVER['HTTP_USER_AGENT'] . ' DokuWiki/SiteExport';
+    }
 
-			// We hacked directly into the login mechanism which provides the login information without encryption via $INPUT
-			$this->user = $INPUT->str('u');
-			$this->pass = $INPUT->str('p');
-			$sticky = $INPUT->str('r');
-		} else {
-			$secret = auth_cookiesalt(!$sticky, true); //bind non-sticky to session
-			$this->pass = !empty($this->pass) ? $this->auth_decrypt($this->pass, $secret) : '';
-		}
-		
-		return isset($this->user);
-	}
+    /**
+     * Authenticate using currently logged in user
+     */
+    private function authenticate($secondAttempt = false) {
 
-	/**
-	 * Auth Decryption has changed from Weatherwax to Binky
-	 */	
-	private function auth_decrypt($pass, $secret) {
+        global $auth, $INPUT;
 
-		if (function_exists('auth_decrypt')) {
-			// Binky
-			return auth_decrypt($pass, $secret);
-		} else if (function_exists('PMA_blowfish_decrypt')) {
-			// Weatherwax
-			return PMA_blowfish_decrypt($pass, $secret);
-		} else {
-			$this->debugClass->runtimeException("No decryption method found");
-		}
-	}
+        // Ok, this is evil. We read the login information of the current user and forward it to the HTTPClient
+        list($this->user, $sticky, $this->pass) = auth_getCookie();
 
-	/**
-	 * Remeber HTTPClient Cookie after successfull authentication
-	 */	
-	function sendRequest($url, $data = '', $method = 'GET') {
-		
-		$returnCode = parent::sendRequest($url, $data, $method);
-		if ($this->settings->cookie == null) {
-			$this->settings->cookie = $this->cookies;
-		}
-		
-		return $returnCode;
-	}
-	
-	 /**
-	 * print debug info to file if exists
-	 * @param string $info
-	 */
-	public function _debug($info, $var = null) {
-		
-		if (!$this->debugClass) {
-			return;
-		}
+        // Logged in in second attempt is now in Session.    
+        if ($secondAttempt && !isset($this->user) && $INPUT->str('u') && $INPUT->str('p')) {
 
-		$this->debugClass->message("[HTTPClient] " . $info, $var, 1);
-	}
+            // We hacked directly into the login mechanism which provides the login information without encryption via $INPUT
+            $this->user = $INPUT->str('u');
+            $this->pass = $INPUT->str('p');
+            $sticky = $INPUT->str('r');
+        } else {
+            $secret = auth_cookiesalt(!$sticky, true); //bind non-sticky to session
+            $this->pass = !empty($this->pass) ? $this->auth_decrypt($this->pass, $secret) : '';
+        }
+
+        return isset($this->user);
+    }
+
+    /**
+     * Auth Decryption has changed from Weatherwax to Binky
+     */    
+    private function auth_decrypt($pass, $secret) {
+
+        if (function_exists('auth_decrypt')) {
+            // Binky
+            return auth_decrypt($pass, $secret);
+        } else if (function_exists('PMA_blowfish_decrypt')) {
+            // Weatherwax
+            return PMA_blowfish_decrypt($pass, $secret);
+        } else {
+            $this->debugClass->runtimeException("No decryption method found");
+        }
+    }
+
+    /**
+     * Remeber HTTPClient Cookie after successfull authentication
+     */    
+    function sendRequest($url, $data = '', $method = 'GET') {
+
+        $returnCode = parent::sendRequest($url, $data, $method);
+        if ($this->settings->cookie == null) {
+            $this->settings->cookie = $this->cookies;
+        }
+
+        return $returnCode;
+    }
+
+     /**
+     * print debug info to file if exists
+     * @param string $info
+     */
+    public function _debug($info, $var = null) {
+
+        if (!$this->debugClass) {
+            return;
+        }
+
+        $this->debugClass->message("[HTTPClient] " . $info, $var, 1);
+    }
 }
 
 //Setup VIM: ex: et ts=4 enc=utf-8 :

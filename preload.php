@@ -7,13 +7,13 @@ if (!defined('DOKU_INC')) {
 
 class preload_plugin_siteexport {
 
-    var $error;
+    public $error;
 
     function __register_template() {
-	
+
         global $conf;
         $tempREQUEST = array();
-	
+
         if (!empty($_REQUEST['q'])) {
 
             require_once(DOKU_INC . 'inc/JSON.php');
@@ -42,12 +42,12 @@ class preload_plugin_siteexport {
         $tplDir = DOKU_INC . 'lib/tpl/' . $newTemplate;
         // check if the directory is valid, has no more "../" in it and is equal to what we expect. DOKU_INC itself is absolute. see #48
         if ($tplDir != realpath($tplDir)) { return; }
-		
+
         // Use fileexists, because realpath is not always right.
         if (!file_exists($tplDir)) { return; }
-		
+
         // Set hint for Dokuwiki_Started event
-        if (!defined('SITEEXPORT_TPL'))		define('SITEEXPORT_TPL', $tempREQUEST['template']);
+        if (!defined('SITEEXPORT_TPL'))        define('SITEEXPORT_TPL', $tempREQUEST['template']);
 
         // define baseURL
         // This should be DEPRECATED - as it is in init.php which suggest tpl_basedir and tpl_incdir
@@ -63,8 +63,8 @@ class preload_plugin_siteexport {
         }
 
         // This should be DEPRECATED - as it is in init.php which suggest tpl_basedir and tpl_incdir
-        if (!defined('DOKU_TPL'))			define('DOKU_TPL', (empty($tempREQUEST['base']) ? DOKU_BASE : $tempREQUEST['base']) . 'lib/tpl/' . $tempREQUEST['template'] . '/');
-        if (!defined('DOKU_TPLINC'))		define('DOKU_TPLINC', $tplDir);
+        if (!defined('DOKU_TPL')) define('DOKU_TPL', (empty($tempREQUEST['base']) ? DOKU_BASE : $tempREQUEST['base']) . 'lib/tpl/' . $tempREQUEST['template'] . '/');
+        if (!defined('DOKU_TPLINC')) define('DOKU_TPLINC', $tplDir);
         /* **************************************************************************************** */
     }
 
@@ -80,13 +80,13 @@ class preload_plugin_siteexport {
             return;
         }
 
-        //		print "removing plugins ";
+        //        print "removing plugins ";
         $_GET['purge'] = 'purge'; //activate purging
         $_POST['purge'] = 'purge'; //activate purging
         $_REQUEST['purge'] = 'purge'; //activate purging
-		
+
         $_SERVER['HTTP_HOST'] = 'siteexport.js'; // fake everything in here
-		
+
         // require_once(DOKU_INC.'inc/plugincontroller.class.php'); // Have to get the pluginutils already
         // require_once(DOKU_INC.'inc/pluginutils.php'); // Have to get the pluginutils already
         $this->__disablePlugins();
@@ -94,7 +94,7 @@ class preload_plugin_siteexport {
 
     function __disablePlugins() {
         global $plugin_controller_class;
-        $plugin_controller_class = 'preload_plugin_siteexport_controller';	
+        $plugin_controller_class = 'preload_plugin_siteexport_controller';    
     }
 
     function __create_preload_function() {
@@ -103,13 +103,13 @@ class preload_plugin_siteexport {
         $CURRENTFILE = 'DOKU_INC' . " . 'lib/plugins/siteexport/preload.php'";
         $CONTENT = <<<OUTPUT
 /* SITE EXPORT *********************************************************** */
-	if ( file_exists($CURRENTFILE) ) {
-		include_once($CURRENTFILE);
-		\$siteexport_preload = new preload_plugin_siteexport();
-		\$siteexport_preload->__register_template();
-		\$siteexport_preload->__temporary_disable_plugins();
-		unset(\$siteexport_preload);
-	}
+    if ( file_exists($CURRENTFILE) ) {
+        include_once($CURRENTFILE);
+        \$siteexport_preload = new preload_plugin_siteexport();
+        \$siteexport_preload->__register_template();
+        \$siteexport_preload->__temporary_disable_plugins();
+        unset(\$siteexport_preload);
+    }
 /* SITE EXPORT END *********************************************************** */
 
 OUTPUT;
@@ -167,9 +167,9 @@ class preload_plugin_siteexport_controller extends Doku_Plugin_Controller {
      */
     public function __construct() {
         parent::__construct();
-		
+
         $disabledPlugins = array();
-		
+
         // support of old syntax
         if (is_array($_REQUEST['diPlu'])) {
             $disabledPlugins = $_REQUEST['diPlu'];
@@ -185,10 +185,10 @@ class preload_plugin_siteexport_controller extends Doku_Plugin_Controller {
             }
             $disabledPlugins = empty($_REQUEST['diPlu']) ? $allPlugins : array_diff($allPlugins, $_REQUEST['diPlu']);
         }
-		
+
         // if this is defined, it overrides the settings made above. obviously.
         $disabledPlugins = empty($_REQUEST['disableplugin']) ? $disabledPlugins : $_REQUEST['disableplugin'];
-		
+
         foreach ($disabledPlugins as $plugin) {
             $this->disable($plugin);
         }
@@ -218,34 +218,33 @@ class preload_plugin_siteexport_controller extends Doku_Plugin_Controller {
         $this->tmp_plugins[$plugin] = 1;
         return true;
     }
-   
+
     public function hasSiteexportHeaders() {
         $headers = function_exists('getallheaders') ? getallheaders() : null;
         return is_array($headers) && array_key_exists('X-Site-Exporter', $headers) /* && $headers['X-Site-Exporter'] = getSecurityToken() */;
     }
-   
+
     /**
      * Filter the List of Plugins for the siteexport plugin
      */
     private function isSiteexportPlugin($item) {
         return $item != 'siteexport';
     }
-	
+
     /**
      * Get the list of plugins, bute remove Siteexport from Style and
      * JS if in export Mode
      */   
     public function getList($type = '', $all = false) {
         $plugins = parent::getList($type, $all);
-       
+
         list(,, $caller) = debug_backtrace(false);
         if ($this->hasSiteexportHeaders() && $caller != null && preg_match("/^(js|css)_/", $caller['function']) && preg_match("/(js|css)\.php$/", $caller['file'])) {
             $plugins = array_filter($plugins, array($this, 'isSiteexportPlugin'));
         }
-       
+
         return $plugins;
     }
 }
-
 
 ?>

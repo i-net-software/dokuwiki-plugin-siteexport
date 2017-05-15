@@ -20,25 +20,25 @@ if (file_exists(DOKU_PLUGIN . 'dw2pdf/mpdf/mpdf.php')) {
     require_once(DOKU_PLUGIN . 'dw2pdf/mpdf/mpdf.php');
 
     class siteexportPDF extends mpdf {
-    
+
         private $debugObj = false;
 
         function __construct($debug) {
             global $INPUT;
             global $conf;
-		
+
             $dw2pdf = plugin_load('action', 'dw2pdf');
-		
+
             // decide on the paper setup from param or config
             $pagesize    = $INPUT->str('pagesize', $dw2pdf->getConf('pagesize'), true);
             $orientation = $INPUT->str('orientation', $dw2pdf->getConf('orientation'), true);
-    
+
             io_mkdir_p(_MPDF_TTFONTDATAPATH);
             io_mkdir_p(_MPDF_TEMP_PATH);
-    
+
             $format = $pagesize;
             if ($orientation == 'landscape') $format .= '-L';
-    
+
             switch ($conf['lang']) {
                 case 'zh':
                 case 'zh-tw':
@@ -48,9 +48,9 @@ if (file_exists(DOKU_PLUGIN . 'dw2pdf/mpdf/mpdf.php')) {
                     break;
                 default:
                     $mode = 'UTF-8-s';
-    
+
             }
-    
+
             // we're always UTF-8
             parent::__construct($mode, $format);
             $this->ignore_invalid_utf8 = true;
@@ -61,7 +61,7 @@ if (file_exists(DOKU_PLUGIN . 'dw2pdf/mpdf/mpdf.php')) {
             $this->use_kwt = true; // avoids page-breaking in H1-H6 if a table follows directly
             $this->useSubstitutions = true;
         }
-        
+
         function message($msg, $vars = null, $lvl = 1)
         {
             if ($this->debugObj !== false) {
@@ -78,73 +78,32 @@ if (file_exists(DOKU_PLUGIN . 'dw2pdf/mpdf/mpdf.php')) {
             }
         }
 
-//*
-        // Nothing
-/*/        
-        var $previousPage = '';
-        var $currentPage = '';
-        var $skipAddPage = false;
-        
-        function Footer(){
-        
-            $currentPage = $this->pages[count($this->pages)];
-            $this->skipAddPage = $this->previousPage && $this->pages[count($this->pages)] == $this->currentPage;
-            
-            if ( $this->skipAddPage ) {
-                $this->message("HAS TO REMOVE PAGE:", count($this->pages));
-            }
-            
-            $this->currentPage = $currentPage;
-            parent::Footer();
-        }
-        function AddPage($orientation='',$condition='', $resetpagenum='', $pagenumstyle='', $suppress='',$mgl='',$mgr='',$mgt='',$mgb='',$mgh='',$mgf='',$ohname='',$ehname='',$ofname='',$efname='',$ohvalue=0,$ehvalue=0,$ofvalue=0,$efvalue=0,$pagesel='',$newformat='')
-        {
-        
-            if ( $skipAddPage ) { return; }
-
-            $count = count($this->pages);
-            $stack = array();
-            $trace = debug_backtrace();
-            foreach( $trace as $entry ) {
-                $vars = substr(implode(',', $entry['args']), 0, 20);
-                $stack[] = "{$entry['function']}({$vars}) | {$entry['file']} | {$entry['line']}";
-            }
-
-            array_unshift($stack, "(({$this->y}+{$this->divheight}>{$this->PageBreakTrigger}) || ({$this->y}+h>{$this->PageBreakTrigger}) || 
-		({$this->y}+(h*2)+{$this->blk[$this->blklvl]['padding_bottom']}+{$this->blk[$this->blklvl]['margin_bottom']}>{$this->PageBreakTrigger} && {$this->blk[$this->blklvl]['page_break_after_avoid']})) and !{$this->InFooter} and AcceptPageBreak())");
-
-            $this->message("Is Adding Page $count: $orientation,$condition, $resetpagenum, $pagenumstyle,$suppress,$mgl,$mgr,$mgt,$mgb,$mgh,$mgf,$ohname,$ehname,$ofname,$efname,$ohvalue,$ehvalue,$ofvalue,$efvalue,$pagesel,$newformat", $stack, 1);
-        
-            parent::AddPage($orientation,$condition, $resetpagenum, $pagenumstyle,$suppress,$mgl,$mgr,$mgt,$mgb,$mgh,$mgf,$ohname,$ehname,$ofname,$efname,$ohvalue,$ehvalue,$ofvalue,$efvalue,$pagesel,$newformat);
-        }
-//*/        
-        
         function GetFullPath(&$path,$basepath='') {
-        
+
             // Full Path might return a doubled path like /~gamma/documentation/lib//~gamma/documentation/lib/tpl/clearreports/./_print-images/background-bottom.jpg
-        	
+
             $path = str_replace("\\","/",$path); //If on Windows
-            $path = preg_replace('/^\/\//','http://',$path);	// mPDF 5.6.27
-            $regexp = '|^./|';	// Inadvertently corrects "./path/etc" and "//www.domain.com/etc"
+            $path = preg_replace('/^\/\//','http://',$path);    // mPDF 5.6.27
+            $regexp = '|^./|';    // Inadvertently corrects "./path/etc" and "//www.domain.com/etc"
             $path = preg_replace($regexp,'',$path);
-		
+
             if ( preg_match("/^.+\/\.\.\//", $path) ) {
                 // ../ not at the beginning
                 $newpath = array();
                 $oldpath = explode('/', $path);
-	        	
+
                 foreach( $oldpath as $slice ) {
                     if ( $slice == ".." && count($newpath) > 0 ) {
                         array_pop($newpath);
                         continue;
                     }
-		        	
+
                     $newpath[] = $slice;
                 }
-	        	
+
                 $path = implode('/', $newpath);
             }
-        	
+
             parent::GetFullPath($path, $basepath);
 
             $regex = "/^(". preg_quote(DOKU_BASE, '/') .".+)\\1/";
@@ -153,14 +112,14 @@ if (file_exists(DOKU_PLUGIN . 'dw2pdf/mpdf/mpdf.php')) {
             }
 
         }
-        
+
         /*
           Only when the toc is being generated  
         */
         function MovePages($target_page, $start_page, $end_page = -1) {
             parent::MovePages($target_page, $start_page, $end_page);
         }
-        
+
         function OpenTag($tag, $attr, &$ahtml, &$ihtml) {
             switch ($tag) {
                 case 'BOOKMARK':
@@ -174,7 +133,7 @@ if (file_exists(DOKU_PLUGIN . 'dw2pdf/mpdf/mpdf.php')) {
             return parent::OpenTag($tag, $attr, $ahtml, $ihtml); 
         }
     }
-    
+
     if (file_exists(DOKU_PLUGIN . 'dw2pdf/mpdf/classes/cssmgr.php') && !class_exists('cssmgr', false)) {
 //*        
         require_once(DOKU_PLUGIN . 'siteexport/inc/patchCSSmgr.php');
