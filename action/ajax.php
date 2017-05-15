@@ -358,9 +358,9 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
                     
                     return $data;
                 }
-            case 1:	$depth = 0;
+            case 1:    $depth = 0;
             break;
-            case 2:	$depth = intval($_REQUEST['depth']);
+            case 2:    $depth = intval($_REQUEST['depth']);
             break;
         }
 
@@ -517,7 +517,7 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
             $this->functions->debug->message("Will replace old filename '{$fileName}' with {$ID}", null, 1);
             $extension = explode('.', $fileName);
             $extension = array_pop($extension);
-        	
+            
             // 2014-04-29 added cleanID to ensure that links are generated consistently when using [[this>...]] or another local, relativ linking
             $fileName = $dirname . '/' . $this->functions->cleanID($this->functions->getSiteTitle($ID)) . '.' . $extension;
         } else if ( !empty($tmpFile[1]) && !strstr($DATA[2], $tmpFile[1]) ) {
@@ -554,7 +554,7 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
                 "file" => $URL,
                 "matches" => preg_match($PATTERN, $URL) ? 'match' : 'no match'
             ), 2);
-	
+    
             if ( preg_match($PATTERN, $URL) ) { return false; }
         }
 
@@ -810,7 +810,7 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
 
         switch (array_pop($elements)) {
             // CSS Extra Handling with extra rewrites
-            case 'css.php'	:	// $DATA[2] .=  ( !$this->functions->settings->addParams || empty($PARAMS) ? '' : '.' . $this->functions->cleanID(preg_replace("/(=|\?|&amp;)/", ".", $PARAMS))) . '.css';
+            case 'css.php'    :    // $DATA[2] .=  ( !$this->functions->settings->addParams || empty($PARAMS) ? '' : '.' . $this->functions->cleanID(preg_replace("/(=|\?|&amp;)/", ".", $PARAMS))) . '.css';
                 $DATA[2] .= '.' . $this->functions->cleanID(preg_replace("/(=|\?|&amp;)/", ".", $PARAMS)) . '.css'; // allways put parameters behind
                 // No paramters needed since they are rewritten.
                 $DATA['PARAMS'] = "";
@@ -825,7 +825,7 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
 
                 break;
             case 'jquery.php'   :
-            case 'js.php'	:	// $DATA[2] .= ( !$this->functions->settings->addParams || empty($PARAMS) ? '' : '.' . $this->functions->cleanID(preg_replace("/(=|\?|&amp;)/", ".", $PARAMS))) . '.js';
+            case 'js.php'    :    // $DATA[2] .= ( !$this->functions->settings->addParams || empty($PARAMS) ? '' : '.' . $this->functions->cleanID(preg_replace("/(=|\?|&amp;)/", ".", $PARAMS))) . '.js';
                 $DATA[2] .= '.t.' . $this->functions->cleanID($_REQUEST['template']) . '.js'; // allways put parameters behind
                 // set Template
                 if (!empty($_REQUEST['template'])) {

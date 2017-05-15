@@ -123,7 +123,7 @@ class siteexport_javahelp
 <?xml version='1.0' encoding='ISO-8859-1' ?>
 <helpset version="1.0">
  
-	<title>{$title}</title>
+    <title>{$title}</title>
     <maps>
         <homeID>{$rootID}</homeID>
         <mapref location="{$translationRoot}{$lang}{$this->mapName}"/>

@@ -21,7 +21,7 @@ class action_plugin_siteexport_aggregate extends DokuWiki_Action_Plugin {
         $controller->register_hook('TPL_ACT_RENDER', 'BEFORE',  $this, 'siteexport_aggregate');
         $controller->register_hook('TOOLBAR_DEFINE', 'AFTER', $this, 'siteexport_aggregate_button', array ());
     }
-	
+    
     function siteexport_aggregate(&$event)
     {
         global $ID, $INFO, $conf;
@@ -30,10 +30,10 @@ class action_plugin_siteexport_aggregate extends DokuWiki_Action_Plugin {
         // (1) this page really has an aggregator and we did submit a request to do so
         // (2) this page really has an aggregator and we export as PDF
         if ( !( (!empty($INFO['meta']['siteexport']) && $INFO['meta']['siteexport']['hasaggregator'] == true) && ( isset($_REQUEST['siteexport_aggregate']) || $conf['renderer_xhtml'] == 'siteexport_pdf' ) ) ) { return true; }
-		
+        
         $exportBase = cleanID($_REQUEST['baseID']);
         $namespace = empty($exportBase) ? $INFO['meta']['siteexport']['baseID'] : getNs($exportBase);
-		
+        
         $functions = plugin_load('helper', 'siteexport');
         $values = $functions->__getOrderedListOfPagesForID($namespace, $exportBase);
         
@@ -94,7 +94,7 @@ class action_plugin_siteexport_aggregate extends DokuWiki_Action_Plugin {
         echo $html;
         return true;
     }
-	
+    
     /**
      * Inserts a toolbar button
      */

@@ -40,119 +40,119 @@ class helper_plugin_siteexport extends DokuWiki_Plugin {
         }
         return is_array($info) ? $info : confToHash(dirname(__FILE__).'/plugin.info.txt');
     }
-	
+    
     /*
      * return all the templates that this wiki has
      */
-	function __getTemplates() {
+    function __getTemplates() {
 
-		// populate $this->_choices with a list of directories
-		$list = array();
+        // populate $this->_choices with a list of directories
+        $list = array();
 
-		$_dir = DOKU_INC . 'lib/tpl/';
-		$_pattern = '/^[\w-]+$/';
-		if ($dh = @opendir($_dir)) {
-			while (false !== ($entry = readdir($dh))) {
-				if ($entry == '.' || $entry == '..') {
-				    continue;
-				}
-				if ($entry == '.' || $entry == '..') {
-				    continue;
-				}
-				if ($_pattern && !preg_match($_pattern,$entry)) {
-				    continue;
-				}
+        $_dir = DOKU_INC . 'lib/tpl/';
+        $_pattern = '/^[\w-]+$/';
+        if ($dh = @opendir($_dir)) {
+            while (false !== ($entry = readdir($dh))) {
+                if ($entry == '.' || $entry == '..') {
+                    continue;
+                }
+                if ($entry == '.' || $entry == '..') {
+                    continue;
+                }
+                if ($_pattern && !preg_match($_pattern,$entry)) {
+                    continue;
+                }
 
-				$file = (is_link($_dir.$entry)) ? readlink($_dir.$entry) : $entry;
-				if (is_dir($_dir.$file)) {
-				    $list[] = $entry;
-				}
-			}
-			closedir($dh);
-		}
+                $file = (is_link($_dir.$entry)) ? readlink($_dir.$entry) : $entry;
+                if (is_dir($_dir.$file)) {
+                    $list[] = $entry;
+                }
+            }
+            closedir($dh);
+        }
 
 
-		sort($list);
-		return $list;
-	}
-	
-	/*
-	 * Return array list of plugins that exist
-	 */
-	function __getPluginList() {
-	    global $plugin_controller;
-	    
-	    $allPlugins = array();
-	    foreach ($plugin_controller->getList(null, true) as $plugin) { // All plugins
-	    	// check for CSS or JS
-	    	if (!file_exists(DOKU_PLUGIN . "$plugin/script.js") && !file_exists(DOKU_PLUGIN . "$plugin/style.css") && !file_exists(DOKU_PLUGIN . "$plugin/print.css")) { continue; }
-	    	$allPlugins[] = $plugin;
-	    }
-	    
-    	return array($allPlugins, $plugin_controller->getList());
-	}
+        sort($list);
+        return $list;
+    }
+    
+    /*
+     * Return array list of plugins that exist
+     */
+    function __getPluginList() {
+        global $plugin_controller;
+        
+        $allPlugins = array();
+        foreach ($plugin_controller->getList(null, true) as $plugin) { // All plugins
+            // check for CSS or JS
+            if (!file_exists(DOKU_PLUGIN . "$plugin/script.js") && !file_exists(DOKU_PLUGIN . "$plugin/style.css") && !file_exists(DOKU_PLUGIN . "$plugin/print.css")) { continue; }
+            $allPlugins[] = $plugin;
+        }
+        
+        return array($allPlugins, $plugin_controller->getList());
+    }
     
     private function _page_sort($a, $b)
     {
-	    if ( $a[2] == $b[2] ) {
-		    return 0;
-	    }
-	    
-	    return $a[2] > $b[2] ? -1 : 1;
+        if ( $a[2] == $b[2] ) {
+            return 0;
+        }
+        
+        return $a[2] > $b[2] ? -1 : 1;
     }
     
     function __getOrderedListOfPagesForID($ID, $start=null)
-	{
-		global $conf;
-		require_once(dirname(__FILE__)."/inc/functions.php");
-		$functions = new siteexport_functions(false);
-		
+    {
+        global $conf;
+        require_once(dirname(__FILE__)."/inc/functions.php");
+        $functions = new siteexport_functions(false);
+        
         $sites = $values = array();
         $page = null;
-		search($sites, $conf['datadir'], 'search_allpages', array(), $functions->getNamespaceFromID($ID, $page));
+        search($sites, $conf['datadir'], 'search_allpages', array(), $functions->getNamespaceFromID($ID, $page));
         foreach( $sites as $site ) {
-        	
-        	if ( $ID == $site['id'] ) {
-        	    continue;
-        	}
-        	$sortIdentifier = intval(p_get_metadata($site['id'], 'mergecompare'));
+            
+            if ( $ID == $site['id'] ) {
+                continue;
+            }
+            $sortIdentifier = intval(p_get_metadata($site['id'], 'mergecompare'));
             array_push($values, array(':' . $site['id'], $functions->getSiteTitle($site['id']), $sortIdentifier));
         }
         
         if ( $start != null ) {
             
-        	// filter using the newerThanPage indicator
+            // filter using the newerThanPage indicator
             $sortIdentifier = intval(p_get_metadata($start, 'mergecompare'));
-	        $values = array_filter($values, array(new helper_plugin_siteexport_page_remove($sortIdentifier), '_page_remove'));
+            $values = array_filter($values, array(new helper_plugin_siteexport_page_remove($sortIdentifier), '_page_remove'));
         }
         
         usort($values, array($this, '_page_sort'));
 
         return $values;
-	}
-	
+    }
+    
     function __getOrderedListOfPagesForStartEnd($ID, $start, $end)
-	{
-    	$values = $this->__getOrderedListOfPagesForID($ID);
+    {
+        $values = $this->__getOrderedListOfPagesForID($ID);
 
-       	// filter using the newerThanPage indicator
+           // filter using the newerThanPage indicator
         $values = array_filter($values, array(new helper_plugin_siteexport_page_remove(intval($start), intval($end)), '_page_remove'));
         
         usort($values, array($this, '_page_sort'));
         return $values;
-	}
+    }
 
-	function __siteexport_addpage() {
-		
+    function __siteexport_addpage() {
+        
         global $ID, $conf;
 
-	    $templateSwitching = false;
-	    $pdfExport = false;
-	    $usenumberedheading = false;
-	    $translation = null;
-	    $translationAvailable = false;
-	    $usenumberedheading = true;
-	    
+        $templateSwitching = false;
+        $pdfExport = false;
+        $usenumberedheading = false;
+        $translation = null;
+        $translationAvailable = false;
+        $usenumberedheading = true;
+        
         $preload = plugin_load('preload', 'siteexport');
         if ($preload && $preload->__create_preload_function()) {
             $templateSwitching = true;
@@ -271,7 +271,7 @@ class helper_plugin_siteexport extends DokuWiki_Plugin {
         if ($templateSwitching)
         {
             $form->startFieldset($this->getLang('disablePluginsOption'));
-            	
+                
             $form->addElement(form_makeCheckboxField("disableall", 1, 'Disable All:', "disableall", 'forceVisible'));
             $form->addElement(form_makeTag('br'));
             $form->addElement(form_makeTag('br'));
@@ -281,7 +281,7 @@ class helper_plugin_siteexport extends DokuWiki_Plugin {
                 $form->addElement(form_makeCheckboxField("disableplugin[]", $plugin, $plugin . ':', "disableplugin_$plugin", null, (!in_array($plugin, $enabledPlugins) ? array('checked' => 'checked', 'disabled' => 'disabled') : array())));
                 $form->addElement(form_makeTag('br'));
             }
-            	
+                
             $form->endFieldset();
             $form->addElement(form_makeTag('br'));
         }
@@ -300,7 +300,7 @@ class helper_plugin_siteexport extends DokuWiki_Plugin {
         $form->addElement(form_makeTag('br'));
 
         if ( !defined('DOKU_SITEEXPORT_MANAGER') ) {
-			
+            
         
             $form->startFieldset( $this->getLang('startProcess') );
             $form->addElement(form_makeTextField('copyurl', "", $this->getLang('directDownloadLink') . ':', 'copyurl', null, array('readonly' => 'readonly') ));
@@ -312,13 +312,13 @@ class helper_plugin_siteexport extends DokuWiki_Plugin {
             $form->addElement(form_makeButton('submit', 'siteexport', $this->getLang('start') , array('style' => 'float:right;')));
             $form->endFieldset();
             $form->addElement(form_makeTag('br'));
-	
+    
             $form->endFieldset();
             $form->addElement(form_makeTag('br'));
 
             $form->startFieldset( $this->getLang('status') );
             $form->addElement(form_makeOpenTag('span', array('id' => 'siteexport__out')));
-	
+    
             $form->addElement(form_makeCloseTag('span'));
             $form->addElement(form_makeOpenTag('span', array('class' => 'siteexport__throbber')));
             $form->addElement(form_makeTag('img', array('src' => DOKU_BASE.'lib/images/loading.gif', 'id' => 'siteexport__throbber')));

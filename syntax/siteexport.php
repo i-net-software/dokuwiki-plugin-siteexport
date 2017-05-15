@@ -54,7 +54,7 @@ class syntax_plugin_siteexport_siteexport extends DokuWiki_Syntax_Plugin {
 
             $submitLabel = $this->getLang('SiteSubmitLabel');
             foreach( $data as $option ) {
-	            
+                
                 list($key, $value) = explode('=', $option);
                 switch ($key) {
                     case "buttonTitle":

@@ -15,17 +15,17 @@
 */
 
 (function($, window){
-	// i'll just put them here to get evaluated on script load
-	var htmlSpecialCharsRegEx = /[<>&\r\n"']/gm;
-	var htmlSpecialCharsPlaceHolders = {
-				'<': 'lt;',
-				'>': 'gt;',
-				'&': 'amp;',
-				'\r': "#13;",
-				'\n': "#10;",
-				'"': 'quot;',
-				"'": 'apos;' /*single quotes just to be safe*/
-	};
+    // i'll just put them here to get evaluated on script load
+    var htmlSpecialCharsRegEx = /[<>&\r\n"']/gm;
+    var htmlSpecialCharsPlaceHolders = {
+                '<': 'lt;',
+                '>': 'gt;',
+                '&': 'amp;',
+                '\r': "#13;",
+                '\n': "#10;",
+                '"': 'quot;',
+                "'": 'apos;' /*single quotes just to be safe*/
+    };
 
 $.extend({
     //
@@ -435,7 +435,7 @@ $.extend({
         function htmlSpecialCharsEntityEncode(str) {
             return str.replace(htmlSpecialCharsRegEx, function(match) {
                 return '&' + htmlSpecialCharsPlaceHolders[match];
-        	});
+            });
         }
 
         return deferred.promise();

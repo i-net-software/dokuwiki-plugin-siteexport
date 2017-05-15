@@ -21,7 +21,7 @@ define('DOKU_SITEEXPORT_MANAGER',1);
     
     if ( empty($ID) ) {
         if ( empty($conf['basedir']) ) {
-    	
+        
             $path = str_replace(array('/', '\\'), DIRECTORY_SEPARATOR, dirname(parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH)).'/../../../../');
             $parts = array_filter(explode(DIRECTORY_SEPARATOR, $path), 'strlen');
             $absolutes = array();
@@ -72,7 +72,7 @@ define('DOKU_SITEEXPORT_MANAGER',1);
         <?php html_msgarea() ?>
         <?php        
             $functions=& plugin_load('helper', 'siteexport');
-            $functions->__siteexport_addpage();	        
+            $functions->__siteexport_addpage();            
         ?>        
     </div>
     <!--[if ( lte IE 7 | IE 8 ) ]></div><![endif]-->

@@ -222,22 +222,22 @@ class siteexport_functions extends DokuWiki_Plugin
         
             $intermediateMore = '';
             foreach( $more as $key => $value) {
-        	
+            
                 if ( strlen($intermediateMore) > 0 ) {
                     $intermediateMore .= $sep;
                 }
-        	
+            
                 if ( !is_array($value) ) {
                     $intermediateMore .= rawurlencode($key) . '=';
                     $intermediateMore .= rawurlencode($value);
                     continue;
                 }
-	        	
+                
                 foreach( $value as $val ) {
                     if ( strlen($intermediateMore) > 0 ) {
                         $intermediateMore .= $sep;
                     }
-	        	
+                
                     $intermediateMore .= rawurlencode($key) . '[]=';
                     $intermediateMore .= rawurlencode($val);
                 }
@@ -457,7 +457,7 @@ class siteexport_functions extends DokuWiki_Plugin
                     if ( !is_array($outputArray[$key]) ) {
                         $outputArray[$key] = array();
                     }
-	                
+                    
                     array_push($outputArray[$key], $value); // Array Handling
                 } else {
                     $outputArray[$key] = $value;

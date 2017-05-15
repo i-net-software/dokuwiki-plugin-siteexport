@@ -74,7 +74,7 @@ class syntax_plugin_siteexport_aggregate extends DokuWiki_Syntax_Plugin {
             $submitLabel = $this->getLang('AggregateSubmitLabel');
             $introduction = $this->getLang('AggragateExportPages');
             foreach( $data as $option ) {
-	            
+                
                 list($key, $value) = explode('=', $option);
                 switch ($key) {
                     case "namespace":
@@ -100,7 +100,7 @@ class syntax_plugin_siteexport_aggregate extends DokuWiki_Syntax_Plugin {
             } else {
                 $form->addElement(form_makeMenuField('baseID', $values, isset($_REQUEST['baseID']) ? $_REQUEST['baseID'] : $values[0], $introduction));
                 $form->addElement(form_makeButton('submit', 'siteexport', $submitLabel, array('class' => 'button download')));
-	
+    
                 ob_start();
                 $form->printForm();
                 $renderer->doc .= ob_get_contents();

@@ -10,140 +10,140 @@
 }
 
 #siteexport__manager {
-	margin-top: 0px;
-	padding-top: 1em;
+    margin-top: 0px;
+    padding-top: 1em;
 }
 
 #siteexport fieldset {
-	text-align: left;
+    text-align: left;
 }
 
 #siteexport fieldset label input, #siteexport fieldset label select {
-	float: right;
-	text-align: left;
-	width: 50%;
+    float: right;
+    text-align: left;
+    width: 50%;
 }
 
 #siteexport fieldset label input[type=checkbox] {
-	width: auto;
+    width: auto;
 }
 
 #siteexport fieldset.hideOptions > *
 {
-	display: none;
+    display: none;
 }
 
 #siteexport fieldset legend, #siteexport fieldset.hideOptions .forceVisible
 {
-	display: block !important;
+    display: block !important;
 } 
 
 #siteexport fieldset legend
 {
-	cursor: pointer;
+    cursor: pointer;
 }
 
 #siteexport fieldset legend:hover
 {
-	color: __existing__;
-	text-decoration: underline;
+    color: __existing__;
+    text-decoration: underline;
 }
 
 #siteexport fieldset br {
-	clear: both;
+    clear: both;
 }
 
 #siteexport fieldset p {
-	margin-top: 0px;
-	color: #a9a9a9;
+    margin-top: 0px;
+    color: #a9a9a9;
 }
 
 #siteexport__errorlog {
-	overflow: auto;
-	max-height: 200px;
+    overflow: auto;
+    max-height: 200px;
 }
 
 #siteexport__errorlog p {
-	color: #a00;
-	margin: 0px;
-	padding: 0px 5px;
-	overflow: hidden;
+    color: #a00;
+    margin: 0px;
+    padding: 0px 5px;
+    overflow: hidden;
 }
 
 #siteexport__errorlog p:nth-child(odd) {
-	background-color: #FFEDED;
+    background-color: #FFEDED;
 }
 
 #siteexport__errorlog p:nth-child(even) {
-	background-color: #FFD4D4;
+    background-color: #FFD4D4;
 }
 
 #siteexport__customActions {
-	margin: 0px;
-	padding: 0px;
+    margin: 0px;
+    padding: 0px;
 }
 
 #siteexport__customActions li {
-	list-style: none;
-	
-	border-bottom: 1px solid #ccc;
-	float: left;
-	clear: both;
-	
-	width: 100%;
-	margin: 0px;
-	padding: 0px;
+    list-style: none;
+    
+    border-bottom: 1px solid #ccc;
+    float: left;
+    clear: both;
+    
+    width: 100%;
+    margin: 0px;
+    padding: 0px;
 }
 
 #siteexport__customActions li input {
-	margin: 2px 1%;
-	width: 45%;
+    margin: 2px 1%;
+    width: 45%;
 }
 
 #siteexport__customActions li:last-child {
-	border-bottom: none;
+    border-bottom: none;
 }
-	
+    
 #siteexport__customActions li:nth-child(odd) {
-	background-color: #eee;
+    background-color: #eee;
 }
 
 #siteexport__customActions li:nth-child(even) {
-	background-color: #f0f0f0;
+    background-color: #f0f0f0;
 }
 
 #siteexport__customActions li button {
-	float: right;
+    float: right;
 }
 
 div.sitetoc ul li div.li > a
 {
-	display: block;
-	margin-bottom: 5px !important;
-	margin-top: 15px !important;
+    display: block;
+    margin-bottom: 5px !important;
+    margin-top: 15px !important;
 }
 
 #siteexport .siteexport__throbber,
 #siteexport .siteexport__throbber img {
-	display: block;
-	margin-left: auto;
-	margin-right: auto;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 #dokuwiki__pagetools ul li a.siteexport_addpage::before {
-	content: url(images/pagetools.png);
+    content: url(images/pagetools.png);
 }
 
 #dokuwiki__pagetools:hover ul li a.siteexport_addpage,
 #dokuwiki__pagetools ul li a.siteexport_addpage:focus,
 #dokuwiki__pagetools ul li a.siteexport_addpage:active {
-	background-image: url(images/pagetools.png);
+    background-image: url(images/pagetools.png);
 }
 
 #dokuwiki__pagetools ul li a.siteexport_addpage:hover,
 #dokuwiki__pagetools ul li a.siteexport_addpage:active,
 #dokuwiki__pagetools ul li a.siteexport_addpage:focus {
-	background-position: right -32px;
+    background-position: right -32px;
 }
 
 

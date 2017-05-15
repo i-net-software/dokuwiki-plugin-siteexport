@@ -144,7 +144,7 @@ class siteexport_debug
             if ( $this->firstRE ) {
                 print 'Runtime Error' . "\n";
             }
-	
+    
             print '<b>'.$message.'</b><br />' . "\n";
             if ( $this->firstRE ) {
                 print '<b>If this error persists, please contact the server administrator.</b><br />' . "\n";
