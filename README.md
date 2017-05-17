@@ -1,11 +1,11 @@
-#Dokuwiki Site Export
+# Dokuwiki Site Export
 
 Site Export is an admin plugin that offers a convenient way to download your dokuwiki site as a standalone version. It cycles through your namespaces - a starting point can be given at run-time - and packs the result into a zip file.
 The result can be unpacked at any place and viewed without having an internet connection. That makes the plugin perfect for providing static documentation to customers on a CD or DVD.
 
 [![Build Status](https://travis-ci.org/i-net-software/dokuwiki-plugin-siteexport.svg?branch=master)](https://travis-ci.org/i-net-software/dokuwiki-plugin-siteexport)
 
-##Requirements
+## Requirements
 
  * [DokuWiki](http://dokuwiki.org) version **Weatherwax**, **Binky** and newer
  * You need to log in as administrator to have access to the siteexport plugin
@@ -13,7 +13,7 @@ The result can be unpacked at any place and viewed without having an internet co
  * [dw2pdf](https://www.dokuwiki.org/plugin:dw2pdf) for PDF export options
  * a writable <code>/inc/preload.php</code> file for template switching
 
-##Configuration
+## Configuration
 
 This is about the Admin --> Configuration Manager page.
 
@@ -34,25 +34,25 @@ This is about the Admin --> Configuration Manager page.
  * **Cache time for export:**<br>
  The siteexport uses its own cache timer to determine when an export should be discarded.
 
-##How to export pages
+## How to export pages
 
 SiteExport is only available from the Admin menu at the _Additional Plugins_ section. When starting of from the page you want to export, simply go to the export menu, and hit _start_.
 
-###Enter your starting Namespace
+### Enter your starting Namespace
 
 Basic export options
 
-####Set Namespace
+#### Set Namespace
 The namespace/page you actually want to export. This will be predefined with the page you currently visited.
  
-####Parent Namespace to export
+#### Parent Namespace to export
 By default this is the same namespace/page that you are going to export. That will result in a flat structure, with the pages at the top level.
 
 You can define a higher namespace which will result in the structure below being exported with potentially empty folders but habing the lib (plugins, template) directories beeing at top level.
 
 This is usefull for exporting translated namespaces starting with the root of the translation.
 
-####Export Type
+#### Export Type
 How many pages should be exported?
 
   * **This page only:**<br>
@@ -62,72 +62,72 @@ How many pages should be exported?
   * **Specific depth:**<br>
   Exports everything below the defined namespace but only for the defined depth. The depth means how many namespaces it will go down.
 
-#####Depth
+##### Depth
 Number of namespaces to go down into.
 
-#####Export Linked Pages
+##### Export Linked Pages
 Will export linked pages outside or even deeper of the defined namespace as well
 
-###Select your Options
+### Select your Options
 
-####Export Absolute Paths
+#### Export Absolute Paths
 
 #### Export Body only
 Adds the option for renderes to only export the inner body other than exporting the whole page.
 
-####Export all parameters (e.g. "do")
+#### Export all parameters (e.g. "do")
 Adds all parameters to the links in exported pages - which may make sense when using JavaScript that relies on the links
 
-####Render Engine
+#### Render Engine
 By default the engine of the DokuWiki. This allows exporting the pages with other renderers, e.g. the siteexport_pdf (derived from dw2pdf) to have pages in PDF file format.
 
-####Export Template
+#### Export Template
 **Only available if <code>inc/preload.php</code> is writable.**<br>
 Allows to export the pages with a different template than the default one.
 
-####PDF Export
+#### PDF Export
 **Only available if the dw2pdf plugin is installed.**<br>
 Exports the pages into PDF files, one per page. There are options ([TOC](#Table Of Contents definition)) to export multiple pages into one large PDF.
 
-####Numbered Headings
+#### Numbered Headings
 **Only available if the dw2pdf plugin is installed.**<br>
 Adds a number to each heading. Usefull for a Table Of Contents inside the PDF
 
-###Select one of the Help Creation Options (optional)
+### Select one of the Help Creation Options (optional)
 This is totaly optional.
 
-####Create Eclipse Help:
+#### Create Eclipse Help:
 Allows the creation of <code>context.xml</code> and <code>map.xml</code> files that can be used by Eclipse and its Plugins.
 
-####Create Java Help:
+#### Create Java Help:
 Allows the creation of <code>tox.xml</code> and <code>map.xml</code> files that can be used by Java and the Java Help implementation.
 
-####Use TOC file in Namespace
+#### Use TOC file in Namespace
 If you do not want the export to be structured like your DokuWiki is, you can create a file called <code>toc</code> in the namespace and create a custom structure that will be used instead.
 
 This is great for having all the chapters of a documentation in their own file and exporting them into PDF as a single file.
 
 See [Table Of Contents definition](#table-of-contents-definition)
 
-###Disable (JS/CSS) Plugins while export
+### Disable (JS/CSS) Plugins while export
 The checkboxes stand for each plugin. By checking it the plugin will be disabled temporarily and therefore not generate any CSS or JS output.
 
 This is great for a static export that does not need any other or only some plugins. Be adviced that disabling plugins might improve the speed of PDF export.
 
-###Custom Options
+### Custom Options
 Here you can add additional variables that will be given to exported page. This can help to create content dynamically when using other plugins or PHP execution.
 
 Simply hit _add Option_ for a new _name_ / _value_ field, enter the variables name and value. Done.
 
-###Start Process
+### Start Process
 The three links are convenience links. They will be regenerated by every change of any option. They reflect static URLs that can be copied and used e.g. for _ant_ jobs.
 
 Now: Hit start and your pages will be exported.
 
-###Status
+### Status
 Reflects what is currently going on and will display errors that occur during exporting or changing options.
 
-###Save as Cron Job
+### Save as Cron Job
 If your configuration directory is writable - which it should after setup, you can save your current setup here.
 
 You can show what has been saved, view them, delete them and re-run them.
@@ -135,7 +135,7 @@ You can show what has been saved, view them, delete them and re-run them.
 If you have CLI access (terminal or whatever) and cron access to your server, you can add the <code>cron.php</code> file to schedule runs of your cron jobs.
 
 
-##Table Of Contents definition
+## Table Of Contents definition
 If you do not want the export to be structured like your DokuWiki is, you can create a file called <code>toc</code> in the namespace and create a custom structure that will be used instead.
 
 This is great for having all the chapters of a documentation in their own file and exporting them into PDF as a single file.
@@ -165,14 +165,14 @@ pagebreak | inserts a pagebreak after each page defined by the namespace
 
 You have to define the options like this: <code>&lt;toc notoc merge&gt;</code>
 
-##Siteexport
+## Siteexport
 Add a download button for the current page - or any other page
 
 <pre>
 {{siteexport [options]}}
 </pre>
 
-##Siteexport Aggregator
+## Siteexport Aggregator
 There is the additional syntax: aggregator. This allows an in-page selection of an ordered list of pages in the current namespace and sub-namespaces. Once selected and submitted, that page will be generated with the options provided - and merged back up the list (it actually starts merging top down). (What?!)
 
 The Syntax is (and can be used multiple times per document):
