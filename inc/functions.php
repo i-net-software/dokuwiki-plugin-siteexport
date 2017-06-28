@@ -667,6 +667,12 @@ class siteexport_functions extends DokuWiki_Plugin
         
         // find out if this is outside of our own export context, becond the baseURL
         $offsiteTemplate = $this->getConf("offSiteLinkTemplate");
+        $this->debug->message("Checking for offsite links", array(
+            "baseParts" => count($baseParts),
+            "originalBaseParts" => $originalBasePartsCount,
+            "ExistingPageID" => $existingPageID,
+            "offsiteTemplate" => $offsiteTemplate
+        ), 1);
         if (count($baseParts) == $originalBasePartsCount && $existingPageID != null && !empty($offsiteTemplate)) {
 
             $offsiteTemplate = str_replace('RAWID', $existingPageID, $offsiteTemplate);
@@ -675,7 +681,8 @@ class siteexport_functions extends DokuWiki_Plugin
             $offsiteTemplate = str_replace('CONTEXTID', array_pop($this->getMapID($existingPageID, null, $check)), $offsiteTemplate);
             $offsiteTemplate = str_replace('LINK', $finalLink, $offsiteTemplate);
 
-            $finalLink = $$offsiteTemplate;
+            $this->debug->message("Replacing finalLink '${finalLink}' with offsiteLink '${offsiteTemplate}'", null, 1);
+            $finalLink = $offsiteTemplate;
         }
         
         return $finalLink;
