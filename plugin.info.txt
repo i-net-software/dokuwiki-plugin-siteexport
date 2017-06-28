@@ -3,7 +3,7 @@
 base   siteexport
 author i-net software
 email  tools@inetsoftware.de
-date   2017-05-15
+date   2017-06-28
 name   Site Export
 desc   exports the dokuwiki site in the given format
 url    https://www.dokuwiki.org/plugin:siteexport
