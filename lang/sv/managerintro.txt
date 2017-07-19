@@ -1,0 +1,5 @@
+====== Webbplatsexport-hanterare ======
+
+Konfigurera en ''%%{{siteAGGREGATOR}}%%''-sektion med dessa alternativ.
+
+När du är färdig, klicka på knappen vid nederst på sidan så kommer detta val att placeras på sidan.
