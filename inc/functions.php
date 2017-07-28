@@ -109,7 +109,12 @@ class siteexport_functions extends DokuWiki_Plugin
      **/
     public function getSiteTitle($ID) {
         if (useHeading('content') && $ID) {
-            $heading = p_get_first_heading($ID, true);
+            $heading = null;
+            if (class_exists('siteexport_pdfgenerator')) {
+                $heading = p_get_metadata(cleanID($ID),'pdftitle',METADATA_RENDER_USING_SIMPLE_CACHE);
+            }
+            $heading = empty($heading) ? p_get_metadata(cleanID($ID),'breadtitle',METADATA_RENDER_USING_SIMPLE_CACHE) : $heading;
+            $heading = empty($heading) ? p_get_first_heading($ID, true) : $heading;
             if ($heading) {
                 return $this->xmlEntities($heading);
             }
