@@ -514,6 +514,35 @@
             $.siteexport().addCustomOption();
             return false;
         });
-        
     });
 })(jQuery);
+
+var copyMapIDToClipBoard = function() {
+    var $this = jQuery(this);
+    var $mapID = $this.find('span.mapID');
+    var range, selection, ok;
+
+    if (window.getSelection && document.createRange) {
+        selection = window.getSelection();
+        range = document.createRange();
+        range.selectNodeContents($mapID.get(0));
+        selection.removeAllRanges();
+        selection.addRange(range);
+    } else if (document.selection && document.body.createTextRange) {
+        range = document.body.createTextRange();
+        range.moveToElementText($mapID.get(0));
+        range.select();
+    }
+    // Use try & catch for unsupported browser
+    try {
+        // The important part (copy selected text)
+        ok = document.execCommand('copy');
+    } catch (err) {}
+    
+    if (ok) {
+        $mapID.addClass('done');
+        setTimeout(function(){
+            $mapID.removeClass('done');
+        }, 1000);
+    }
+};

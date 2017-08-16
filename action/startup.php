@@ -96,7 +96,17 @@ class action_plugin_siteexport_startup extends DokuWiki_Action_Plugin {
         
         if ( ($this->getConf('allowallusers') || auth_isadmin() || auth_ismanager()) ) {
             $event->data['items'][] = '<li>' . tpl_link(wl($ID, array('do' => 'siteexport_addpage')), '<span>Export Page</span>',
-                                                'class="action siteexport_addpage" title="Add page"', 1) . '</li>';
+                                                'class="action siteexport_addpage" title="Export Page (Siteexport)"', 1) . '</li>';
+                                                
+            require_once(DOKU_PLUGIN . 'siteexport/inc/functions.php');
+            $functions = new siteexport_functions();
+            
+            $check = array();
+            $mapID = array_shift($functions->getMapID($ID, null, $check));
+            if ( !empty($mapID) ) {
+                $event->data['items'][] = '<li>' . tpl_link('', '<span>Copy Map-ID: <span class="mapID" data-done="Done.">'.$mapID.'</span></span>',
+                                                   'class="action siteexport_mapid" title="Show Map-ID"" data-mapid="'.$mapID.'" onclick="copyMapIDToClipBoard.call(this); return false;"', 1) . '</li>';
+            }
         }
     }
     
