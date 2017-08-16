@@ -146,5 +146,27 @@ div.sitetoc ul li div.li > a
     background-position: right -32px;
 }
 
+#dokuwiki__pagetools ul li a.siteexport_mapid {
+    .mapID {
+        position: relative;
+
+        &:before {
+            position: absolute;
+            left: 0; right: 0;
+            content: attr(data-done);
+            color: #0a0;
+            opacity: 0;
+            background: #efe;
+            text-align: center;
+            
+            transition: opacity ease-in-out 500ms;
+        }
+        
+        &.done:before {
+            opacity: 1;
+        }
+    }
+}
+
 
 // Setup VIM: ex: et ts=4 enc=utf-8 :
