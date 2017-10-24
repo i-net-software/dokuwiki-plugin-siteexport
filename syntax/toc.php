@@ -584,7 +584,7 @@ class syntax_plugin_siteexport_toc extends DokuWiki_Syntax_Plugin {
     function _cleanXHTML($xhtml) {
         $replace = array(
             '!<div class="toc">.*?(</div>\n</div>)!s' => '', // remove TOCs
-            '#<!-- SECTION \[(\d*-\d*)\] -->#e'       => '', // remove section edit buttons
+            '#<!-- SECTION \[(\d*-\d*)\] -->#s'       => '', // remove section edit buttons
             '!<div id="tags">.*?(</div>)!s'           => ''  // remove category tags
         );
         $xhtml = preg_replace(array_keys($replace), array_values($replace), $xhtml);
