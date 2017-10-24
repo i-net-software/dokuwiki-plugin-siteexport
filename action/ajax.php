@@ -51,7 +51,7 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
      * @param $event
      * @param $args
      */
-    function ajax_siteexport_provider(&$event, $args) {
+    function ajax_siteexport_provider(Doku_Event &$event, $args) {
 
         // If this is not a siteexport call, ignore it.
         if (!strstr($event->data, '__siteexport'))
@@ -73,7 +73,7 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
      * Export from a URL - action
      * @param $event
      */
-    function siteexport_action( &$event ) {
+    function siteexport_action( Doku_Event &$event ) {
         global $ID;
 
         // Check if the 'do' was siteexport
@@ -185,7 +185,7 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
      * Also gives back the parameters for this URL
      * @param $event init event of the ajax request
      */
-    function ajax_siteexport_prepareURL_and_POSTData(&$event) {
+    function ajax_siteexport_prepareURL_and_POSTData(Doku_Event &$event) {
 
         $event->preventDefault();
         $event->stopPropagation();
@@ -204,7 +204,7 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
     /**
      * generate direct access URL
      **/
-    function ajax_siteexport_generateurl(&$event) {
+    function ajax_siteexport_generateurl(Doku_Event &$event) {
 
         list($url, $combined, $path, $POSTData) = $this->ajax_siteexport_prepareURL_and_POSTData($event);
 
@@ -238,7 +238,7 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
     /**
      * Get List of sites to be exported for AJAX (wrapper)
      **/
-    function ajax_siteexport_getsitelist(&$event) {
+    function ajax_siteexport_getsitelist(Doku_Event &$event) {
 
         $event->preventDefault();
         $event->stopPropagation();
@@ -275,7 +275,7 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
         return;
     }
 
-    function ajax_siteexport_aggregate(&$event) {
+    function ajax_siteexport_aggregate(Doku_Event &$event) {
         
         // Quick preparations for one page only
         if ($this->filewriter->hasValidCacheFile($_REQUEST, $data)) {
@@ -295,7 +295,7 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
     /**
      * Add a page to the package (for AJAX calls - Wrapper)
      **/
-    function ajax_siteexport_addsite(&$event) {
+    function ajax_siteexport_addsite(Doku_Event &$event) {
 
         $event->preventDefault();
         $event->stopPropagation();

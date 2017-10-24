@@ -52,7 +52,7 @@ class action_plugin_siteexport_startup extends DokuWiki_Action_Plugin {
     /**
      * Check for Template changes in JS
      **/
-    function siteexport_check_js_cache(&$event)
+    function siteexport_check_js_cache(Doku_Event &$event)
     {
         global $conf, $INFO;
 
@@ -61,7 +61,7 @@ class action_plugin_siteexport_startup extends DokuWiki_Action_Plugin {
         $event->data->cache = getCacheName($event->data->key,$event->data->ext);
     }
 
-    function siteexport_check_export(&$event)
+    function siteexport_check_export(Doku_Event &$event)
     {
         global $conf;
         $command = is_array($event->data) ? array_shift(array_keys($event->data)) : $event->data;
@@ -77,7 +77,7 @@ class action_plugin_siteexport_startup extends DokuWiki_Action_Plugin {
         }
     }
 
-    function siteexport_addpage(&$event)
+    function siteexport_addpage(Doku_Event &$event)
     {
         if ( $event->data != 'siteexport_addpage' || ! ($this->getConf('allowallusers') || auth_isadmin() || auth_ismanager()) ) { return; }
         if ( ! $functions=& plugin_load('helper', 'siteexport') ) {
@@ -89,7 +89,7 @@ class action_plugin_siteexport_startup extends DokuWiki_Action_Plugin {
         $event->preventDefault();
     }
 
-    function siteexport_add_page_export(&$event)
+    function siteexport_add_page_export(Doku_Event &$event)
     {
         global $ID;
 
@@ -110,7 +110,7 @@ class action_plugin_siteexport_startup extends DokuWiki_Action_Plugin {
         }
     }
 
-    function siteexport_metaheaders(&$event)
+    function siteexport_metaheaders(Doku_Event &$event)
     {
         global $conf;
         $template = defined('SITEEXPORT_TPL') ? SITEEXPORT_TPL : $conf['template'];
@@ -126,7 +126,7 @@ class action_plugin_siteexport_startup extends DokuWiki_Action_Plugin {
         return true;
     }
 
-    function siteexport_toolbar_define(&$event) {
+    function siteexport_toolbar_define(Doku_Event &$event) {
 
         if ( $this->hasSiteexportHeaders() ) {
             // Remove Toolbar

@@ -22,7 +22,7 @@ class action_plugin_siteexport_aggregate extends DokuWiki_Action_Plugin {
         $controller->register_hook('TOOLBAR_DEFINE', 'AFTER', $this, 'siteexport_aggregate_button', array ());
     }
     
-    function siteexport_aggregate(&$event)
+    function siteexport_aggregate(Doku_Event &$event)
     {
         global $ID, $INFO, $conf;
 
