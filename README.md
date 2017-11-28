@@ -185,4 +185,6 @@ The Syntax is (and can be used multiple times per document):
  * Without options it will generate a dropdown-list of all pages in the namespace (except the current) one
  * The list will be ordered by a meta key `mergecompare` which has to be added via the META plugin.
  * You can create an element with predefined options using the editor button.
- * There is one additional option: `exportSelectedVersionOnly` - if set it will only export this one selected entry. It will then export this one page with the metadata of the page that has the aggregator.
+ * There are two additional options:
+   * `exportSelectedVersionOnly` - if set it will only export this one selected entry. It will then export this one page with the metadata of the page that has the aggregator.
+   * `includeSelectedVersion` - will export all documents starting from the newest to the document directly prior to the selected one.
