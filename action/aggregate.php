@@ -24,14 +24,14 @@ class action_plugin_siteexport_aggregate extends DokuWiki_Action_Plugin {
     
     function siteexport_aggregate(Doku_Event &$event)
     {
-        global $ID, $INFO, $conf;
+        global $ID, $INFO, $conf, $INPUT;
 
         // Aggregate only if
         // (1) this page really has an aggregator and we did submit a request to do so
         // (2) this page really has an aggregator and we export as PDF
-        if ( !( (!empty($INFO['meta']['siteexport']) && $INFO['meta']['siteexport']['hasaggregator'] == true) && ( isset($_REQUEST['siteexport_aggregate']) || $conf['renderer_xhtml'] == 'siteexport_pdf' ) ) ) { return true; }
+        if ( !( (!empty($INFO['meta']['siteexport']) && $INFO['meta']['siteexport']['hasaggregator'] == true) && ( $INPUT->has( 'siteexport_aggregate' ) || $conf['renderer_xhtml'] == 'siteexport_pdf' ) ) ) { return true; }
         
-        $exportBase = cleanID($_REQUEST['baseID']);
+        $exportBase = cleanID( $INPUT->str('baseID') );
         $namespace = empty($exportBase) ? $INFO['meta']['siteexport']['baseID'] : getNs($exportBase);
         
         $functions = plugin_load('helper', 'siteexport');
@@ -44,18 +44,22 @@ class action_plugin_siteexport_aggregate extends DokuWiki_Action_Plugin {
         }
         
         // If only the one file should be exported, strip it down.
-        if ( !empty($_REQUEST['exportSelectedVersionOnly']) ) {
+        if ( $INPUT->bool('exportSelectedVersionOnly' ) ) {
             // Strip down values
             $lookupNS = noNS($namespace) == $conf['start'] ? $namespace : $namespace . ':' . $conf['start'];
             
-            if ( !empty( $_REQUEST['mergecompare_start'] ) && !empty( $_REQUEST['mergecompare_end'] ) ) {
-                    $values = $functions->__getOrderedListOfPagesForStartEnd($lookupNS, $_REQUEST['mergecompare_start'], $_REQUEST['mergecompare_end']);
+            if ( $INPUT->has( 'mergecompare_start' ) && $INPUT->has( 'mergecompare_end' ) ) {
+                    $values = $functions->__getOrderedListOfPagesForStartEnd($lookupNS, $INPUT->int( 'mergecompare_start' ), $INPUT->int( 'mergecompare_end' ) );
             } else {
                 $values = $functions->__getOrderedListOfPagesForID($lookupNS, $exportBase);
                 $values = array(end( $values )); // the list above has the $exportBase element at the very end
             }
         }
         
+        if( $INPUT->bool('includeSelectedVersion', true, true ) && count( $values ) > 1 ) {
+            array_pop( $values ); // Remove last entry which is the selected version, but only if more than one entry exists
+        }
+
         $originalID = (string) $ID;
 
         // Generate a TOC that can be exported
