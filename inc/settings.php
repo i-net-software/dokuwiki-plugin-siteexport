@@ -3,7 +3,7 @@
 if (!defined('DOKU_PLUGIN')) die('meh');
 class settings_plugin_siteexport_settings extends DokuWiki_Plugin
 {
-    public $fileType = 'html';
+    public  $fileType = 'html';
     public  $exportNamespace = '';
     public  $pattern = null;
 
@@ -37,11 +37,12 @@ class settings_plugin_siteexport_settings extends DokuWiki_Plugin
      * @param siteexport_functions $functions
      */
     function __construct($functions) {
-        global $ID, $conf;
+        global $ID, $conf, $INPUT;
 
         $functions->debug->setDebugFile($this->getConf('debugFile'));
-        if (!empty($_REQUEST['debug']) && intval($_REQUEST['debug']) >= 0 && intval($_REQUEST['debug']) <= 5) {
-            $functions->debug->setDebugLevel(intval($_REQUEST['debug']));
+        $debugLevel = $INPUT->int('debug', -1, true);
+        if ( $debugLevel >= 0 && $debugLevel <= 5) {
+            $functions->debug->setDebugLevel($debugLevel);
         } else 
         {
             $functions->debug->setDebugLevel($this->getConf('debugLevel'));
@@ -49,20 +50,19 @@ class settings_plugin_siteexport_settings extends DokuWiki_Plugin
 
         $functions->debug->isAJAX = $this->getConf('ignoreAJAXError') ? false : $functions->debug->isAJAX;
 
-        if (empty($_REQUEST['pattern']))
+        // Set the pattern
+        $this->pattern = $INPUT->str('pattern');
+        if ( empty( $this->pattern ) )
         {
             $params = $_REQUEST;
             $this->pattern = $functions->requestParametersToCacheHash($params);
-        } else {
-            // Set the pattern
-            $this->pattern = $_REQUEST['pattern'];
         }
 
         $this->isCLI = (!$_SERVER['REMOTE_ADDR'] && 'cli' == php_sapi_name());
 
         $this->cachetime = $this->getConf('cachetime');
-        if ( !empty( $_REQUEST['disableCache'] ) ) {
-            $this->cachetime = intval($_REQUEST['disableCache']) == 1 ? 0 : $this->cachetime;
+        if ( $INPUT->has( 'disableCache' ) ) {
+            $this->cachetime = 0;
         }
 
         // Load variables
@@ -77,21 +77,22 @@ class settings_plugin_siteexport_settings extends DokuWiki_Plugin
         $this->zipFile = mediaFN($this->downloadZipFile);
 
         $this->tmpDir = mediaFN(getNS($this->origZipFile));
-        $this->exportLinkedPages = !isset($_REQUEST['exportLinkedPages']) || intval($_REQUEST['exportLinkedPages']) == 1 ? true : false;
+        $this->exportLinkedPages = $INPUT->bool( 'exportLinkedPages', false, true );
 
-        $this->namespace = $functions->getNamespaceFromID($_REQUEST['ns'], $PAGE);
-        $this->addParams = !empty($_REQUEST['addParams']);
+        $this->namespace = $functions->getNamespaceFromID( $INPUT->str('ns'), $PAGE );
+        $this->addParams = $INPUT->bool( 'addParams' );
 
-        $this->useTOCFile = !empty($_REQUEST['useTocFile']);
+        $this->useTOCFile = $INPUT->bool( 'useTocFile' );
 
         // set export Namespace - which is a virtual Root
         $pg = noNS($ID);
         if (empty($this->namespace)) { $this->namespace = $functions->getNamespaceFromID(getNS($ID), $pg); }
-        $this->exportNamespace = !empty($_REQUEST['ens']) && preg_match("%^" . preg_quote($functions->getNamespaceFromID($_REQUEST['ens'], $pg), '%') . "%", $this->namespace) ? $functions->getNamespaceFromID($_REQUEST['ens'], $pg) : $this->namespace;
+        $ens = $INPUT->str( 'ens' );
+        $this->exportNamespace = !empty($ens) && preg_match("%^" . preg_quote($functions->getNamespaceFromID($ens, $pg), '%') . "%", $this->namespace) ? $functions->getNamespaceFromID($ens, $pg) : $this->namespace;
 
         $this->TOCMapWithoutTranslation = intval($_REQUEST['TOCMapWithoutTranslation']) == 1 ? true : false;
 
-        $this->defaultLang = empty($_REQUEST['defaultLang']) ? $conf['lang'] : $_REQUEST['defaultLang'];
+        $this->defaultLang = $INPUT->str( 'defaultLang', $conf['lang'], true );
 
         // Strip params that should be forwarded
         $this->additionalParameters = $_REQUEST;
