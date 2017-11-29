@@ -161,6 +161,7 @@ notoc | hide the user defined TOC in the document
 description | display the description abstract below of the linked page below the link (usefull together with:`~~META:description abstract=This is my abstract.~~`
 merge | this will merge all the defined documents from the TOC into the current document.
 mergeheader | this will, as addition to merge, merge all headers starting with the first document (new headers of later documents will be appended at the end, the will not be sorted alphabetically)
+mergehint | add hints about the merged content. It can be configured using the meta plugin and the key "mergehint = <label>". It falls back to the "thema" key or the page title.
 pagebreak | inserts a pagebreak after each page defined by the namespace
 
 You have to define the options like this: <code>&lt;toc notoc merge&gt;</code>
@@ -188,3 +189,4 @@ The Syntax is (and can be used multiple times per document):
  * There are two additional options:
    * `exportSelectedVersionOnly` - if set it will only export this one selected entry. It will then export this one page with the metadata of the page that has the aggregator.
    * `includeSelectedVersion` - will export all documents starting from the newest to the document directly prior to the selected one.
+   * `mergehint=false` - disable the addition of merge hints
