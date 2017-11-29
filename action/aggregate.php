@@ -63,7 +63,14 @@ class action_plugin_siteexport_aggregate extends DokuWiki_Action_Plugin {
         $originalID = (string) $ID;
 
         // Generate a TOC that can be exported
-        $TOC = "<toc merge mergeheader>\n";
+        $TOC = "<toc merge mergeheader";
+
+        // add a mergehint, or better remove it if not required
+        if( $INPUT->bool('mergehint', true, true ) ) {
+            $TOC .= " mergehint";
+        }
+
+        $TOC .= ">\n";
         $thema = array();
         foreach( $values as $value ) {
             list($id, $title, $sort) = $value;
@@ -71,23 +78,23 @@ class action_plugin_siteexport_aggregate extends DokuWiki_Action_Plugin {
             $thema[] = p_get_metadata($id, 'thema', METADATA_RENDER_USING_SIMPLE_CACHE);
             $TOC .= "  * [[{$id}|{$title}]]\n";
         }
-        
+
         $TOC .= "</toc>";
-        
+
         // Only get first and last element
         $thema = array_reverse(array_unique(array(reset($thema), end($thema))));
         
         $meta = p_read_metadata($originalID);
         // Temporary ID for rendering a document.
         $ID = (string) cleanID($originalID . '-toc-' . implode('-', array_filter($thema)));
-        
+
         $meta['current']['thema'] = implode(' - ', array_filter($thema));
         p_save_metadata($originalID, $meta);
         p_save_metadata($ID, $meta);
-        
+
         if (empty($TOC)) { return true; }
         $event->preventDefault();
-        
+
         $html = p_render('xhtml', p_get_instructions($TOC), $INFO);
         // $html = html_secedit($html,false);
         if ($INFO['prependTOC']) $html = tpl_toc(true) . $html;
@@ -98,7 +105,7 @@ class action_plugin_siteexport_aggregate extends DokuWiki_Action_Plugin {
         echo $html;
         return true;
     }
-    
+
     /**
      * Inserts a toolbar button
      */

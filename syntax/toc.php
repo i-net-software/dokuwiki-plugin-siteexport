@@ -140,6 +140,7 @@ class syntax_plugin_siteexport_toc extends DokuWiki_Syntax_Plugin {
                             case 'nohead' : $renderer->meta['sitetoc']['noTocHeader'] = true; break;
                             case 'mergeheader' : $renderer->meta['sitetoc']['mergeHeader'] = true; break;
                             case 'pagebreak' : $renderer->meta['sitetoc']['pagebreak'] = true; break;
+                            case 'mergehint' : $renderer->meta['sitetoc']['mergehint'] = true; break;
                         }
                     }
                 }
@@ -205,7 +206,7 @@ class syntax_plugin_siteexport_toc extends DokuWiki_Syntax_Plugin {
 
                         if ($renderer->meta['sitetoc']['mergeHeader'] && !empty($instr)) {
                             // get a hint for merged pages
-                            if ( !empty( $instr ) ) {
+                            if ( $renderer->meta['sitetoc']['mergehint'] && !empty( $instr ) ) {
                                 // only if the first section is already there
                                 $mergeHint = p_get_metadata( $tocItem, 'mergehint', METADATA_RENDER_USING_SIMPLE_CACHE );
                                 if ( empty( $mergeHint) ) { $mergeHint = p_get_metadata( $tocItem, 'thema', METADATA_RENDER_USING_SIMPLE_CACHE ); }
