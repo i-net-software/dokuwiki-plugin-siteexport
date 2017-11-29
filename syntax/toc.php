@@ -236,9 +236,7 @@ class syntax_plugin_siteexport_toc extends DokuWiki_Syntax_Plugin {
                     }
 
                     if (!empty($instr)) {
-                        $this->_cleanInstructions($instr, '/section_(close|open)/');
-                        $this->_cleanInstructions($instr, '/listu_(close|open)/');
-                        $this->_cleanInstructions($instr, '/listo_(close|open)/');
+                        $this->_cleanAllInstructions($instr);
 
                         //if its the document start, cut off the first element(document information)
                         if ($instr[count($instr)-1][1][0] == 'siteexport_toctools') {
@@ -581,6 +579,12 @@ class syntax_plugin_siteexport_toc extends DokuWiki_Syntax_Plugin {
         return $currentSlice > 0;
     }
 
+    function _cleanAllInstructions(&$instr) {
+        $this->_cleanInstructions($instr, '/section_(close|open)/');
+        $this->_cleanInstructions($instr, '/listu_(close|open)/');
+        $this->_cleanInstructions($instr, '/listo_(close|open)/');
+    }
+
     /**
      * @param string $tag
      */
@@ -609,6 +613,10 @@ class syntax_plugin_siteexport_toc extends DokuWiki_Syntax_Plugin {
 
         // Surround new slice with a mergehint
         if ( empty( $mergeHint ) ) { return; }
+
+        // No emtpy insruction sets.
+        $this->_cleanAllInstructions( $instructions );
+        if ( empty( $instructions ) ) { return; }
 
         // only section content should be surrounded.
         if ( $instructions[0][0] != 'section_open' ) { return; }
