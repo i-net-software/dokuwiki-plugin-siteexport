@@ -62,9 +62,9 @@ class syntax_plugin_siteexport_toctools extends DokuWiki_Syntax_Plugin {
             if ( $type == 'mergehint' ) {
                 if ( $pos == 'start' ) {
                     $renderer->doc .= '<!-- MergeHint Start for "' . $title . '" -->';
-                    $renderer->doc .= '<div id="' . $id . '" class="siteexport mergehint"><span class="mergehint">' . $title . '</span>';
+                    $renderer->doc .= '<div id="' . $id . '" class="siteexport mergehintwrapper"><aside class="mergehint">' . $title . '</aside><div class="mergehintcontent">';
                 } else {
-                    $renderer->doc .= '</div>';
+                    $renderer->doc .= '</div></div>';
                     $renderer->doc .= '<!-- MergeHint End for "' . $title . '" -->';
                 }
             } else {
