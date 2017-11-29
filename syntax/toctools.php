@@ -15,7 +15,7 @@ require_once(DOKU_PLUGIN . 'syntax.php');
  * All DokuWiki plugins to extend the parser/rendering mechanism
  * need to inherit from this class
  */
-class syntax_plugin_siteexport_pagebreak extends DokuWiki_Syntax_Plugin {
+class syntax_plugin_siteexport_toctools extends DokuWiki_Syntax_Plugin {
  
     /**
      * What kind of syntax are we?
@@ -43,14 +43,14 @@ class syntax_plugin_siteexport_pagebreak extends DokuWiki_Syntax_Plugin {
      * Connect pattern to lexer
      */
     function connectTo($mode) {
-        $this->Lexer->addSpecialPattern('<sitepagebreak>',$mode,'plugin_siteexport_pagebreak');
+        // not really a syntax plugin
     }
  
     /**
      * Handle the match
      */
     function handle($match, $state, $pos, Doku_Handler $handler){
-        return array();
+        // not really a syntax plugin
     }
  
     /**
@@ -58,7 +58,18 @@ class syntax_plugin_siteexport_pagebreak extends DokuWiki_Syntax_Plugin {
      */
     function render($mode, Doku_Renderer $renderer, $data) {
         if ($mode == 'xhtml') {
-            $renderer->doc .= "<br style=\"page-break-after:always;\" />";
+            list( $type, $pos, $title, $id ) = $data;
+            if ( $type == 'mergehint' ) {
+                if ( $pos == 'start' ) {
+                    $renderer->doc .= '<!-- MergeHint Start for "' . $title . '" -->';
+                    $renderer->doc .= '<div id="' . $id . '" class="siteexport mergehint"><span class="mergehint">' . $title . '</span>';
+                } else {
+                    $renderer->doc .= '</div>';
+                    $renderer->doc .= '<!-- MergeHint End for "' . $title . '" -->';
+                }
+            } else {
+                $renderer->doc .= "<br style=\"page-break-after:always;\" />";
+            }
             return true;
         }
         return false;

@@ -168,5 +168,15 @@ div.sitetoc ul li div.li > a
     }
 }
 
+div.siteexport.mergehint {
+
+    position: relative;
+
+    span.mergehint {
+        position: absolute;
+        right: 100%;
+        font-size: 90%;
+    }
+}
 
 // Setup VIM: ex: et ts=4 enc=utf-8 :

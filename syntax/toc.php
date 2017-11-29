@@ -21,6 +21,7 @@ class syntax_plugin_siteexport_toc extends DokuWiki_Syntax_Plugin {
 
     private $mergedPages = array();
     private $includedPages = array();
+    private $merghintIds = array();
 
     function getType() { return 'protected'; }
     function getPType() { return 'block'; }
@@ -187,6 +188,7 @@ class syntax_plugin_siteexport_toc extends DokuWiki_Syntax_Plugin {
 
                     // Load the instructions
                     $instr = array();
+                    $mergeHint = null;
                     foreach ($this->mergedPages as $tocElement) {
 
                         list($tocItem, $depth) = $tocElement;
@@ -202,11 +204,30 @@ class syntax_plugin_siteexport_toc extends DokuWiki_Syntax_Plugin {
                         $instructions = $this->_convertInstructions($instructions, $addID, $renderer, $depth);
 
                         if ($renderer->meta['sitetoc']['mergeHeader'] && !empty($instr)) {
+                            // get a hint for merged pages
+                            if ( !empty( $instr ) ) {
+                                // only if the first section is already there
+                                $mergeHint = p_get_metadata( $tocItem, 'mergehint', METADATA_RENDER_USING_SIMPLE_CACHE );
+                                if ( empty( $mergeHint) ) { $mergeHint = p_get_metadata( $tocItem, 'thema', METADATA_RENDER_USING_SIMPLE_CACHE ); }
+                                if ( empty( $mergeHint) ) { $mergeHint = tpl_pagetitle( $tocItem, true ); }
+                            }
+
                             // Merge
-                            $instr = $this->_mergeWithHeaders($instr, $instructions, 1);
+                            $instr = $this->_mergeWithHeaders($instr, $instructions, 1, $mergeHint);
                         } else
                         if ($renderer->meta['sitetoc']['pagebreak']) {
-                            $instr = array_merge($instr, $instructions, $this->_convertInstructions(p_get_instructions('<sitepagebreak>'), $addID, $renderer, $depth));
+                            $sitepagebreak = array( array(
+                                'plugin',
+                                array(
+                                    'siteexport_toctools',
+                                    array(
+                                        'pagebreak',
+                                        null,
+                                        null
+                                    )
+                                )
+                            ));
+                            $instr = array_merge($instr, $instructions, $sitepagebreak);
                         } else {
                             // Concat
                             $instr = array_merge($instr, $instructions);
@@ -219,10 +240,12 @@ class syntax_plugin_siteexport_toc extends DokuWiki_Syntax_Plugin {
                         $this->_cleanInstructions($instr, '/listo_(close|open)/');
 
                         //if its the document start, cut off the first element(document information)
-                        if ($instr[count($instr)-1][1][0] == 'siteexport_pagebreak') {
+                        if ($instr[count($instr)-1][1][0] == 'siteexport_toctools') {
                             $instr = array_slice($instr, 0, -1);
                         }
 
+
+                        // print "<pre>"; print_r($instr); print "</pre>";
                         $this->_render_output($renderer, $mode, $instr);
                     }
 
@@ -432,7 +455,7 @@ class syntax_plugin_siteexport_toc extends DokuWiki_Syntax_Plugin {
         $instr[1][0] += $depth;
     }
 
-    function _mergeWithHeaders($existing, $newInstructions, $level = 1) {
+    function _mergeWithHeaders($existing, $newInstructions, $level = 1, $mergeHint = array() ) {
 
         $returnInstructions = array();
         $preparedInstructions = array();
@@ -457,7 +480,7 @@ class syntax_plugin_siteexport_toc extends DokuWiki_Syntax_Plugin {
                     array_shift($newSlice); // Remove Heading
 
                 // merge found parts on next level.
-                $returnedInstructions = $this->_mergeWithHeaders($currentSlice, $newSlice, $level+1);
+                $returnedInstructions = $this->_mergeWithHeaders($currentSlice, $newSlice, $level+1, $mergeHint);
 
                 // Put them at the end!
                 $preparedInstructions = array_merge($preparedInstructions, $returnedInstructions);
@@ -465,6 +488,7 @@ class syntax_plugin_siteexport_toc extends DokuWiki_Syntax_Plugin {
                 // Remove from input
                 array_splice($newInstructions, $newStart, $newEnd-$newStart);
             } else {
+                // Nothing else found
                 $preparedInstructions = array_merge($preparedInstructions, $currentSlice);
             }
 
@@ -501,7 +525,7 @@ class syntax_plugin_siteexport_toc extends DokuWiki_Syntax_Plugin {
             )
         ) {
             $section_postpend = array_merge($section_postpend, array_splice($returnInstructions, -1));
-        }        
+        }
 
         // What if there are headings left inside the $newInstructions?????
         // Find matching part with headername
@@ -515,6 +539,8 @@ class syntax_plugin_siteexport_toc extends DokuWiki_Syntax_Plugin {
             $section_prepend = $newInstructions;
             $newInstructions = array();
         }
+
+        $this->_insertMergeHint( $section_prepend, $mergeHint );
 
         $returnInstructions = array_merge($returnInstructions, $section_prepend, $preparedInstructions, $newInstructions, $section_postpend);
 
@@ -576,6 +602,52 @@ class syntax_plugin_siteexport_toc extends DokuWiki_Syntax_Plugin {
             }
 
         }
+    }
+    
+    function _insertMergeHint( &$instructions, $mergeHint ) {
+
+        // Surround new slice with a mergehint
+        if ( empty( $mergeHint ) ) { return; }
+
+        // only section content should be surrounded.
+        if ( $instructions[0][0] != 'section_open' ) { return; }
+
+        // save for later use
+        $mergeHints = array();
+        $mergeHintId = sectionid( $mergeHint, $mergeHints );
+        $this->merghintIds[$mergeHintId] = $mergeHint;
+
+        $mergeHintPrepend = array( array(
+            'plugin',
+            array(
+                'siteexport_toctools',
+                array(
+                    'mergehint',
+                    'start',
+                    $mergeHint,
+                    $mergeHintId
+                )
+            )
+        ));
+
+        $mergeHintPostpend = array( array(
+            'plugin',
+            array(
+                'siteexport_toctools',
+                array(
+                    'mergehint',
+                    'end',
+                    $mergeHint
+                )
+            )
+        ));
+
+/*
+        print "\n\n#########\n";
+        print_r($instructions);
+        print "\nn#########\n\n";
+*/
+        $instructions = array_merge( $mergeHintPrepend, $instructions, $mergeHintPostpend );
     }
 
     /**
