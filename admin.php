@@ -21,17 +21,6 @@ class admin_plugin_siteexport extends DokuWiki_Admin_Plugin {
     }
 
     /**
-     * for backward compatability
-     * @see inc/DokuWiki_Plugin#getInfo()
-     */
-    function getInfo() {
-        if (method_exists(parent, 'getInfo')) {
-            $info = parent::getInfo();
-        }
-        return is_array($info) ? $info : confToHash(dirname(__FILE__) . '/plugin.info.txt');
-    }
-
-    /**
      * return sort order for position in admin menu
      */
     function getMenuSort() {

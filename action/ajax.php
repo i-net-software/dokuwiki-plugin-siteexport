@@ -206,12 +206,14 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
      **/
     function ajax_siteexport_generateurl(Doku_Event &$event) {
 
+        global $INPUT;
+
         list($url, $combined, $path, $POSTData) = $this->ajax_siteexport_prepareURL_and_POSTData($event);
 
         // WGET Redirects - this is an option for wget only.
         // Calculate the maximum redirects that we want to allow. A Problem is that we don't know how long it will take to fetch one page
         // Therefore we assume it takes about 5s for each page - that gives the freedom to have anough time for redirect.
-        $maxRedirectNumber = ceil((count($this->__get_siteexport_list($NS, true))*5)/$this->getConf('max_execution_time'));
+        $maxRedirectNumber = ceil((count($this->__get_siteexport_list($INPUT->str('ns'), true))*5)/$this->getConf('max_execution_time'));
         $maxRedirect = $maxRedirectNumber > 0 ? '--max-redirect=' . ($maxRedirectNumber+3) . ' ' : '';
         $maxRedirs = $maxRedirectNumber > 0 ? '--max-redirs ' . ($maxRedirectNumber+3) . ' ' : '';
 
@@ -240,10 +242,12 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
      **/
     function ajax_siteexport_getsitelist(Doku_Event &$event) {
 
+        global $INPUT;
+
         $event->preventDefault();
         $event->stopPropagation();
 
-        $data = $this->__get_siteexport_list_and_init_tocs($_REQUEST['ns']);
+        $data = $this->__get_siteexport_list_and_init_tocs($INPUT->str('ns'));
         
         // Important for reconaisance of the session
 
@@ -278,7 +282,7 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
     function ajax_siteexport_aggregate(Doku_Event &$event) {
         
         // Quick preparations for one page only
-        if ($this->filewriter->hasValidCacheFile($_REQUEST, $data)) {
+        if ($this->filewriter->hasValidCacheFile($_REQUEST)) {
             $this->functions->debug->message("Had a valid cache file and will use it.", null, 2);
             print $this->functions->downloadURL();
             
@@ -297,6 +301,8 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
      **/
     function ajax_siteexport_addsite(Doku_Event &$event) {
 
+        global $INPUT;
+
         $event->preventDefault();
         $event->stopPropagation();
 
@@ -304,7 +310,7 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
         $this->functions->debug->message("Starting export from AJAX call", null, 1);
         $this->functions->debug->message("----------------------------------------", null, 1);
 
-        $status = $this->__siteexport_add_site($_REQUEST['site']);
+        $status = $this->__siteexport_add_site($INPUT->str('site'));
         if ( $status === false ) {
             $this->functions->debug->message("----------------------------------------", null, 1);
             $this->functions->debug->message("Errors during export from AJAX call", null, 1);
@@ -345,7 +351,7 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
         switch (intval($_REQUEST['depthType'])) {
             case 0:
                 $query = $this->functions->cleanID(str_replace(":", "/", $NS . ':' . $PAGE));
-                resolve_pageid($NS, $PAGE, $exists);
+                resolve_pageid($NS, $PAGE, $exists = null);
 
                 if ($exists) {
                     $data = array(array('id' => $PAGE));
@@ -836,7 +842,7 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
                 $DATA['PARAMS'] = "";
                 $newAdditionalParameters['do'] = 'siteexport';
 
-                $this->functions->debug->message("This is JS file", array($DATA, $url, $fileName, $newAdditionalParameters), 2);
+                $this->functions->debug->message("This is JS file", array($DATA, $url, $newAdditionalParameters), 2);
 
                 break;
                 // Detail Handling with extra Rewrites if Paramaters are available - otherwise this is just the fetch

@@ -30,7 +30,7 @@ class action_plugin_siteexport_startup extends DokuWiki_Action_Plugin {
 
     private function hasSiteexportHeaders() {
         $headers = function_exists('getallheaders') ? getallheaders() : null;
-        return is_array($headers) && array_key_exists('X-Site-Exporter', $headers) /*&& $headers['X-Site-Exporter'] = getSecurityToken()*/;
+        return is_array($headers) && array_key_exists('X-Site-Exporter', $headers);
     }
 
     /**

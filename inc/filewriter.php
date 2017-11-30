@@ -8,7 +8,7 @@ class siteexport_zipfilewriter
     /**
      * further classes
      */
-    private $pdfGenerator = false;
+    private $pdfGenerator = null;
     private $functions = null;
 
     public function __construct($functions = null)
@@ -22,7 +22,7 @@ class siteexport_zipfilewriter
 
     public function canDoPDF()
     {
-        return $this->pdfGenerator !== false;
+        return $this->pdfGenerator !== null;
     }
 
 
@@ -36,7 +36,9 @@ class siteexport_zipfilewriter
 
         $tmpFile = tempnam($this->functions->settings->tmpDir, 'siteexport__');
 
-        @file_put_contents($tmpFile, $DATA);
+        if (@file_put_contents($tmpFile, $DATA) === false) {
+            // There was an error here
+        }
 
         // Add to zip
         if ($JUSTWRITE) {
@@ -44,7 +46,10 @@ class siteexport_zipfilewriter
         } else {
             $status = $this->__addFileToZip($tmpFile, $FILENAME, $ZIP);
         }
-        @unlink($tmpFile);
+
+        if (@unlink($tmpFile) === false) {
+            // There was an error here
+        }
 
         return $status;
     }
@@ -104,7 +109,7 @@ class siteexport_zipfilewriter
         $code = $zip->open($ZIPFILE, ZipArchive::CREATE);
         if ($code === TRUE) {
 
-            $this->functions->debug->message("Adding file '$NAME' to ZIP $ZIP", null, 2);
+            $this->functions->debug->message("Adding file '{$NAME}' to ZIP {$ZIPFILE}", null, 2);
 
             $zip->addFile($FILE, $NAME);
             $zip->close();
@@ -112,7 +117,6 @@ class siteexport_zipfilewriter
             // If this has worked out, we may put this version into the cache ... ?
 
             // ALibi Touching - 2011-09-13 wird nicht gebraucht nach Umstellung
-            // io_saveFile(mediaFN($this->origZipFile), "alibi file");
 
             return true;
         }
@@ -159,8 +163,10 @@ class siteexport_zipfilewriter
         // Check if the file is expired - if so, just create a new one.
         if ($mtime == 0 || $mtime < time()-$this->functions->settings->cachetime)
         {
-            @unlink($cacheFile);
-            @unlink($this->functions->settings->zipFile);
+            if ( @unlink($cacheFile) === false ||
+                 @unlink($this->functions->settings->zipFile) === false ) {
+                     // do not care
+            }
             $this->functions->debug->message("New CacheFile because the file was over the cachetime: ", $cacheFile, 2);
             return false;
         }
@@ -178,8 +184,10 @@ class siteexport_zipfilewriter
                 }
                 
                 if ($mtime < @filemtime(wikiFN($site['id']))) {
-                    @unlink($cacheFile);
-                    @unlink($this->functions->settings->zipFile);
+                    if ( @unlink($cacheFile) === false ||
+                         @unlink($this->functions->settings->zipFile) === false ) {
+                             // do not care
+                    }
                     $this->functions->debug->message("New CacheFile, because a page changed: ", $cacheFile, 2);
                     return false; // cache older than files it depends on?
                 }
@@ -226,8 +234,7 @@ class siteexport_zipfilewriter
         
         sleep(1);
         $data['file'] .= '.' . cleanID($data['orig']); // Wee need the other file for cache reasons.
-        @rename($folder.'/'.$data['orig'], $data['file']);
-        return true;
+        return (@rename($folder.'/'.$data['orig'], $data['file'])) === true;
     }
 }
 

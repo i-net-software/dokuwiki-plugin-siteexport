@@ -68,6 +68,8 @@ class siteexport_debug
     public function message($info,$var=null,$level=4){
 
         $ajaxCanLog = $this->isAJAX && $level == 4;
+        $fh = false;
+
         if( $this->debugLevel > $level && !$ajaxCanLog  ) return; // only log certain Debug Levels
         
         if ( empty($this->debugFile) ) {
@@ -93,7 +95,7 @@ class siteexport_debug
         $prepend = "[" . @date('Y-m-d H:i:s') . " $TYPE] ";
         $log = $prepend . str_replace("\n", "\n" . $prepend . "\t", trim($info)) . "\n";
         
-        if ( $fh ) {
+        if ( $fh !== false ) {
             fwrite($fh, $log);
         }
         if ( $ajaxCanLog ) {

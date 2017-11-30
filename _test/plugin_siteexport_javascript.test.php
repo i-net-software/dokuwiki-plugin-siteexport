@@ -14,15 +14,15 @@ class SiteexportJavaScriptEvaluation extends DokuWikiTest {
         $compressed = $dir . 'compressed.source.js';
         $uncompressed = $dir . 'uncompressed.source.js';
         
-        @unlink($compressed);
-        @unlink($uncompressed);
+        if (@unlink($compressed) === false || @unlink($uncompressed) === false) {
+            // Could not remove
+        }
         
         file_put_contents($uncompressed, $this->setUpJavascript(0));
         $this->assertFileExists($uncompressed, "The uncompressed javascript version does not exist.");
 
         file_put_contents($compressed, $this->setUpJavascript(1));
         $this->assertFileExists($compressed, "The compressed javascript version does not exist.");
-        
     }
     
     private function setUpJavascript($compress = 1) {
