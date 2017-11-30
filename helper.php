@@ -148,10 +148,9 @@ class helper_plugin_siteexport extends DokuWiki_Plugin {
 
         $templateSwitching = false;
         $pdfExport = false;
-        $usenumberedheading = false;
-        $translation = null;
         $translationAvailable = false;
         $usenumberedheading = true;
+        $trans = array(); 
         
         $preload = plugin_load('preload', 'siteexport');
         if ($preload && $preload->__create_preload_function()) {
@@ -166,9 +165,9 @@ class helper_plugin_siteexport extends DokuWiki_Plugin {
         $translation = plugin_load('helper', 'autotranslation');
         if ($translation) {
             $translationAvailable = true;
+            $trans = $translation->translations;
         }
 
-        $regenerateScript = '';
         print $this->locale_xhtml((defined('DOKU_SITEEXPORT_MANAGER') ? 'manager' : '') . 'intro');
 
         $form = new Doku_Form('siteexport', null, 'post');
@@ -218,27 +217,16 @@ class helper_plugin_siteexport extends DokuWiki_Plugin {
         
         $form->addElement(form_makeTag('br'));
         $form->addElement(form_makeCheckboxField('pdfExport', 1, $this->getLang('pdfExport') . ':', 'pdfExport', null, $pdfExport ? array() : array_merge(array('disabled' => 'disabled'))));
-        if (!$pdfExport) {
-            $form->addElement(form_makeOpenTag('p', array('style' => 'color: #a00;')));
-            $form->addElement('In order to use the PDF export, please ');
-            $form->addElement(form_makeOpenTag('a', array('href' => 'http://www.dokuwiki.org/plugin:dw2pdf', 'alt' => 'install plugin', 'target' => '_blank')));
-            $form->addElement('install the dw2pdf plugin.');
-            $form->addElement(form_makeCloseTag('a'));
-            $form->addElement(form_makeCloseTag('p'));
-        }
+
+        // Hint for dw2pdf
+        $this->addPluginHint( $form, $pdfExport, "the PDF export", "dw2pdf" );
 
         $form->addElement(form_makeTag('br'));
         $form->addElement(form_makeCheckboxField('usenumberedheading', 1, $this->getLang('usenumberedheading') . ':', 'usenumberedheading', null, $usenumberedheading && $pdfExport ? array() : array_merge(array('disabled' => 'disabled'))));
         $form->addElement(form_makeTag('br'));
-        
-        if (!$usenumberedheading) {
-            $form->addElement(form_makeOpenTag('p', array('style' => 'color: #a00;')));
-            $form->addElement('In order to use numbered headings, please ');
-            $form->addElement(form_makeOpenTag('a', array('href' => 'http://www.dokuwiki.org/plugin:nodetailsxhtml', 'alt' => 'install plugin', 'target' => '_blank')));
-            $form->addElement('install the nodetailsxhtml plugin.');
-            $form->addElement(form_makeCloseTag('a'));
-            $form->addElement(form_makeCloseTag('p'));
-        }
+
+        // Hint for nodetailsxhtml
+        $this->addPluginHint( $form, $usenumberedheading, "numbered headings", "nodetailsxhtml" );
 
         $form->endFieldset();
         $form->addElement(form_makeTag('br'));
@@ -336,4 +324,16 @@ class helper_plugin_siteexport extends DokuWiki_Plugin {
 
         $form->printForm();
     }
+    
+    private function addPluginHint( &$form, $condition, $hint, $plugin ) {
+        if ($condition) { return; }
+
+        $form->addElement(form_makeOpenTag('p', array('style' => 'color: #a00;')));
+        $form->addElement('In order to use ' . $hint . ', please ');
+        $form->addElement(form_makeOpenTag('a', array('href' => 'http://www.dokuwiki.org/plugin:' . $plugin, 'alt' => 'install plugin', 'target' => '_blank')));
+        $form->addElement('install the ' . $plugin . ' plugin.');
+        $form->addElement(form_makeCloseTag('a'));
+        $form->addElement(form_makeCloseTag('p'));
+    }
+
 }

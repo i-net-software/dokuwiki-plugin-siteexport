@@ -451,7 +451,7 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
     /**
      * Add page with ID to the package
      **/
-    function __siteexport_add_site($ID) {
+    private function __siteexport_add_site($ID) {
         global $conf, $currentID, $currentParent;
 
         // Which is the current ID?
@@ -505,7 +505,6 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
         // fetch URL and save it in temp file
         $tmpFile = $this->__getHTTPFile($url);
         if ( $tmpFile === false ) {
-            // return $this->functions->debug->message("Creating temporary download file failed for '$url'. See log for more information.");
             $this->functions->debug->runtimeException("Creating temporary download file failed for '$url'. See log for more information.");
             return false;
         }
@@ -520,7 +519,7 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
             
             // 2014-04-29 added cleanID to ensure that links are generated consistently when using [[this>...]] or another local, relativ linking
             $fileName = $dirname . '/' . $this->functions->cleanID($this->functions->getSiteTitle($ID)) . '.' . $extension;
-        } else if ( !empty($tmpFile[1]) && !strstr($DATA[2], $tmpFile[1]) ) {
+        } else if ( !empty($tmpFile[1]) /*&& !strstr($DATA[2], $tmpFile[1])*/ ) { // 2017-11-30: $DATA is never defined
         
             $this->functions->debug->message("Will replace old filename '{$fileName}' with {$dirname}/{$tmpFile[1]}", null, 1);
             $fileName = $dirname . '/' . $tmpFile[1];
@@ -529,7 +528,9 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
         // Add to zip
         $this->fileChecked[$url] = $fileName;
         $status = $this->filewriter->__addFileToZip($tmpFile[0], $fileName);
-        @unlink($tmpFile[0]);
+        if (@unlink($tmpFile[0]) === false) {
+            $this->functions->debug->message("Could not remove temporary file: " . $tmpFile[0]);
+        }
 
         return $status;
     }

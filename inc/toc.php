@@ -65,7 +65,6 @@ class siteexport_toc
         
         $TOCXML = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<toc>";
         $MAPXML = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<map version=\"1.0\">";
-        // usort($DATA, array($this, 'sortFunction'));
 
         // Go through the pages
         $CHECKDATA = array();
@@ -373,15 +372,16 @@ class siteexport_toc
 
         $isEmptyNode = count($DATA) == 1 && empty($indexFile);
 
-        if (!$isEmptyNode && ($this->emptyNSToc || count($DATA) > 0))
-        $XML = "$DEPTH<$ITEM label=\"$indexTitle\" $indexFile>";
+        if (!$isEmptyNode && ($this->emptyNSToc || count($DATA) > 0)) {
+            $XML = "$DEPTH<$ITEM label=\"$indexTitle\" $indexFile>";
+        } else {
+            $XML = "";
+        }
 
         if (!$isEmptyNode && count($DATA) > 0) $XML .= "\n";
 
         foreach ($DATA as $NODENAME => $NS) {
-
             $XML .= $this->__addXMLTopic($NS, (!($this->emptyNSToc || count($DATA) > 1) && $ITEM != 'topic' ? $ITEM : 'topic'), $LEVEL+(!$isEmptyNode ? 1 : 0), $NODENAME);
-
         }
 
         if (!$isEmptyNode && count($DATA) > 0) $XML .= "$DEPTH";

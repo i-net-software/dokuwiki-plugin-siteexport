@@ -9,7 +9,7 @@ class preload_plugin_siteexport {
 
     public $error;
 
-    function __register_template() {
+    public function __register_template() {
 
         global $conf;
         $tempREQUEST = array();
@@ -68,7 +68,7 @@ class preload_plugin_siteexport {
         /* **************************************************************************************** */
     }
 
-    function __temporary_disable_plugins() {
+    public function __temporary_disable_plugins() {
 
         // Check for siteexport - otherwise this does not matter.
         if (empty($_REQUEST['do']) || $_REQUEST['do'] != 'siteexport') {
@@ -92,12 +92,12 @@ class preload_plugin_siteexport {
         $this->__disablePlugins();
     }
 
-    function __disablePlugins() {
+    private function __disablePlugins() {
         global $plugin_controller_class;
         $plugin_controller_class = 'preload_plugin_siteexport_controller';    
     }
 
-    function __create_preload_function() {
+    public function __create_preload_function() {
 
         $PRELOADFILE = DOKU_INC . 'inc/preload.php';
         $CURRENTFILE = 'DOKU_INC' . " . 'lib/plugins/siteexport/preload.php'";

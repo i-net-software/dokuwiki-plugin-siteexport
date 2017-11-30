@@ -73,7 +73,7 @@ class action_plugin_siteexport_aggregate extends DokuWiki_Action_Plugin {
         $TOC .= ">\n";
         $thema = array();
         foreach( $values as $value ) {
-            list($id, $title, $sort) = $value;
+            list($id, $title) = $value;
 
             $thema[] = p_get_metadata($id, 'thema', METADATA_RENDER_USING_SIMPLE_CACHE);
             $TOC .= "  * [[{$id}|{$title}]]\n";
@@ -96,11 +96,12 @@ class action_plugin_siteexport_aggregate extends DokuWiki_Action_Plugin {
         $event->preventDefault();
 
         $html = p_render('xhtml', p_get_instructions($TOC), $INFO);
-        // $html = html_secedit($html,false);
         if ($INFO['prependTOC']) $html = tpl_toc(true) . $html;
 
-        @unlink(metaFN($ID, '.meta'));
-        
+        if (@unlink(metaFN($ID, '.meta')) === false) {
+            dbglog("Could not delete old meta file: " . metaFN($ID, '.meta') );
+        }
+
         $ID = (string) $originalID;
         echo $html;
         return true;
