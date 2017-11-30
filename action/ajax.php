@@ -663,22 +663,8 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
 
         $this->functions->debug->message("Starting Link Replacement", array('data' => $DATA, 'additional Params' => $newAdditionalParameters, 'newDepth' => $newDepth, 'currentID' => $currentID, 'currentParent' => $currentParent), 2);
 
-        // $DATA[2] = urldecode($DATA[2]); // Leads to problems because it does not re-encode the url
-        // External and mailto links
-        if (preg_match("%^(https?://|mailto:|javascript:|data:)%", $DATA[2])) {
-            $this->functions->debug->message("Don't like http, mailto, data or javascript links here", null, 1);
-            return $this->__rebuildLink($DATA, "");
-        }
-        //if ( preg_match("%^(https?://|mailto:|" . DOKU_BASE . "/_export/)%", $DATA[2]) ) { return $this->__rebuildLink($DATA, ""); }
-        // External media - this is deep down in the link, so we have to grep it out
-        if (preg_match("%media=(https?://.*?$)%", $DATA[2], $matches)) {
-            $DATA[2] = $matches[1];
-            $this->functions->debug->message("This is an HTTP like somewhere else", $DATA, 1);
-            return $this->__rebuildLink($DATA, "");
-        }
-        // reference only links won't have to be rewritten
-        if (preg_match("%^#.*?$%", $DATA[2])) {
-            $this->functions->debug->message("This is a refercence only", null, 1);
+        // STEP 1: check for well known links that can be returned
+        if ( $this->__fetchAndReplaceWellKnownLinks( $DATA ) ) {
             return $this->__rebuildLink($DATA, "");
         }
 
@@ -714,18 +700,9 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
 
         $this->functions->debug->message("URL before rewriting option for others than 1", array($DATA, $PARAMS, $hadBase), 1);
 
+
         // Handle rewrites other than 1 - just for non-lib-files
-        // if ( !preg_match('$^/?lib/$', $DATA[2]) ) {
-        if ( !preg_match('$^(' . DOKU_BASE . ')?lib/$', $DATA[2]) ) {
-            $this->functions->debug->message("Did not match '$^(" . DOKU_BASE . ")?lib/$' userewrite == {$conf['userewrite']}", null, 2);
-            if ( $conf['userewrite'] == 2 ) {
-                $DATA[2] = $this->__getInternalRewriteURL($DATA[2]);
-            } elseif ( $conf['userewrite'] == 0 ) {
-                $this->__getParamsAndDataRewritten($DATA, $PARAMS);
-            }
-        } else {
-            $this->functions->debug->message("This file must be inside lib ...", null, 2);
-        }
+        $this->__fetchAndReplaceLinkHandleRewrite( $DATA, $PARAMS );
 
         $this->functions->debug->message("URL before rewriting option", array($DATA, $PARAMS), 2);
 
@@ -797,17 +774,7 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
             // The actual file in lib
             $DATA[2] = $matches[1];
             $PARAMS .= '&' . (in_array($matches[3], array('fetch', 'detail')) ? 'media' : 'id') . '=' . cleanID(str_replace('/', ':', $matches[4]));
-            
-/*            $DATA[2] = preg_replace( '$/lib/.*?fetch\.php$', '', $DATA[2]);
-            $DATA[2] = preg_replace( '%(/lib/.*?detail\.php.*$)%', '\1' . '.' . $this->functions->settings->fileType, $DATA[2]);
 
-            if ( preg_match( '%/(lib/.*?detail|doku)\.php%', $DATA[2])) {
-                $noDeepReplace = false;
-                $fileName = $this->functions->getSiteName($ID);
-                $newDepth = str_repeat('../', count(explode('/', $fileName))-1);
-            }
-            $this->functions->debug->message("DATA after second rewrite with UseRewrite = 2", array($DATA, $noDeepReplace, $fileName, $newDepth), 1);
-*/
             $this->functions->debug->message("DATA after second rewrite with UseRewrite = 2", array($DATA, $matches, $PARAMS), 1);
         }
 
@@ -815,6 +782,30 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
         $DATA['PARAMS'] = $PARAMS;
         $elements = explode('/', $DATA[2]);
 
+        // Main Switch to check the link
+        $result = $this->__fetchAndReplaceLinkMainSwitch( $elements, $DATA, $url, $newAdditionalParameters, $PARAMS, $noDeepReplace, $fileName, $newDepth, $ID );
+        if ( $result !== null ) {
+            return $result;
+        }
+
+        $this->functions->debug->message("DATA after SWITCH CASE decision", array($DATA, $noDeepReplace, $fileName, $newDepth), 1);
+
+        if ($this->filewriter->canDoPDF()) {
+            $this->functions->addAdditionalParametersToURL($url, $newAdditionalParameters);
+            $DATA[2] = $url;
+            unset($DATA['PARAMS']);
+            $url = $this->__rebuildLink($DATA, '');
+
+            $this->functions->debug->message("Creating PDF with URL '$url'", null, 2);
+
+            return $url;
+        }
+
+        // Finalize
+        return $this->__fetchAndReplaceLinkFinish( $DATA, $url, $currentID, $currentParent, $noDeepReplace, $newAdditionalParameters, $ORIGDATA2, $newDepth, $IDexists );
+    }
+
+    private function __fetchAndReplaceLinkMainSwitch( &$elements, &$DATA, &$url, &$newAdditionalParameters, &$PARAMS, &$noDeepReplace, &$fileName, &$newDepth, &$ID ) {
         switch (array_pop($elements)) {
             // CSS Extra Handling with extra rewrites
             case 'css.php'    :    // $DATA[2] .=  ( !$this->functions->settings->addParams || empty($PARAMS) ? '' : '.' . $this->functions->cleanID(preg_replace("/(=|\?|&amp;)/", ".", $PARAMS))) . '.css';
@@ -954,19 +945,11 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
 
                 unset($newAdditionalParameters['diPlu']);
         }
+        
+        return null;
+    }
 
-        $this->functions->debug->message("DATA after SWITCH CASE decision", array($DATA, $noDeepReplace, $fileName, $newDepth), 1);
-
-        if ($this->filewriter->canDoPDF()) {
-            $this->functions->addAdditionalParametersToURL($url, $newAdditionalParameters);
-            $DATA[2] = $url;
-            unset($DATA['PARAMS']);
-            $url = $this->__rebuildLink($DATA, '');
-
-            $this->functions->debug->message("Creating PDF with URL '$url'", null, 2);
-
-            return $url;
-        }
+    private function __fetchAndReplaceLinkFinish( $DATA, $url, $currentID, $currentParent, $noDeepReplace, $newAdditionalParameters, $ORIGDATA2, $newDepth, $IDexists ) {
 
         // Create Name to save the file at
         $DATA[2] = str_replace(':', '_', $DATA[2]);
@@ -1042,13 +1025,53 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
         // Add to zip
         $this->fileChecked[$url] = $DATA[2]; // 2010-09-03 - One URL to one FileName
 
-        $status = $this->filewriter->__addFileToZip($tmpFile[0], $DATA[2]);
-        @unlink($tmpFile[0]);
+        $this->filewriter->__addFileToZip($tmpFile[0], $DATA[2]);
+        if ( @unlink($tmpFile[0]) === false ) {
+            $this->functions->debug->message("Could not delete temporary file.", null, 2);
+        }
 
         $newURL = $this->__rebuildLink($DATA);
         $this->functions->debug->message("Returning final Link to document: '$newURL'", null, 2);
 
         return $newURL;
+    }
+
+    private function __fetchAndReplaceWellKnownLinks( $DATA ) {
+        // $DATA[2] = urldecode($DATA[2]); // Leads to problems because it does not re-encode the url
+        // External and mailto links
+        if (preg_match("%^(https?://|mailto:|javascript:|data:)%", $DATA[2])) {
+            $this->functions->debug->message("Don't like http, mailto, data or javascript links here", null, 1);
+            return true;
+        }
+        //if ( preg_match("%^(https?://|mailto:|" . DOKU_BASE . "/_export/)%", $DATA[2]) ) { return $this->__rebuildLink($DATA, ""); }
+        // External media - this is deep down in the link, so we have to grep it out
+        if (preg_match("%media=(https?://.*?$)%", $DATA[2], $matches)) {
+            $DATA[2] = $matches[1];
+            $this->functions->debug->message("This is an HTTP like somewhere else", $DATA, 1);
+            return true;
+        }
+        // reference only links won't have to be rewritten
+        if (preg_match("%^#.*?$%", $DATA[2])) {
+            $this->functions->debug->message("This is a refercence only", null, 1);
+            return true;
+        }
+
+        return false;
+    }
+
+    // Handle rewrites other than 1 - just for non-lib-files
+    private function __fetchAndReplaceLinkHandleRewrite( &$DATA, &$PARAMS ) {
+        global $conf;
+        if ( !preg_match('$^(' . DOKU_BASE . ')?lib/$', $DATA[2]) ) {
+            $this->functions->debug->message("Did not match '$^(" . DOKU_BASE . ")?lib/$' userewrite == {$conf['userewrite']}", null, 2);
+            if ( $conf['userewrite'] == 2 ) {
+                $DATA[2] = $this->__getInternalRewriteURL($DATA[2]);
+            } elseif ( $conf['userewrite'] == 0 ) {
+                $this->__getParamsAndDataRewritten($DATA, $PARAMS);
+            }
+        } else {
+            $this->functions->debug->message("This file must be inside lib ...", null, 2);
+        }
     }
 
     /**
