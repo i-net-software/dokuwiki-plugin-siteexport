@@ -427,6 +427,9 @@
                     var value = values[node];
                     if ( typeof value == 'object' ) {
                         for ( var val in value ) {
+                            if ( !value.hasOwnProperty(val)) {
+                                continue; // Skip keys from the prototype.
+                            }
                             _.updateValue($('#siteexport #'+node+'_'+value[val]+':input[name='+node+'\\[\\]]'), value[val]);
                         }
                     } else {
