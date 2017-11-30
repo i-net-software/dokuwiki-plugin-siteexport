@@ -90,7 +90,6 @@ class HTTPProxy extends DokuHTTPClient {
             // We hacked directly into the login mechanism which provides the login information without encryption via $INPUT
             $this->user = $INPUT->str('u');
             $this->pass = $INPUT->str('p');
-            $sticky = $INPUT->str('r');
         } else {
             $secret = auth_cookiesalt(!$sticky, true); //bind non-sticky to session
             $this->pass = !empty($this->pass) ? $this->auth_decrypt($this->pass, $secret) : '';

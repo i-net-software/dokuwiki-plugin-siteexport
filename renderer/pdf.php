@@ -43,18 +43,6 @@ class renderer_plugin_siteexport_pdf extends Doku_Renderer_xhtml {
                                     5=>0
     );
 
-    /**
-     * return some info
-     */
-    function getInfo() {
-        if (method_exists(parent, 'getInfo')) {
-            $info = parent::getInfo();
-        }
-        return array_merge(is_array($info) ? $info : confToHash(dirname(__FILE__) . '/../plugin.info.txt'), array(
-
-        ));
-    }
-
     function document_start() {
         global $TOC, $ID, $INFO;
 
@@ -239,7 +227,7 @@ class renderer_plugin_siteexport_pdf extends Doku_Renderer_xhtml {
     $height = NULL, $cache = NULL, $linking = NULL) {
         global $ID;
         list($src, $hash) = explode('#', $src, 2);
-        resolve_mediaid(getNS($ID), $src, $exists);
+        resolve_mediaid(getNS($ID), $src, $exists = null);
 
         $noLink = false;
         $render = ($linking == 'linkonly') ? false : true;
@@ -291,8 +279,9 @@ class renderer_plugin_siteexport_pdf extends Doku_Renderer_xhtml {
         $default = $this->_simpleTitle($id);
 
         // now first resolve and clean up the $id
-        resolve_pageid(getNS($ID), $id, $exists);
-        $name = $this->_getLinkTitle($name, $default, $isImage, $id, $linktype);
+        resolve_pageid(getNS($ID), $id, $exists = null);
+        $name = $this->_getLinkTitle($name, $default, $isImage = null, $id, $linktype);
+        $link = array();
         if (!$isImage) {
             if ($exists) {
                 $class = 'wikilink1';
@@ -391,7 +380,7 @@ class renderer_plugin_siteexport_pdf extends Doku_Renderer_xhtml {
         $ar = preg_split('/(?<!^)(?!$)(?!\n)/u', $str); // return array of every multi-byte character
         foreach ($ar as $c) {
             $o = ord($c);
-            if ( $o > 127 ) {
+            if ($o > 127) {
                 // convert to numeric entity
                 $c = mb_encode_numericentity($c, array(0x0, 0xffff, 0, 0xffff), 'UTF-8');
             }
@@ -441,7 +430,7 @@ class renderer_plugin_siteexport_pdf extends Doku_Renderer_xhtml {
      */
     function locallink($hash, $name = null, $returnonly = false) {
         global $ID;
-        $name  = $this->_getLinkTitle($name, $hash, $isImage);
+        $name  = $this->_getLinkTitle($name, $hash, $isImage = null);
         $hash  = $this->_headerToLink($hash);
         $title = $name;
 
@@ -450,9 +439,9 @@ class renderer_plugin_siteexport_pdf extends Doku_Renderer_xhtml {
         $doc .= '</a>';
 
         if ($returnonly) {
-          return $doc;
+            return $doc;
         } else {
-          $this->doc .= $doc;
+            $this->doc .= $doc;
         }
     }
 }

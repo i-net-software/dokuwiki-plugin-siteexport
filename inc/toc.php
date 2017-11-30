@@ -21,7 +21,8 @@ class siteexport_toc
     {
         // Mandatory: we allways want '/' insteadf of ':' here
         $inputURL = str_replace(':', '/', $inputURL);
-        $checkArray = $this->translation ? $this->translation->translations : array(array_pop(explode(':', $this->NS)));
+
+        $checkArray = $this->translation ? $this->translation->translations : array(noNS($this->NS));
         
         $url = explode('/', $inputURL);
         
@@ -257,6 +258,7 @@ class siteexport_toc
         
         $depthA = explode(':', getNS($idA));
         $depthB = explode(':', getNS($idB));
+        $NSCMP = 0;
         
         for ($i = 0; $i < min(count($depthA), count($depthB)); $i++)
         {

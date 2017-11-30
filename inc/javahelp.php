@@ -60,10 +60,9 @@ class siteexport_javahelp
         $this->functions->debug->message("HelpSetPre-Name: {$hsPrename}", null, 3);
         $this->functions->debug->message("Translation-Root: {$translationRoot}", null, 3);
         $this->functions->debug->message("HSFiles:", $translationHSFiles, 1);
-        
-        $check = array();
-        $last_key = end(array_keys($translationHSFiles));
-        
+
+        $last_key = end((array_keys($translationHSFiles)));
+
         foreach ($translationHSFiles as $lang => $data)
         {
             // Prepare Translations
@@ -85,7 +84,6 @@ class siteexport_javahelp
             $this->filewriter->__moveDataToZip($mapData, $tsRootPath . (empty($lang) ? '' : $lang . '/') . $this->mapName);
 
             // Create HS File
-            // array_shift($toc->getMapID($rootNode, &$check))
             $HS = $this->getHSXML($startPageID, $this->functions->getSiteTitle($rootNode), $lang, $tsRootPath);
             $this->filewriter->__moveDataToZip($HS, $translationRoot . (empty($lang) ? '' : '_' . $lang) . '.hs');
             

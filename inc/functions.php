@@ -95,7 +95,6 @@ class siteexport_functions extends DokuWiki_Plugin
         }
 
         $url = $this->wl($this->cleanID($ID), null, true, null, null, $overrideRewrite); // this must be done with rewriting set to override
-        //$url = $this->wl($this->cleanID($ID), null, true); // this must be done with rewriting set to override
         $uri = @parse_url($url);
         if ($uri['path'][0] == '/') {
             $uri['path'] = substr($uri['path'], 1);
@@ -174,7 +173,7 @@ class siteexport_functions extends DokuWiki_Plugin
         $sepcharpat = '#\\' . $sepchar . '+#';
 
         $id = trim((string) $raw_id);
-        //        $id = utf8_strtolower($id); // NO LowerCase for us!
+        // NO LowerCase for us! - Preserve it, that is why the call is missing here.
 
         //alternative namespace seperator
         $id = strtr($id, ';', ':');
@@ -378,8 +377,6 @@ class siteexport_functions extends DokuWiki_Plugin
             foreach ($newAdditionalParameters as $key => $value) {
                 if (empty($key) || empty($value)) { continue; }
 
-                $append = '';
-
                 if (is_array($value)) {
                     foreach (array_values($value) as $aValue) { // Array Handling
                         $URL .= (strstr($URL, '?') ? '&' : '?') . $key . "[]=$aValue";
@@ -388,7 +385,6 @@ class siteexport_functions extends DokuWiki_Plugin
                     $append = "$key=$value";
                     $URL .= empty($append) || strstr($URL, $append) ? '' : (strstr($URL, '?') ? '&' : '?') . $append;
                 }
-
             }
         }
     }
@@ -475,7 +471,7 @@ class siteexport_functions extends DokuWiki_Plugin
             $allPlugins = array();
             foreach ($plugin_controller->getList(null, true) as $plugin) {
                 // check for CSS or JS
-                if (!file_exists(DOKU_PLUGIN . "$plugin/script.js") && !file_exists(DOKU_PLUGIN . "$p/style.css")) { continue; }
+                if (!file_exists(DOKU_PLUGIN . $plugin . "/script.js") && !file_exists(DOKU_PLUGIN . $plugin . "/style.css")) { continue; }
                 $allPlugins[] = $plugin;
             }
 
@@ -561,7 +557,7 @@ class siteexport_functions extends DokuWiki_Plugin
             $removeKeys[] = 'startcounter';
             $removeKeys[] = 'pattern';
             $removeKeys[] = 'TOCMapWithoutTranslation';
-            // OLD-CODE: unset($removeArray['disableCache']);
+
             $removeKeys[] = 'debug';
         }
         
@@ -585,7 +581,6 @@ class siteexport_functions extends DokuWiki_Plugin
                 }
             }
 
-            // OLD-CODE: $removeArray = implode( ($this->settings->fileType == 'pdf' ? "&" : "&amp;"), $removeArray);
             $removeArray = implode("&", $removeArray); // The &amp; made problems with the HTTPClient / Apache. It should not be a problem to have &
         }
     }
@@ -688,7 +683,7 @@ class siteexport_functions extends DokuWiki_Plugin
             $offsiteTemplate = str_replace('RAWID', $existingPageID, $offsiteTemplate);
             
             $check = null;
-            $offsiteTemplate = str_replace('CONTEXTID', array_pop($this->getMapID($existingPageID, null, $check)), $offsiteTemplate);
+            $offsiteTemplate = str_replace('CONTEXTID', array_pop(($this->getMapID($existingPageID, null, $check))), $offsiteTemplate);
             $offsiteTemplate = str_replace('LINK', $finalLink, $offsiteTemplate);
 
             $this->debug->message("Replacing finalLink '${finalLink}' with offsiteLink '${offsiteTemplate}'", null, 1);
@@ -751,7 +746,7 @@ class siteexport_functions extends DokuWiki_Plugin
         $secToken = $this->getSecurityToken();
         if ( empty( $secToken) && empty ( $token ) ) return false;
         if($secToken != $token) {
-            if ( !$softfail ) msg('Security Token did not match. Possible CSRF attack.', -1);
+            if ( $softfail !== true ) msg('Security Token did not match. Possible CSRF attack.', -1);
             return false;
         }
         return true;

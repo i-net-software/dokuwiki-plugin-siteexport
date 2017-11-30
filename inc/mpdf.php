@@ -21,7 +21,7 @@ if (file_exists(DOKU_PLUGIN . 'dw2pdf/mpdf/mpdf.php')) {
 
     class siteexportPDF extends mpdf {
 
-        private $debugObj = false;
+        private $debugObj = null;
 
         public function __construct($debug) {
             global $INPUT;
@@ -64,14 +64,14 @@ if (file_exists(DOKU_PLUGIN . 'dw2pdf/mpdf/mpdf.php')) {
 
         public function message($msg, $vars = null, $lvl = 1)
         {
-            if ($this->debugObj !== false) {
+            if ($this->debugObj !== null) {
                 $this->debugObj->message($msg, $vars, $lvl);
             }
         }
 
         public function Error($msg)
         {
-            if ($this->debugObj !== false && method_exists($this->debugObj, 'runtimeException')) {
+            if ($this->debugObj !== null && method_exists($this->debugObj, 'runtimeException')) {
                 $this->debugObj->runtimeException($msg);
             } else {
                 parent::Error($msg);
