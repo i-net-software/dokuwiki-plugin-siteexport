@@ -5,7 +5,6 @@
 /** global: NS */
 /** global: JSINFO */
 /** global: opener */
-
 // Siteexport Admin Plugin Script
 (function($){
     $(function(){
@@ -161,7 +160,7 @@
                     }
                     
                     // Downloads do not generate a load event
-                    frame.load(function(event){
+                    frame.load(function(){
                         _.status(LANG.plugins.siteexport.downloadfinished);
                         
                         // This must only happen when not downloading, meaning we have a PDF file.
