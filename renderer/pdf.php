@@ -63,7 +63,7 @@ class renderer_plugin_siteexport_pdf extends Doku_Renderer_xhtml {
         // Cheating in again
         $newMeta = p_get_metadata($ID, 'description tableofcontents', false); // 2010-10-23 This should be save to use
         if (!empty($newMeta) && count($newMeta) > 1) {
-            // $TOC = $this->toc = $newMeta; // 2010-08-23 doubled the TOC
+            // 2010-08-23 // $TOC = $this->toc = $newMeta; // 2010-08-23 doubled the TOC
             $TOC = $newMeta;
         }
     }
@@ -391,11 +391,11 @@ class renderer_plugin_siteexport_pdf extends Doku_Renderer_xhtml {
         $ar = preg_split('/(?<!^)(?!$)(?!\n)/u', $str );  // return array of every multi-byte character
         foreach ($ar as $c){
             $o = ord($c);
-            if ( // (strlen($c) > 1) || /* multi-byte [unicode] */
+            if ( // 2017-11-30: Scrutinizer // (strlen($c) > 1) || /* multi-byte [unicode] */
                 ($o > 127) // || /* <- control / latin weirdos -> */
-                // ($o <32 || $o > 126) || /* <- control / latin weirdos -> */
-                // ($o >33 && $o < 40) ||/* quotes + ambersand */
-                // ($o >59 && $o < 63) /* html */
+                // 2017-11-30: Scrutinizer // ($o <32 || $o > 126) || /* <- control / latin weirdos -> */
+                // 2017-11-30: Scrutinizer // ($o >33 && $o < 40) ||/* quotes + ambersand */
+                // 2017-11-30: Scrutinizer // ($o >59 && $o < 63) /* html */
 
             ) {
                 // convert to numeric entity

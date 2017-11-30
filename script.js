@@ -4,6 +4,7 @@
 /** global: LANG */
 /** global: NS */
 /** global: JSINFO */
+/** global: opener */
 
 // Siteexport Admin Plugin Script
 (function($){
