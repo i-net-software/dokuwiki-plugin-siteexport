@@ -22,7 +22,7 @@ class renderer_plugin_siteexport_pdf extends Doku_Renderer_xhtml {
 
     private $currentLevel = 0;
 
-    public $levels = array( '======'=>1,
+    public $levels = array('======'=>1,
                             '====='=>2,
                             '===='=>3,
                             '==='=>4,
@@ -36,7 +36,7 @@ class renderer_plugin_siteexport_pdf extends Doku_Renderer_xhtml {
                             'scriptmode' => false, // In scriptmode, some tags will not be encoded => '<%', '%>'
     );
 
-    public $headingCount = array(   1=>0,
+    public $headingCount = array(1=>0,
                                     2=>0,
                                     3=>0,
                                     4=>0,
@@ -46,11 +46,11 @@ class renderer_plugin_siteexport_pdf extends Doku_Renderer_xhtml {
     /**
      * return some info
      */
-    function getInfo(){
-        if ( method_exists(parent, 'getInfo')) {
+    function getInfo() {
+        if (method_exists(parent, 'getInfo')) {
             $info = parent::getInfo();
         }
-        return array_merge(is_array($info) ? $info : confToHash(dirname(__FILE__).'/../plugin.info.txt'), array(
+        return array_merge(is_array($info) ? $info : confToHash(dirname(__FILE__) . '/../plugin.info.txt'), array(
 
         ));
     }
@@ -149,39 +149,39 @@ class renderer_plugin_siteexport_pdf extends Doku_Renderer_xhtml {
             }
 
             // write the header
-            $this->doc .= DOKU_LF.'<h'.$level;
+            $this->doc .= DOKU_LF . '<h' . $level;
             $class = array();
             if ($INFO['perm'] > AUTH_READ &&
                 $level <= $conf['maxseclevel']) {
                 $class[] = $this->startSectionEdit($pos, 'section', $text);
             }
 
-            if ( !empty($headingNumber) ) {
+            if (!empty($headingNumber)) {
                 $class[] = 'level' . trim($headingNumber);
-                if ( intval($headingNumber) > 1 ) {
+                if (intval($headingNumber) > 1) {
                     $class[] = 'notfirst';
                 } else {
                     $class[] = 'first';
                 }
             }
 
-            if ( !empty($class) ) {
+            if (!empty($class)) {
                 $this->doc .= ' class="' . implode(' ', $class) . '"';
             }
 
-            $this->doc .= '><a name="'.$hid.'" id="'.$hid.'">';
+            $this->doc .= '><a name="' . $hid . '" id="' . $hid . '">';
             $this->doc .= $this->_xmlEntities($headingNumber . $text);
-            $this->doc .= "</a></h$level>".DOKU_LF;
+            $this->doc .= "</a></h$level>" . DOKU_LF;
 
-        } else if ( $INFO['perm'] > AUTH_READ ) {
+        } else if ($INFO['perm'] > AUTH_READ) {
 
-            if ( $this->hasSeenHeader ) {
+            if ($this->hasSeenHeader) {
                 $this->finishSectionEdit($pos);
             }
 
             // write the header
             $name = rand() . $level;
-            $this->doc .= DOKU_LF.'<a name="'. $this->startSectionEdit($pos, 'section_empty', $name) .'" class="' . $this->startSectionEdit($pos, 'section_empty', $name) . '" ></a>'.DOKU_LF;
+            $this->doc .= DOKU_LF . '<a name="' . $this->startSectionEdit($pos, 'section_empty', $name) . '" class="' . $this->startSectionEdit($pos, 'section_empty', $name) . '" ></a>' . DOKU_LF;
         }
 
         $this->hasSeenHeader = true;
@@ -218,49 +218,49 @@ class renderer_plugin_siteexport_pdf extends Doku_Renderer_xhtml {
     /**
      * Wrap centered media in a div to center it
      */
-    function _media ($src, $title=NULL, $align=NULL, $width=NULL,
-                        $height=NULL, $cache=NULL, $render = true) {
+    function _media($src, $title = NULL, $align = NULL, $width = NULL,
+                        $height = NULL, $cache = NULL, $render = true) {
 
         $out = '';
-        if($align == 'center'){
+        if ($align == 'center') {
             $out .= '<div align="center" style="text-align: center">';
         }
 
-        $out .= parent::_media ($src, $title, $align, $width, $height, $cache, $render);
+        $out .= parent::_media($src, $title, $align, $width, $height, $cache, $render);
 
-        if($align == 'center'){
+        if ($align == 'center') {
             $out .= '</div>';
         }
 
         return $out;
     }
 
-    function internalmedia ($src, $title=NULL, $align=NULL, $width=NULL,
-    $height=NULL, $cache=NULL, $linking=NULL) {
+    function internalmedia($src, $title = NULL, $align = NULL, $width = NULL,
+    $height = NULL, $cache = NULL, $linking = NULL) {
         global $ID;
-        list($src,$hash) = explode('#',$src,2);
-        resolve_mediaid(getNS($ID),$src, $exists);
+        list($src, $hash) = explode('#', $src, 2);
+        resolve_mediaid(getNS($ID), $src, $exists);
 
         $noLink = false;
         $render = ($linking == 'linkonly') ? false : true;
         $link = $this->_getMediaLinkConf($src, $title, $align, $width, $height, $cache, $render);
 
-        list($ext,$mime,$dl) = mimetype($src);
-        if(substr($mime,0,5) == 'image' && $render){
-            $link['url'] = ml($src,array('id'=>$ID,'cache'=>$cache),($linking=='direct'));
-            if ( substr($mime,0,5) == 'image' && $linking='details' ) { $noLink = true;}
-        } elseif($mime == 'application/x-shockwave-flash' && $render){
+        list($ext, $mime, $dl) = mimetype($src);
+        if (substr($mime, 0, 5) == 'image' && $render) {
+            $link['url'] = ml($src, array('id'=>$ID, 'cache'=>$cache), ($linking == 'direct'));
+            if (substr($mime, 0, 5) == 'image' && $linking = 'details') { $noLink = true; }
+        } elseif ($mime == 'application/x-shockwave-flash' && $render) {
             // don't link flash movies
             $noLink = true;
-        } else{
+        } else {
             // add file icons
-            $class = preg_replace('/[^_\-a-z0-9]+/i','_',$ext);
-            $link['class'] .= ' mediafile mf_'.$class;
-            $link['url'] = ml($src,array('id'=>$ID,'cache'=>$cache),true);
+            $class = preg_replace('/[^_\-a-z0-9]+/i', '_', $ext);
+            $link['class'] .= ' mediafile mf_' . $class;
+            $link['url'] = ml($src, array('id'=>$ID, 'cache'=>$cache), true);
         }
 
-        if($hash) {
-            $link['url'] .= '#'.$hash;
+        if ($hash) {
+            $link['url'] .= '#' . $hash;
         }
 
         //markup non existing files
@@ -384,12 +384,12 @@ class renderer_plugin_siteexport_pdf extends Doku_Renderer_xhtml {
     /**
      * @param string $str
      */
-    function superentities( $str ){
+    function superentities($str) {
         // get rid of existing entities else double-escape
         $str2 = '';
-        $str = html_entity_decode(stripslashes($str),ENT_QUOTES,'UTF-8'); 
-        $ar = preg_split('/(?<!^)(?!$)(?!\n)/u', $str );  // return array of every multi-byte character
-        foreach ($ar as $c){
+        $str = html_entity_decode(stripslashes($str), ENT_QUOTES, 'UTF-8'); 
+        $ar = preg_split('/(?<!^)(?!$)(?!\n)/u', $str); // return array of every multi-byte character
+        foreach ($ar as $c) {
             $o = ord($c);
             if ( // 2017-11-30: Scrutinizer // (strlen($c) > 1) || /* multi-byte [unicode] */
                 ($o > 127) // || /* <- control / latin weirdos -> */
@@ -426,10 +426,10 @@ class renderer_plugin_siteexport_pdf extends Doku_Renderer_xhtml {
      */
     public function imageCaptionTags(&$imagereferenceplugin)
     {
-        if ( !$imagereferenceplugin->accepts('table') ) {
-            return array( '<figure id="%s" class="imgcaption%s">', // $captionStart
-                            '</figure>',                             // $captionEnd
-                            '<figcaption class="undercaption">',     // $underCaptionStart
+        if (!$imagereferenceplugin->accepts('table')) {
+            return array('<figure id="%s" class="imgcaption%s">', // $captionStart
+                            '</figure>', // $captionEnd
+                            '<figcaption class="undercaption">', // $underCaptionStart
                             '</figcaption>'                          // $underCaptionEnd
                     );
         }
@@ -451,11 +451,11 @@ class renderer_plugin_siteexport_pdf extends Doku_Renderer_xhtml {
         $hash  = $this->_headerToLink($hash);
         $title = $name;
 
-        $doc = '<a href="#'.$hash.'" title="'.$title.'" class="wikilink1">';
+        $doc = '<a href="#' . $hash . '" title="' . $title . '" class="wikilink1">';
         $doc .= $name;
         $doc .= '</a>';
 
-        if($returnonly) {
+        if ($returnonly) {
           return $doc;
         } else {
           $this->doc .= $doc;
