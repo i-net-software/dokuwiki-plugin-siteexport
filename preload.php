@@ -3,9 +3,7 @@ if (!defined('DOKU_INC')) {
     define('DOKU_INC', realpath(dirname(__FILE__) . '/../../../') . '/');
 }
 
-if ( @include_once(DOKU_INC . 'inc/plugincontroller.class.php') === false ) {
-    // Do not care.
-} 
+include_once(DOKU_INC . 'inc/plugincontroller.class.php');
 
 class preload_plugin_siteexport {
 
