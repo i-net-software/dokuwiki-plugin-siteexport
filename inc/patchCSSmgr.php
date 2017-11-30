@@ -29,7 +29,7 @@ class CSSMgrPatch {
         $this->setCode($contents);
     }
     
-    function redefineFunction($new_function) {
+    public function redefineFunction($new_function) {
     
         preg_match('/function (.+)\(/', $new_function, $aryMatches);
         $func_name = trim($aryMatches[1]);
@@ -51,7 +51,7 @@ class CSSMgrPatch {
         }
     }
     
-    function getCode() {
+    public function getCode() {
         return $this->_code;
     }
 }

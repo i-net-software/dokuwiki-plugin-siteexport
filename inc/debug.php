@@ -129,7 +129,7 @@ class siteexport_debug
         }
     }
 
-    function runtimeException($message, $wasDebug=false) {
+    public function runtimeException($message, $wasDebug=false) {
 
         if ( empty($message) ) { return; }
         

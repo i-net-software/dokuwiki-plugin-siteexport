@@ -29,7 +29,7 @@ class HTTPProxy extends DokuHTTPClient {
      * Constructor.
      * @param siteexport_functions $functions
      */
-    function __construct($functions) {
+    public function __construct($functions) {
         global $conf;
 
         // The proxy should only be used if configured.
@@ -118,7 +118,7 @@ class HTTPProxy extends DokuHTTPClient {
     /**
      * Remeber HTTPClient Cookie after successfull authentication
      */    
-    function sendRequest($url, $data = '', $method = 'GET') {
+    public function sendRequest($url, $data = '', $method = 'GET') {
 
         $returnCode = parent::sendRequest($url, $data, $method);
         if ($this->settings->cookie == null) {

@@ -1,5 +1,10 @@
 /* DOKUWIKI:include jquery.filedownload.js */
 
+/** global: DOKU_BASE */
+/** global: LANG */
+/** global: NS */
+/** global: JSINFO */
+
 // Siteexport Admin Plugin Script
 (function($){
     $(function(){
@@ -12,11 +17,7 @@
             window.location.origin = window.location.protocol + "//" + window.location.hostname + (window.location.port ? ':' + window.location.port: '');
         }
         
-        var siteexportadmin = function() {
-        };
-
-        var hasErrors = function(data, status) {
-            return (status != 'undefined' && status != 200);
+        var SiteexportAdmin = function() {
         };
 
         (function(_){
@@ -35,7 +36,7 @@
                 this.resetDataForNewRequest();
 
                 _.throbber(true);
-                $.post( _.url, _.settings('__siteexport_generateurl'), function(data, textStatus, jqXHR) {
+                $.post( _.url, _.settings('__siteexport_generateurl'), function(data) {
                     data = data.split("\n");
                     $('#copyurl').val(data[0]);
                     $('#wgeturl').val(data[1]);
@@ -51,12 +52,12 @@
             
                 this.resetDataForNewRequest();
             
-                if ( _.isManager && opener ) {
+                if ( _.isManager && !(typeof opener === "undefined") ) {
                 
                     var settings = $.param(_.cleanSettings()).split('&').join(' ');
                     if ( settings.length > 0 ) { settings = ' ' + settings; }
                     
-                    edid = String.prototype.match.call(document.location, new RegExp("&edid=([^&]+)"));
+                    var edid = String.prototype.match.call(document.location, new RegExp("&edid=([^&]+)"));
                     opener.insertTags(edid ? edid[1] : 'wiki__text', '{{siteexportAGGREGATOR' + settings + '}}','','');
 
                     window.close();
@@ -65,7 +66,7 @@
                 }
 
                 _.throbber(true);
-                $.post( _.url, _.settings('__siteexport_getsitelist'), function(data, textStatus, jqXHR) {
+                $.post( _.url, _.settings('__siteexport_getsitelist'), function(data) {
                     data = data.split("\n");
 
                     _.pattern = data.shift();
@@ -99,7 +100,7 @@
                 _.aggregateForm.addClass('loading');
                 var settings = _.settings('__siteexport_aggregate');
                 var throbber = $('form#siteexport_site_aggregator :input[name=baseID], form#siteexport_site_aggregator :input[type=submit], form#siteexport_siteexporter :input[type=submit]').prop('disabled', true);
-                $.post( _.url, settings, function(data, textStatus, jqXHR) {
+                $.post( _.url, settings, function(data) {
 
                     if ( data.match( new RegExp( 'mpdf error', 'i' ) ) ) {
                         _.aggregatorStatus.addClass('error');
@@ -212,7 +213,7 @@
                 });
 
                 _.throbber(true);
-                $.post( _.url, settings, function(data, textStatus, jqXHR) {
+                $.post( _.url, settings, function(data) {
                     _.zipURL = data.split("\n").pop();
                     _.nextPage();
                 }).fail(function(jqXHR){
@@ -397,6 +398,7 @@
                                 selected = true;
                                 return false;
                             }
+                            return true;
                         });
                         
                         if ( !selected && !isNaN(value) ) {
@@ -418,9 +420,11 @@
                 _.suspendGenerate = true;
                 for ( var node in values ) {
                     
+                    if ( !values.hasOwnProperty(node)) {
+                        continue; // Skip keys from the prototype.
+                    }
+
                     var value = values[node];
-                    var elem = null;
-                    
                     if ( typeof value == 'object' ) {
                         for ( var val in value ) {
                             _.updateValue($('#siteexport #'+node+'_'+value[val]+':input[name='+node+'\\[\\]]'), value[val]);
@@ -433,6 +437,10 @@
                 // Custom Options
                 for ( var index in values['customoptionname'] ) {
                     
+                    if ( !values['customoptionname'].hasOwnProperty(index)) {
+                        continue; // Skip keys from the prototype.
+                    }
+
                     try {
                         _.addCustomOption(values['customoptionname'][index], values['customoptionvalue'][index]);
                     } catch (e) {
@@ -443,19 +451,19 @@
                 _.suspendGenerate = false;
             };
             
-        }(siteexportadmin.prototype));
+        }(SiteexportAdmin.prototype));
         
         var __siteexport = null;
         $.siteexport = function() {
             if ( __siteexport == null ) {
-                __siteexport = new siteexportadmin();
+                __siteexport = new SiteexportAdmin();
             }
             
             return __siteexport;
         };
         
         $.siteexport().generate();
-        $('#siteexport :input').each(function(index, element){
+        $('#siteexport :input').each(function(){
             $(this).change(function(event){
                 event.stopPropagation();
                 $.siteexport().generate();
@@ -537,7 +545,9 @@ var copyMapIDToClipBoard = function() {
     try {
         // The important part (copy selected text)
         ok = document.execCommand('copy');
-    } catch (err) {}
+    } catch (err) {
+        // Ignore if it does not work.
+    }
     
     if (ok) {
         $mapID.addClass('done');

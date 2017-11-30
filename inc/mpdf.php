@@ -23,7 +23,7 @@ if (file_exists(DOKU_PLUGIN . 'dw2pdf/mpdf/mpdf.php')) {
 
         private $debugObj = false;
 
-        function __construct($debug) {
+        public function __construct($debug) {
             global $INPUT;
             global $conf;
 
@@ -62,14 +62,14 @@ if (file_exists(DOKU_PLUGIN . 'dw2pdf/mpdf/mpdf.php')) {
             $this->useSubstitutions = true;
         }
 
-        function message($msg, $vars = null, $lvl = 1)
+        public function message($msg, $vars = null, $lvl = 1)
         {
             if ($this->debugObj !== false) {
                 $this->debugObj->message($msg, $vars, $lvl);
             }
         }
 
-        function Error($msg)
+        public function Error($msg)
         {
             if ($this->debugObj !== false && method_exists($this->debugObj, 'runtimeException')) {
                 $this->debugObj->runtimeException($msg);
@@ -78,7 +78,7 @@ if (file_exists(DOKU_PLUGIN . 'dw2pdf/mpdf/mpdf.php')) {
             }
         }
 
-        function GetFullPath(&$path,$basepath='') {
+        public function GetFullPath(&$path,$basepath='') {
 
             // Full Path might return a doubled path like /~gamma/documentation/lib//~gamma/documentation/lib/tpl/clearreports/./_print-images/background-bottom.jpg
 
@@ -116,11 +116,11 @@ if (file_exists(DOKU_PLUGIN . 'dw2pdf/mpdf/mpdf.php')) {
         /*
           Only when the toc is being generated  
         */
-        function MovePages($target_page, $start_page, $end_page = -1) {
+        public function MovePages($target_page, $start_page, $end_page = -1) {
             parent::MovePages($target_page, $start_page, $end_page);
         }
 
-        function OpenTag($tag, $attr, &$ahtml, &$ihtml) {
+        public function OpenTag($tag, $attr, &$ahtml, &$ihtml) {
             switch ($tag) {
                 case 'BOOKMARK':
                 case 'TOCENTRY':

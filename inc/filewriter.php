@@ -55,7 +55,7 @@ class siteexport_zipfilewriter
      * @param $NAME name of the file that is being added
      * @param $ZIP name of the zip file to which we add
      */
-    function __addFileToZip($FILE, $NAME, $ZIP = null) {
+    public function __addFileToZip($FILE, $NAME, $ZIP = null) {
 
         if ($NAME[0] === "/") {
             $this->functions->debug->message("Weird, the NAME for the ZIP started with a '/'. This may result in wrong links!", null, 3);
@@ -125,7 +125,7 @@ class siteexport_zipfilewriter
      * check if a file exists allready
      * @param $NAME name of the file in the zip
      */
-    function fileExistsInZip($NAME)
+    public function fileExistsInZip($NAME)
     {
         $zip = new ZipArchive();
         $code = $zip->open($this->functions->settings->zipFile, ZipArchive::CREATE);
@@ -142,7 +142,7 @@ class siteexport_zipfilewriter
      * Checks if a valid cache file exists for the given request parameters
      * @param $requestData
      */
-    function hasValidCacheFile($requestData, $depends = array())
+    public function hasValidCacheFile($requestData, $depends = array())
     {
         $pattern = $this->functions->requestParametersToCacheHash($requestData);
         return $this->hasValidCacheFileForPattern($pattern, $depends);
