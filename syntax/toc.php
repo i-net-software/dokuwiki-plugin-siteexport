@@ -189,7 +189,6 @@ class syntax_plugin_siteexport_toc extends DokuWiki_Syntax_Plugin {
 
                     // Load the instructions
                     $instr = array();
-                    $mergeHint = null;
                     foreach ($this->mergedPages as $tocElement) {
 
                         list($tocItem, $depth) = $tocElement;
@@ -300,7 +299,7 @@ class syntax_plugin_siteexport_toc extends DokuWiki_Syntax_Plugin {
     /*
      * pull apart the ID and create an Entry for the TOC
      */
-    function __addTocItem($id, $name, $depth, $renderer) {
+    private function __addTocItem($id, $name, $depth, $renderer) {
         global $conf;
         global $ID;
 
@@ -331,7 +330,7 @@ class syntax_plugin_siteexport_toc extends DokuWiki_Syntax_Plugin {
     /*
      * Render the output of one page
      */
-    function _render_output($renderer, $mode, $instr) {
+    private function _render_output($renderer, $mode, $instr) {
         global $ID;
 
         // Section IDs
@@ -367,7 +366,7 @@ class syntax_plugin_siteexport_toc extends DokuWiki_Syntax_Plugin {
      * Corrects relative internal links and media and
      * converts headers of included pages to subheaders of the current page
      */
-    function _convertInstructions($instr, $id, &$renderer, $depth = 1) {
+    private function _convertInstructions($instr, $id, &$renderer, $depth = 1) {
         global $ID;
         global $conf;
 
@@ -399,7 +398,7 @@ class syntax_plugin_siteexport_toc extends DokuWiki_Syntax_Plugin {
     /*
      * Convert link of given instruction
      */
-    function _convert_link(&$renderer, &$instr, $id) {
+    private function _convert_link(&$renderer, &$instr, $id) {
         global $ID;
 
         $exists = false;
@@ -430,7 +429,7 @@ class syntax_plugin_siteexport_toc extends DokuWiki_Syntax_Plugin {
     /*
      * Convert internalmedia of given instruction
      */
-    function _convert_media(&$renderer, &$instr, $id) {
+    private function _convert_media(&$renderer, &$instr, $id) {
         global $ID;
 
         // Resolvemedia returns the absolute path to media by reference
@@ -441,7 +440,7 @@ class syntax_plugin_siteexport_toc extends DokuWiki_Syntax_Plugin {
     /**
      * @param integer $depth
      */
-    function _convert_header(&$renderer, &$instr, $depth) {
+    private function _convert_header(&$renderer, &$instr, $depth) {
         // More Depth!
         $instr[1][1] += $depth;
     }
@@ -449,12 +448,12 @@ class syntax_plugin_siteexport_toc extends DokuWiki_Syntax_Plugin {
     /**
      * @param integer $depth
      */
-    function _convert_section(&$renderer, &$instr, $depth) {
+    private function _convert_section(&$renderer, &$instr, $depth) {
         // More Depth!
         $instr[1][0] += $depth;
     }
 
-    function _mergeWithHeaders($existing, $newInstructions, $level = 1, $mergeHint = array() ) {
+    private function _mergeWithHeaders($existing, $newInstructions, $level = 1, $mergeHint = array() ) {
 
         $returnInstructions = array();
         $preparedInstructions = array();
@@ -549,7 +548,7 @@ class syntax_plugin_siteexport_toc extends DokuWiki_Syntax_Plugin {
     /**
      * @param integer $level
      */
-    function _findNextHeaderSection($section, $level, &$start, &$end, $headerName = null) {
+    private function _findNextHeaderSection($section, $level, &$start, &$end, $headerName = null) {
 
         $inCount = count($section);
         $currentSlice = -1;
@@ -579,7 +578,7 @@ class syntax_plugin_siteexport_toc extends DokuWiki_Syntax_Plugin {
         return $currentSlice > 0;
     }
 
-    function _cleanAllInstructions(&$instr) {
+    private function _cleanAllInstructions(&$instr) {
         $this->_cleanInstructions($instr, '/section_(close|open)/');
         $this->_cleanInstructions($instr, '/listu_(close|open)/');
         $this->_cleanInstructions($instr, '/listo_(close|open)/');
@@ -588,7 +587,7 @@ class syntax_plugin_siteexport_toc extends DokuWiki_Syntax_Plugin {
     /**
      * @param string $tag
      */
-    function _cleanInstructions(&$instructions, $tag) {
+    private function _cleanInstructions(&$instructions, $tag) {
 
         $inCount = count($instructions);
         for ($i = 0; $i < $inCount; $i++) {
@@ -612,7 +611,7 @@ class syntax_plugin_siteexport_toc extends DokuWiki_Syntax_Plugin {
     /**
      * Strip everything except for the headers
      */
-    function _initialHeaderStructure($instructions) {
+    private function _initialHeaderStructure($instructions) {
         $inCount = count($instructions);
         for ($i = 0; $i < $inCount; $i++) {
 
@@ -631,7 +630,7 @@ class syntax_plugin_siteexport_toc extends DokuWiki_Syntax_Plugin {
         return $instructions;
     }
 
-    function _insertMergeHint( &$instructions, $mergeHint ) {
+    private function _insertMergeHint( &$instructions, $mergeHint ) {
 
         // Surround new slice with a mergehint
         if ( empty( $mergeHint ) ) { return; }
