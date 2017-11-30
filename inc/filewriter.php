@@ -48,7 +48,7 @@ class siteexport_zipfilewriter
         }
 
         if (@unlink($tmpFile) === false) {
-            // There was an error here
+            unset($tmpFile);
         }
 
         return $status;
@@ -165,7 +165,7 @@ class siteexport_zipfilewriter
         {
             if ( @unlink($cacheFile) === false ||
                  @unlink($this->functions->settings->zipFile) === false ) {
-                     // do not care
+                 $this->functions->debug->message("Cannot remove cache Files: ", $cacheFile, 2);
             }
             $this->functions->debug->message("New CacheFile because the file was over the cachetime: ", $cacheFile, 2);
             return false;
@@ -186,7 +186,7 @@ class siteexport_zipfilewriter
                 if ($mtime < @filemtime(wikiFN($site['id']))) {
                     if ( @unlink($cacheFile) === false ||
                          @unlink($this->functions->settings->zipFile) === false ) {
-                             // do not care
+                         $this->functions->debug->message("Cannot remove cache Files: ", $cacheFile, 2);
                     }
                     $this->functions->debug->message("New CacheFile, because a page changed: ", $cacheFile, 2);
                     return false; // cache older than files it depends on?

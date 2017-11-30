@@ -252,21 +252,14 @@ class syntax_plugin_siteexport_toc extends DokuWiki_Syntax_Plugin {
             // Add ID to flags['mergeDoc']
             if ($renderer->meta['sitetoc']['mergeDoc'] === true) { // || (count($renderer->meta['sitetoc']['siteexportTOC']) > 0 && $renderer->meta['sitetoc']['siteexportMergeDoc'] === true) ) {
                 $this->mergedPages[] = array($SID, $DEPTH);
-                // $default = $renderer->_simpleTitle($SID); $isImage = false;
                 resolve_pageid(getNS($ID), $SID, $exists);
-
-                // $NAME = empty($NAME) ? p_get_first_heading($SID, true) : $NAME;
-                // $LNID = "$ID#" . sectionID($SID, $check);
-
             } else {
                 // // print normal internal link (XHTML odt)
                 $renderer->internallink($LNID, $NAME, null);
 
                 // Display Description underneath
                 if ($renderer->meta['sitetoc']['showDescription'] === true) {
-                    // $renderer->p_open();
                     $renderer->cdata(p_get_metadata($SID, 'description abstract', true));
-                    // $renderer->p_close();
                 }
             }
 

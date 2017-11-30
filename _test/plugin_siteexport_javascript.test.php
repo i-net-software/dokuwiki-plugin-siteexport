@@ -15,7 +15,7 @@ class SiteexportJavaScriptEvaluation extends DokuWikiTest {
         $uncompressed = $dir . 'uncompressed.source.js';
         
         if (@unlink($compressed) === false || @unlink($uncompressed) === false) {
-            // Could not remove
+            echo "Did not remove previous files";
         }
         
         file_put_contents($uncompressed, $this->setUpJavascript(0));
