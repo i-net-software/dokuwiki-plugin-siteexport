@@ -391,13 +391,7 @@ class renderer_plugin_siteexport_pdf extends Doku_Renderer_xhtml {
         $ar = preg_split('/(?<!^)(?!$)(?!\n)/u', $str); // return array of every multi-byte character
         foreach ($ar as $c) {
             $o = ord($c);
-            if ( // 2017-11-30: Scrutinizer // (strlen($c) > 1) || /* multi-byte [unicode] */
-                ($o > 127) // || /* <- control / latin weirdos -> */
-                // 2017-11-30: Scrutinizer // ($o <32 || $o > 126) || /* <- control / latin weirdos -> */
-                // 2017-11-30: Scrutinizer // ($o >33 && $o < 40) ||/* quotes + ambersand */
-                // 2017-11-30: Scrutinizer // ($o >59 && $o < 63) /* html */
-
-            ) {
+            if ( $o > 127 ) {
                 // convert to numeric entity
                 $c = mb_encode_numericentity($c, array(0x0, 0xffff, 0, 0xffff), 'UTF-8');
             }
