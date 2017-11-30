@@ -48,11 +48,8 @@ class syntax_plugin_siteexport_toc extends DokuWiki_Syntax_Plugin {
             case DOKU_LEXER_ENTER:
 
                 $this->insideToc = true;
-
                 $this->options = explode(' ', substr($match, 5, -1));
-
                 return array('start' => true, 'pos' => $pos, 'options' => $this->options);
-                break;
 
             case DOKU_LEXER_SPECIAL:
 
@@ -86,12 +83,11 @@ class syntax_plugin_siteexport_toc extends DokuWiki_Syntax_Plugin {
                                 if (in_array($item[0], array('list_item', 'list_open'))) { $call = $item; break; }
                             }
 
-                            $depth = $handler->CallWriter->interpretSyntax($call[1][0], $listType)-1; // Minus one because of plus one inside the interpret function
+                            $depth = $handler->CallWriter->interpretSyntax($call[1][0], $listType = null)-1; // Minus one because of plus one inside the interpret function
                         }
 
                         if (empty($link[0])) { break; } // No empty elements. This would lead to problems
                         return array($link[0], $link[1], $depth);
-                        break;
                     } else {
                         // use parser! - but with another p
                         $handler->internallink($match, $state, $pos);
@@ -107,12 +103,10 @@ class syntax_plugin_siteexport_toc extends DokuWiki_Syntax_Plugin {
                 $handler->_addCall('cdata', array($match), $pos);
 
                 return false;
-                break;
             case DOKU_LEXER_EXIT:
 
                 $this->insideToc = false;
                 return 'save__meta';
-                break;
         }
         return false;
     }
@@ -122,7 +116,7 @@ class syntax_plugin_siteexport_toc extends DokuWiki_Syntax_Plugin {
 
         list($SID, $NAME, $DEPTH) = $data;
 
-        resolve_pageid(getNS($ID), $SID, $exists);
+        resolve_pageid(getNS($ID), $SID, $exists = null);
 //        $SID = cleanID($SID); // hier kein cleanID, da sonst moeglicherweise der anker verloren geht
 
         //    Render XHTML and ODT
@@ -164,7 +158,7 @@ class syntax_plugin_siteexport_toc extends DokuWiki_Syntax_Plugin {
                 }
 
                 // If this is not set, we may have it as Metadata
-                if (!$this->mergedPages && $renderer->meta['sitetoc']['mergeDoc']) {
+                if ( empty( $this->mergedPages ) && $renderer->meta['sitetoc']['mergeDoc']) {
                     $toc = $renderer->meta['sitetoc']['siteexportTOC'];
 
                     if (is_array($toc)) {
@@ -184,7 +178,7 @@ class syntax_plugin_siteexport_toc extends DokuWiki_Syntax_Plugin {
 
                     // Prepare lookup Array
                     foreach ($this->mergedPages as $tocItem) {
-                        $this->includedPages[] = array_shift(explode('#', $tocItem[0]));
+                        list($this->includedPages[]) = explode('#', $tocItem[0]);
                     }
 
                     // Load the instructions
@@ -201,7 +195,7 @@ class syntax_plugin_siteexport_toc extends DokuWiki_Syntax_Plugin {
                         }
 
                         // Convert Link and header instructions
-                        $instructions = $this->_convertInstructions($instructions, $addID, $renderer, $depth);
+                        $instructions = $this->_convertInstructions($instructions, $addID = null, $renderer, $depth);
 
                         if ($renderer->meta['sitetoc']['mergeHeader'] && count($this->mergedPages) > 1 ) {
                             // get a hint for merged pages
@@ -258,11 +252,11 @@ class syntax_plugin_siteexport_toc extends DokuWiki_Syntax_Plugin {
             // Add ID to flags['mergeDoc']
             if ($renderer->meta['sitetoc']['mergeDoc'] === true) { // || (count($renderer->meta['sitetoc']['siteexportTOC']) > 0 && $renderer->meta['sitetoc']['siteexportMergeDoc'] === true) ) {
                 $this->mergedPages[] = array($SID, $DEPTH);
-                $default = $renderer->_simpleTitle($SID); $isImage = false;
+                // $default = $renderer->_simpleTitle($SID); $isImage = false;
                 resolve_pageid(getNS($ID), $SID, $exists);
 
-                $NAME = empty($NAME) ? p_get_first_heading($SID, true) : $NAME;
-                $LNID = "$ID#" . sectionID($SID, $check);
+                // $NAME = empty($NAME) ? p_get_first_heading($SID, true) : $NAME;
+                // $LNID = "$ID#" . sectionID($SID, $check);
 
             } else {
                 // // print normal internal link (XHTML odt)
@@ -500,26 +494,26 @@ class syntax_plugin_siteexport_toc extends DokuWiki_Syntax_Plugin {
         $section_postpend = array();
         if ( 
             ( 
-            ($tmp = array_slice($newInstructions, -1))
-            && ($tmp[0][0] == 'section_close')
+                ($tmp1 = array_slice($newInstructions, -1))
+                && ($tmp1[0][0] == 'section_close')
             )
             && 
             (
-            ($tmp = array_slice($newInstructions, -2))
-            && ($tmp[0][0] == 'section_close')
+                ($tmp2 = array_slice($newInstructions, -2))
+                && ($tmp2[0][0] == 'section_close')
             )
         ) {
             $section_postpend = array_splice($newInstructions, -1);
         }        
         if (
             ( 
-            ($tmp = array_slice($returnInstructions, -1))
-            && ($tmp[0][0] == 'section_close')
+                ($tmp3 = array_slice($returnInstructions, -1))
+                && ($tmp3[0][0] == 'section_close')
             )
             && 
             (
-            ($tmp = array_slice($returnInstructions, -2))
-            && ($tmp[0][0] == 'section_close')
+                ($tmp4 = array_slice($returnInstructions, -2))
+                && ($tmp4[0][0] == 'section_close')
             )
         ) {
             $section_postpend = array_merge($section_postpend, array_splice($returnInstructions, -1));
