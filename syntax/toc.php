@@ -204,17 +204,17 @@ class syntax_plugin_siteexport_toc extends DokuWiki_Syntax_Plugin {
                         // Convert Link and header instructions
                         $instructions = $this->_convertInstructions($instructions, $addID, $renderer, $depth);
 
-                        if ($renderer->meta['sitetoc']['mergeHeader'] && !empty($instr)) {
+                        if ($renderer->meta['sitetoc']['mergeHeader'] && count($this->mergedPages) > 1 ) {
                             // get a hint for merged pages
-                            if ( $renderer->meta['sitetoc']['mergehint'] && !empty( $instr ) ) {
+                            if ($renderer->meta['sitetoc']['mergehint']) {
                                 // only if the first section is already there
                                 $mergeHint = p_get_metadata( $tocItem, 'mergehint', METADATA_RENDER_USING_SIMPLE_CACHE );
                                 if ( empty( $mergeHint) ) { $mergeHint = p_get_metadata( $tocItem, 'thema', METADATA_RENDER_USING_SIMPLE_CACHE ); }
                                 if ( empty( $mergeHint) ) { $mergeHint = tpl_pagetitle( $tocItem, true ); }
+                                $instructions = $this->_mergeWithHeaders( $this->_initialHeaderStructure( $instructions ), $instructions, 1, $mergeHint);
                             }
-
                             // Merge
-                            $instr = $this->_mergeWithHeaders($instr, $instructions, 1, $mergeHint);
+                            $instr = $this->_mergeWithHeaders( $instr, $instructions, 1);
                         } else
                         if ($renderer->meta['sitetoc']['pagebreak']) {
                             $sitepagebreak = array( array(
@@ -474,7 +474,7 @@ class syntax_plugin_siteexport_toc extends DokuWiki_Syntax_Plugin {
             $newStart = $newEnd = 0;
             if ($this->_findNextHeaderSection($newInstructions, $level, $newStart, $newEnd, $currentSlice[0][1][0])) {
 
-                $newSlice = array_slice($newInstructions, $newStart, $newEnd-$newStart);                
+                $newSlice = array_slice($newInstructions, $newStart, $newEnd-$newStart);
                 if ($newSlice[0][0] == 'header')
                     array_shift($newSlice); // Remove Heading
 
@@ -497,7 +497,7 @@ class syntax_plugin_siteexport_toc extends DokuWiki_Syntax_Plugin {
         // Append the rest
         $returnInstructions = array_merge($returnInstructions, array_slice($existing, $existingStart));
 
-        // Check for section close inconsistencies and put one at the very end ...        
+        // Check for section close inconsistencies and put one at the very end ...
         $section_postpend = array();
         if ( 
             ( 
@@ -609,6 +609,28 @@ class syntax_plugin_siteexport_toc extends DokuWiki_Syntax_Plugin {
         }
     }
     
+    /**
+     * Strip everything except for the headers
+     */
+    function _initialHeaderStructure($instructions) {
+        $inCount = count($instructions);
+        for ($i = 0; $i < $inCount; $i++) {
+
+            // Last instruction
+            if ($i == $inCount-1) {
+                break;
+            }
+
+            if (!in_array($instructions[$i][0], array('header', 'section_open', 'section_close', 'p_open', 'p_close'))) {
+                // found non-matching
+                array_splice($instructions, $i, 1);
+                $inCount --;
+                $i--;
+            }
+        }
+        return $instructions;
+    }
+
     function _insertMergeHint( &$instructions, $mergeHint ) {
 
         // Surround new slice with a mergehint
