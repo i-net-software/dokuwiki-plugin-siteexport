@@ -10,11 +10,12 @@ checks:
         no_exit: false
     javascript: true
 filter:
-    paths: [ "lib/plugins/siteexport" ]
+    paths:
+        - lib/plugins/siteexport
     excluded_paths:
         - _tests/*
     dependency_paths:
-        - *
+        - ./*
 coding_style:
     php:
         indentation:
@@ -121,10 +122,11 @@ coding_style:
                 true_false_null: undefined
 
 build:
+    tests:
+        before:
+            - "sh .scrutinizer.sh"
     nodes:
         tests:
-            before:
-                - "sh .scrutinizer.sh"
         analysis:
             tests:
                 override:
