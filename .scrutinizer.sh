@@ -11,7 +11,7 @@
 # make sure this runs on travis only
 if [ -z "$SCRUTINIZER" ] || [ -z "$CI" ]  ; then
     echo 'This script is only intended to run on scrutinizer-ci build servers'
-    exit 1
+    exit 0
 fi
 
 # check if template or plugin
@@ -23,14 +23,14 @@ elif [ -e 'template.info.txt' ]; then
     dir='tpl'
 else
     echo 'No plugin.info.txt or template.info.txt found!'
-    exit 1
+    exit 0
 fi
 
 # find out where this plugin belongs to
 BASE=`awk '/^base/{print $2}' ${type}.info.txt`
 if [ -z "$BASE" ]; then
     echo "This plugins misses a base entry in ${type}.info.txt"
-    exit 1
+    exit 0
 fi
 
 # move everything to the correct location
