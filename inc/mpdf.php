@@ -10,8 +10,12 @@
 if (file_exists(DOKU_PLUGIN . 'dw2pdf/mpdf/mpdf.php')) {
 
     global $conf;
-    if (!defined('_MPDF_TEMP_PATH')) define('_MPDF_TEMP_PATH', $conf['tmpdir'] . '/dwpdf/' . rand(1, 1000) . '/');
-    if (!defined('_MPDF_TTFONTDATAPATH')) define('_MPDF_TTFONTDATAPATH', $conf['cachedir'] . '/mpdf_ttf/');
+    if (!defined('_MPDF_TEMP_PATH')) {
+        define('_MPDF_TEMP_PATH', $conf['tmpdir'] . '/dwpdf/' . rand(1, 1000) . '/');
+    }
+    if (!defined('_MPDF_TTFONTDATAPATH')) {
+        define('_MPDF_TTFONTDATAPATH', $conf['cachedir'] . '/mpdf_ttf/');
+    }
 
     require_once(DOKU_PLUGIN . 'dw2pdf/mpdf/mpdf.php');
 
@@ -33,7 +37,9 @@ if (file_exists(DOKU_PLUGIN . 'dw2pdf/mpdf/mpdf.php')) {
             io_mkdir_p(_MPDF_TEMP_PATH);
 
             $format = $pagesize;
-            if ($orientation == 'landscape') $format .= '-L';
+            if ($orientation == 'landscape') {
+                $format .= '-L';
+            }
 
             switch ($conf['lang']) {
                 case 'zh':
