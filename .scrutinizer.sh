@@ -41,6 +41,7 @@ mv .[a-zA-Z0-9_-]* lib/${dir}/$BASE/
 
 # checkout DokuWiki into current directory (no clone because dir isn't empty)
 # the branch is specified in the $DOKUWIKI environment variable
+DOKUWIKI=${DOKUWIKI:-master}
 echo ">CLONING DOKUWIKI: $DOKUWIKI"
 git init
 git pull https://github.com/splitbrain/dokuwiki.git $DOKUWIKI
