@@ -120,9 +120,9 @@ coding_style:
                 true_false_null: undefined
 
 build:
-    project_setup:
+    dependencies:
         before:
-            - "sh .scrutinizer.sh"
+            - sh .scrutinizer.sh
     nodes:
         analysis:
             tests:
