@@ -12,7 +12,6 @@ checks:
 filter:
     excluded_paths:
         - "_tests/*"
-        _ "../../*"
 coding_style:
     php:
         indentation:
