@@ -13,7 +13,7 @@ filter:
     paths:
         - lib/plugins/siteexport
     excluded_paths:
-        - */_tests/*
+        - _tests/*
     dependency_paths:
         - *
 coding_style:
