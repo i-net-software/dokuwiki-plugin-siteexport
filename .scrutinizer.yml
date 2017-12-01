@@ -10,8 +10,7 @@ checks:
         no_exit: false
     javascript: true
 filter:
-    paths:
-        - lib/plugins/siteexport
+    paths: [ "lib/plugins/siteexport" ]
     excluded_paths:
         - _tests/*
     dependency_paths:
