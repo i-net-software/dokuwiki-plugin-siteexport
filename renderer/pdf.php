@@ -196,22 +196,22 @@ class renderer_plugin_siteexport_pdf extends Doku_Renderer_xhtml {
         $this->doc .= DOKU_LF . '<p class="level' . $this->currentLevel . '">' . DOKU_LF;
     }
 
-    function listu_open() {
+    function listu_open($classes = null) {
         $this->doc .= '<ul class="level' . $this->currentLevel . '">' . DOKU_LF;
     }
 
-    function listo_open() {
+    function listo_open($classes = null) {
         $this->doc .= '<ol class="level' . $this->currentLevel . '">' . DOKU_LF;
     }
 
-    public function finishSectionEdit($end = null) {
+    public function finishSectionEdit($end = null, $hid = null) {
         return '';
     }
 
     /**
      * @param string $type
      */
-    public function startSectionEdit($start, $type, $title = null) {
+    public function startSectionEdit($start, $type, $title = null, $hid = null) {
         return '';
     }
 
@@ -235,8 +235,7 @@ class renderer_plugin_siteexport_pdf extends Doku_Renderer_xhtml {
         return $out;
     }
 
-    function internalmedia ($src, $title=NULL, $align=NULL, $width=NULL,
-    $height=NULL, $cache=NULL, $linking=NULL) {
+    function internalmedia($src, $title = NULL, $align = NULL, $width = NULL, $height = NULL, $cache = NULL, $linking = NULL, $return = false) {
         global $ID;
         list($src,$hash) = explode('#',$src,2);
         resolve_mediaid(getNS($ID),$src, $exists);
