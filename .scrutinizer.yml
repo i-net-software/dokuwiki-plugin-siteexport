@@ -11,8 +11,8 @@ checks:
     javascript: true
 filter:
     excluded_paths:
-        - _tests/*
-        _ ../../*
+        - "_tests/*"
+        _ "../../*"
 coding_style:
     php:
         indentation:
