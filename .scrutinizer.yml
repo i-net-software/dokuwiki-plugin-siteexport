@@ -10,6 +10,8 @@ checks:
         no_exit: false
     javascript: true
 filter:
+    paths:
+        - "lib/plugins/siteexport"
     excluded_paths:
         - "_tests/*"
 coding_style:
@@ -121,7 +123,6 @@ build:
     project_setup:
         before:
             - "sh .scrutinizer.sh"
-    root_path: lib/plugins/siteexport
     nodes:
         tests:
         analysis:
