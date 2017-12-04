@@ -33,7 +33,7 @@ class siteexport_javahelp
         // Split Tree for translation
         $translationHSFiles = array();
 
-        for ($i = 0; $i < count($data); $i++)
+        for ($i = count($data); $i >= 0; $i--)
         {
             $lang = '';
             if ($this->translation)
