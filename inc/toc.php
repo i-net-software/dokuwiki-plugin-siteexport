@@ -25,8 +25,9 @@ class siteexport_toc
         $checkArray = $this->translation ? $this->translation->translations : array(noNS($this->NS));
         
         $url = explode('/', $inputURL);
-        
-        for ($i = count($url); $i >=0 ; $i--)
+
+        $URLcount = count($url);
+        for ($i = 0; $i < $URLcount ; $i++)
         {
             if (in_array($url[$i], $checkArray))
             {
