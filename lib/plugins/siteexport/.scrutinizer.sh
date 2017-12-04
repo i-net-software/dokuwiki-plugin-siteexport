@@ -14,6 +14,8 @@ if [ -z "$SCRUTINIZER" ] || [ -z "$CI" ]  ; then
     exit 0
 fi
 
+cd ../../../
+
 # check if template or plugin
 if [ -e 'plugin.info.txt' ]; then
     type='plugin'
@@ -62,7 +64,7 @@ if [ -f "$REQUIRE" ]; then
 fi
 
 # change working directory
-cd lib/${dir}/$BASE/
+cd -
 
 # we now have a full dokuwiki environment with our plugin installed
 # scrutinizer can take over
