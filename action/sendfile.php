@@ -28,7 +28,7 @@ class action_plugin_siteexport_sendfile extends DokuWiki_Action_Plugin {
     /*
      * Redirect File to real File
      */
-    function siteexport_sendfile(Doku_Event &$event, $args) {
+    public function siteexport_sendfile(Doku_Event &$event, $args) {
         global $conf;
 
         if (empty($_REQUEST['siteexport']) /* || $event->data['orig'] != $this->getConf('zipfilename') */) {
@@ -59,7 +59,7 @@ class action_plugin_siteexport_sendfile extends DokuWiki_Action_Plugin {
         $functions->debug->message("Event Data After:", $event->data, 3);
     }
 
-    function siteexport_sendfile_not_found(Doku_Event &$event, $args)
+    public function siteexport_sendfile_not_found(Doku_Event &$event, $args)
     {
         if (empty($_REQUEST['siteexport']) ||
         /**

@@ -19,21 +19,21 @@ class syntax_plugin_siteexport_siteexport extends DokuWiki_Syntax_Plugin {
 
     private $headers = array();
 
-    function getType() { return 'substition'; }
-    function getPType() { return 'block'; }
-    function getSort() { return 300; }
+    public function getType() { return 'substition'; }
+    public function getPType() { return 'block'; }
+    public function getSort() { return 300; }
 
-    function connectTo($mode) {
+    public function connectTo($mode) {
         $this->Lexer->addSpecialPattern('\{\{siteexport .*?\}\}', $mode, 'plugin_siteexport_siteexport');
     }
 
-    function handle($match, $state, $pos, Doku_Handler $handler) {
+    public function handle($match, $state, $pos, Doku_Handler $handler) {
     
         $options = explode(' ', trim(substr($match, 2, -2)));
         return $options;
     }
     
-    function render($mode, Doku_Renderer $renderer, $data) {
+    public function render($mode, Doku_Renderer $renderer, $data) {
         global $ID, $conf, $INFO;
 
         $namespace = $INFO['id'] != $ID ? $INFO['id'] : $ID;

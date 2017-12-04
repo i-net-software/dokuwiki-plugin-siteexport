@@ -18,12 +18,12 @@ class helper_plugin_siteexport_page_remove {
      * @param integer $start
      * @param integer $end
      */
-    function __construct($start, $end=null) {
+    public function __construct($start, $end=null) {
         $this->start = $start;
         $this->end = $end;
     }
 
-    function _page_remove($elem) {
+    public function _page_remove($elem) {
         return $elem[2] >= $this->start && ( is_null( $this->end ) || $elem[2] <= $this->end);
     }
 }
@@ -33,7 +33,7 @@ class helper_plugin_siteexport extends DokuWiki_Plugin {
     /*
      * return all the templates that this wiki has
      */
-    function __getTemplates() {
+    public function __getTemplates() {
 
         // populate $this->_choices with a list of directories
         $list = array();
@@ -68,7 +68,7 @@ class helper_plugin_siteexport extends DokuWiki_Plugin {
     /*
      * Return array list of plugins that exist
      */
-    function __getPluginList() {
+    public function __getPluginList() {
         global $plugin_controller;
         
         $allPlugins = array();
@@ -81,7 +81,7 @@ class helper_plugin_siteexport extends DokuWiki_Plugin {
         return array($allPlugins, $plugin_controller->getList());
     }
     
-    private function _page_sort($a, $b)
+    public function _page_sort($a, $b)
     {
         if ( $a[2] == $b[2] ) {
             return 0;
@@ -90,7 +90,7 @@ class helper_plugin_siteexport extends DokuWiki_Plugin {
         return $a[2] > $b[2] ? -1 : 1;
     }
     
-    function __getOrderedListOfPagesForID($ID, $start=null)
+    public function __getOrderedListOfPagesForID($ID, $start=null)
     {
         global $conf;
         require_once(dirname(__FILE__)."/inc/functions.php");
@@ -120,7 +120,7 @@ class helper_plugin_siteexport extends DokuWiki_Plugin {
         return $values;
     }
     
-    function __getOrderedListOfPagesForStartEnd($ID, $start, $end)
+    public function __getOrderedListOfPagesForStartEnd($ID, $start, $end)
     {
         $values = $this->__getOrderedListOfPagesForID($ID);
 
@@ -131,7 +131,7 @@ class helper_plugin_siteexport extends DokuWiki_Plugin {
         return $values;
     }
 
-    function __siteexport_addpage() {
+    public function __siteexport_addpage() {
         
         global $ID, $conf;
 

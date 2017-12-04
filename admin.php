@@ -16,31 +16,31 @@ class admin_plugin_siteexport extends DokuWiki_Admin_Plugin {
     /**
      * Constructor
      */
-    function __construct() {
+    public function __construct() {
         $this->setupLocale();
     }
 
     /**
      * return sort order for position in admin menu
      */
-    function getMenuSort() {
+    public function getMenuSort() {
         return 100;
     }
 
-    function forAdminOnly() {
+    public function forAdminOnly() {
         return false;
     }
 
     /**
      * handle user request
      */
-    function handle() {
+    public function handle() {
     }
 
     /**
      * output appropriate html
      */
-    function html() {
+    public function html() {
 
         if (!$functions = & plugin_load('helper', 'siteexport')) {
             msg("Can't initialize");

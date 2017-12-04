@@ -14,7 +14,7 @@ if (!empty($_REQUEST['pdfExport']) && intval($_REQUEST['pdfExport']) == 1 && fil
             $this->functions = $functions;
         }
 
-        function createPDFFromFile($filename, &$NAME) {
+        public function createPDFFromFile($filename, &$NAME) {
 
             if (!preg_match("/" . $this->functions->settings->fileType . "$/", $NAME)) {
                 $this->functions->debug->message("Filetype " . $this->functions->settings->fileType . " did not match filename '$NAME'", null, 4);
@@ -62,7 +62,7 @@ if (!empty($_REQUEST['pdfExport']) && intval($_REQUEST['pdfExport']) == 1 && fil
             return $html;
         }
 
-        function arrangeHtml(&$html, $norendertags = '')
+        private function arrangeHtml(&$html, $norendertags = '')
         {
             global $conf;
 

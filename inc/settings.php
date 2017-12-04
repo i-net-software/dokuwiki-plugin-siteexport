@@ -36,7 +36,7 @@ class settings_plugin_siteexport_settings extends DokuWiki_Plugin
     /**
      * @param siteexport_functions $functions
      */
-    function __construct($functions) {
+    public function __construct($functions) {
         global $ID, $conf, $INPUT;
 
         $functions->debug->setDebugFile($this->getConf('debugFile'));
