@@ -1,6 +1,6 @@
 <?php
 if(!defined('DOKU_INC')) {
-    define('DOKU_INC',realpath(dirname(__FILE__).'/../../../').'/');
+    define('DOKU_INC', /** @scrutinizer ignore-type */ realpath(dirname(__FILE__).'/../../../').'/');
 }
 if(!defined('DOKU_PLUGIN')) {
     define('DOKU_PLUGIN',DOKU_INC.'lib/plugins/');

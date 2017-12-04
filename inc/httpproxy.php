@@ -23,7 +23,7 @@ require_once(DOKU_INC . 'inc/HTTPClient.php');
 class HTTPProxy extends DokuHTTPClient {
 
     public $debugClass = null;
-    public $setttings = null;
+    public $settings = null;
 
     /**
      * Constructor.

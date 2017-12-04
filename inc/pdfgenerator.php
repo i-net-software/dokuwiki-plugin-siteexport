@@ -152,7 +152,7 @@ if (!empty($_REQUEST['pdfExport']) && intval($_REQUEST['pdfExport']) == 1 && fil
 
             switch ($conf['mailguard']) {
                 case 'visible' :
-                    return strtr($email, array(' [at] ' => '@', ' [dot] ' => '.', ' [dash] ' => '-'));
+                    return /** @scrutinizer ignore-call */ strtr($email, array(' [at] ' => '@', ' [dot] ' => '.', ' [dash] ' => '-'));
 
                 case 'hex' :
                     $encode = '';

@@ -36,6 +36,8 @@ class settings_plugin_siteexport_settings extends DokuWiki_Plugin
     public $tmpDir = null;
     
     public $namespace = "";
+    
+    public $cookies = null;
 
     /**
      * @param siteexport_functions $functions
