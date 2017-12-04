@@ -99,7 +99,7 @@ class action_plugin_siteexport_aggregate extends DokuWiki_Action_Plugin {
         if ($INFO['prependTOC']) $html = tpl_toc(true) . $html;
 
         if (@unlink(metaFN($ID, '.meta')) === false) {
-            dbglog("Could not delete old meta file: " . metaFN($ID, '.meta') );
+            dbglog("Could not delete old meta file", metaFN($ID, '.meta'), 1 );
         }
 
         $ID = (string) $originalID;

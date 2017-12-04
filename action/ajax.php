@@ -542,7 +542,7 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
         $this->fileChecked[$url] = $fileName;
         $status = $this->filewriter->__addFileToZip($tmpFile[0], $fileName);
         if (@unlink($tmpFile[0]) === false) {
-            $this->functions->debug->message("Could not remove temporary file: " . $tmpFile[0]);
+            $this->functions->debug->message("Could not remove temporary file", $tmpFile[0], 1);
         }
 
         return $status;
@@ -1027,8 +1027,8 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
         $this->fileChecked[$url] = $DATA[2]; // 2010-09-03 - One URL to one FileName
 
         $this->filewriter->__addFileToZip($tmpFile[0], $DATA[2]);
-        if ( @unlink($tmpFile[0]) === false ) {
-            $this->functions->debug->message("Could not delete temporary file.", null, 2);
+        if (@unlink($tmpFile[0]) === false) {
+            $this->functions->debug->message("Could not delete temporary file.", $tmpFile[0], 2);
         }
 
         $newURL = $this->__rebuildLink($DATA);
@@ -1292,11 +1292,11 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
      */
     private function unlinkIfExists($cache) {
         if (file_exists($cache) && @unlink($cache) === false) {
-            $this->functions->debug->message('Could not remove file ' . $cache );
+            $this->functions->debug->message('Could not remove file', $cache, 1 );
         }
         
         if (function_exists('gzopen') && @unlink("{$cache}.gz") === false ) {
-            $this->functions->debug->message('Could not remove file ' . $cache . '.gz' );
+            $this->functions->debug->message('Could not remove file', $cache . '.gz', 1 );
         }
     }
 }
