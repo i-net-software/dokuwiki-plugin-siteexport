@@ -34,7 +34,7 @@ class siteexport_zipfilewriter
 
         if (empty($DATA)) { return false; }
 
-        $tmpFile = tempnam($this->functions->settings->tmpDir, 'siteexport__');
+        $tmpFile = tempnam($this->functions->settings->tmpDir, 'siteexport__') ?: $this->functions->settings->tmpDir . 'siteexport__';
 
         if (@file_put_contents($tmpFile, $DATA) === false) {
             // There was an error here

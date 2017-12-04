@@ -21,6 +21,7 @@ class CSSMgrPatch {
     public function includeCode($path) {
     
         $fp = fopen($path, 'r');
+        if ( !$fp ) { return; }
         $contents = fread($fp, filesize($path));
         $contents = str_replace('<?php', '', $contents);
         $contents = str_replace('?>', '', $contents);

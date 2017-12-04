@@ -29,7 +29,7 @@ class syntax_plugin_siteexport_siteexport extends DokuWiki_Syntax_Plugin {
 
     public function handle($match, $state, $pos, Doku_Handler $handler) {
     
-        $options = explode(' ', trim(substr($match, 2, -2)));
+        $options = explode(' ', trim(substr($match, 2, -2)?:""));
         return $options;
     }
     

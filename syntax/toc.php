@@ -48,7 +48,7 @@ class syntax_plugin_siteexport_toc extends DokuWiki_Syntax_Plugin {
             case DOKU_LEXER_ENTER:
 
                 $this->insideToc = true;
-                $this->options = explode(' ', substr($match, 5, -1));
+                $this->options = explode(' ', substr($match, 5, -1)?:"");
                 return array('start' => true, 'pos' => $pos, 'options' => $this->options);
 
             case DOKU_LEXER_SPECIAL:

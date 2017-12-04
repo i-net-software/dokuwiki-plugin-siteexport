@@ -683,7 +683,8 @@ class siteexport_functions extends DokuWiki_Plugin
             $offsiteTemplate = str_replace('RAWID', $existingPageID, $offsiteTemplate);
             
             $check = null;
-            $offsiteTemplate = str_replace('CONTEXTID', array_pop(($this->getMapID($existingPageID, null, $check))), $offsiteTemplate);
+            $mapID = $this->getMapID($existingPageID, null, $check);
+            $offsiteTemplate = str_replace('CONTEXTID', array_pop($mapID), $offsiteTemplate);
             $offsiteTemplate = str_replace('LINK', $finalLink, $offsiteTemplate);
 
             $this->debug->message("Replacing finalLink '${finalLink}' with offsiteLink '${offsiteTemplate}'", null, 1);

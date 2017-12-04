@@ -77,7 +77,8 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
         global $ID;
 
         // Check if the 'do' was siteexport
-        $command = is_array($event->data) ? array_shift(array_keys($event->data)) : $event->data;
+        $keys = is_array($event->data) ? array_keys($event->data) : null;
+        $command = is_array($keys) ? array_shift($keys) : $event->data;
         if ( $command != 'siteexport' ) { return false; }
         $event->data = act_clean($event->data);
 
@@ -227,7 +228,7 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
 
         echo $url;
         echo "\n";
-        echo 'wget ' . $maxRedirect . '--output-document=' . array_pop(explode(":", ($this->getConf('zipfilename')))) . ' --post-data="' . $POSTData . '" ' . wl(cleanID($path), null, true) . ' --http-user=USER --http-passwd=PASSWD';
+        echo 'wget ' . $maxRedirect . '--output-document=' . array_pop((explode(":", ($this->getConf('zipfilename'))))) . ' --post-data="' . $POSTData . '" ' . wl(cleanID($path), null, true) . ' --http-user=USER --http-passwd=PASSWD';
         echo "\n";
         echo 'curl -L ' . $maxRedirs . '-o ' . array_pop(explode(":", ($this->getConf('zipfilename')))) . ' -d "' . $POSTData . '" ' . wl(cleanID($path), null, true) . ' --anyauth --user USER:PASSWD';
         echo "\n";
@@ -601,7 +602,7 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
             $this->functions->debug->message("========================================", null, 1);
         }
 
-        $tmpFile = tempnam($this->functions->settings->tmpDir , 'siteexport__');
+        $tmpFile = tempnam($this->functions->settings->tmpDir , 'siteexport__') ?: $this->functions->settings->tmpDir . "siteexport__";
         $this->functions->debug->message("Temporary filename", $tmpFile, 1);
 
         $fp = fopen( $tmpFile, "w");
@@ -863,7 +864,8 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
 
                 $newDepth = str_repeat('../', count(explode('/', $fileName))-1);
                 $this->__rebuildDataForNormalFiles($DATA, $PARAMS);
-                $DATA[2] .= '.' . array_pop(explode('/', $fileName));
+                $DATA2Name = explode('/', $fileName);
+                $DATA[2] .= '.' . array_pop($DATA2Name);
 
                 $this->functions->debug->message("This is doku.php file with addParams", array($DATA, $ID, $fileName, $newDepth, $newAdditionalParameters), 2);
                 return $this->__rebuildLink($DATA);
@@ -1154,7 +1156,7 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
             $data = array();
             search($data, $conf['mediadir'], 'search_media', array('pattern' => "/$fn$/i"), $ns);
 
-            if (count($data > 0)) {
+            if (count($data) > 0) {
 
                 // 30 Minuten Cache Zeit
                 $cache = $this->functions->settings->cachetime;
@@ -1283,11 +1285,11 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
      * Clear Cache
      */
     private function unlinkIfExists($cache) {
-        if (file_exists($cache) && file_exists($cache) && unlink($cache) === false) {
+        if (file_exists($cache) && @unlink($cache) === false) {
             $this->functions->debug->message('Could not remove file ' . $cache );
         }
         
-        if (function_exists('gzopen') && file_exists("{$cache}.gz") && unlink("{$cache}.gz") === false ) {
+        if (function_exists('gzopen') && @unlink("{$cache}.gz") === false ) {
             $this->functions->debug->message('Could not remove file ' . $cache . '.gz' );
         }
     }

@@ -92,7 +92,7 @@ class siteexport_debug
             default: $TYPE = " NONE"; break;
         }
 
-        $prepend = "[" . @date('Y-m-d H:i:s') . " $TYPE] ";
+        $prepend = "[" . (date('Y-m-d H:i:s') ?: "") . " $TYPE] ";
         $log = $prepend . str_replace("\n", "\n" . $prepend . "\t", trim($info)) . "\n";
         
         if ( $fh !== false ) {
