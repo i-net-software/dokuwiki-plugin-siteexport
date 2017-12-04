@@ -8,7 +8,6 @@ include_once(DOKU_INC . 'inc/plugincontroller.class.php');
 class preload_plugin_siteexport {
 
     public $error;
-    private $tmp_plugins = array();
 
     public function __register_template() {
 
@@ -164,6 +163,8 @@ OUTPUT;
 
 // return a custom plugin list
 class preload_plugin_siteexport_controller extends Doku_Plugin_Controller {
+
+    private $tmp_plugins = array();
 
     /**
      * Setup disabling
