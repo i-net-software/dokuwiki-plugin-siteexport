@@ -65,11 +65,11 @@ if [ -f "$REQUIRE" ]; then
     done
 fi
 
+# change working directory back
+cd -
+
 # link dependencies
 ln -s ../../../ dokuwiki-dependency
-
-# change working directory
-cd -
 
 # we now have a full dokuwiki environment with our plugin installed
 # scrutinizer can take over
