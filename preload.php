@@ -164,7 +164,7 @@ OUTPUT;
 // return a custom plugin list
 class preload_plugin_siteexport_controller extends Doku_Plugin_Controller {
 
-    private $tmp_plugins = array();
+    protected $tmp_plugins = array();
 
     /**
      * Setup disabling
