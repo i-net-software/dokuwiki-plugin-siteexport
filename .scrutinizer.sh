@@ -37,7 +37,7 @@ fi
 echo ">MOVING TO: lib/$dir/$BASE"
 mkdir -p lib/${dir}/$BASE
 mv * lib/${dir}/$BASE/ 2>/dev/null
-cp -a .[a-zA-Z0-9_-]* lib/${dir}/$BASE/
+mv .* lib/${dir}/$BASE/ 2>/dev/null
 
 # checkout DokuWiki into current directory (no clone because dir isn't empty)
 # the branch is specified in the $DOKUWIKI environment variable
@@ -60,6 +60,9 @@ if [ -f "$REQUIRE" ]; then
         fi
     done
 fi
+
+# change working directory
+cd lib/${dir}/$BASE/
 
 # we now have a full dokuwiki environment with our plugin installed
 # scrutinizer can take over
