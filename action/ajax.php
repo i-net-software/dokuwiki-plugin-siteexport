@@ -363,6 +363,8 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
                     }
                     
                     return $data;
+                } else {
+                    // Does not exist, try next case
                 }
             case 1:    $depth = 0;
             break;
