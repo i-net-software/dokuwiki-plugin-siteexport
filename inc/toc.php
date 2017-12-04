@@ -238,7 +238,7 @@ class siteexport_toc
     }
     
     
-    function post(&$value, $key, array $additional) {
+    private function post(&$value, $key, array $additional) {
         $inner_glue = $additional[0];
         $prefix = isset($additional[1]) ? $additional[1] : false;
         if ($prefix === false) $prefix = $key;

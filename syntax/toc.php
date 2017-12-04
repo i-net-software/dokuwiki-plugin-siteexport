@@ -23,25 +23,25 @@ class syntax_plugin_siteexport_toc extends DokuWiki_Syntax_Plugin {
     private $includedPages = array();
     private $merghintIds = array();
 
-    function getType() { return 'protected'; }
-    function getPType() { return 'block'; }
-    function getAllowedTypes() { return array('container'); }
-    function getSort() { return 100; }
+    public function getType() { return 'protected'; }
+    public function getPType() { return 'block'; }
+    public function getAllowedTypes() { return array('container'); }
+    public function getSort() { return 100; }
 
     /**
      * Connect pattern to lexer
      */
-    function connectTo($mode) {
+    public function connectTo($mode) {
         $this->Lexer->addEntryPattern('<toc>(?=.*?</toc>)', $mode, 'plugin_siteexport_toc');
         $this->Lexer->addEntryPattern('<toc .+?>(?=.*?</toc>)', $mode, 'plugin_siteexport_toc');
         $this->Lexer->addSpecialPattern("\[\[.+?\]\]", $mode, 'plugin_siteexport_toc');
     }
 
-    function postConnect() {
+    public function postConnect() {
         $this->Lexer->addExitPattern('</toc.*?>', 'plugin_siteexport_toc');
     }
 
-    function handle($match, $state, $pos, Doku_Handler $handler) {
+    public function handle($match, $state, $pos, Doku_Handler $handler) {
         global $ID, $INFO;
 
         switch ($state) {
@@ -111,7 +111,7 @@ class syntax_plugin_siteexport_toc extends DokuWiki_Syntax_Plugin {
         return false;
     }
 
-    function render($mode, Doku_Renderer $renderer, $data) {
+    public function render($mode, Doku_Renderer $renderer, $data) {
         global $ID, $lang, $INFO;
 
         list($SID, $NAME, $DEPTH) = $data;
@@ -670,7 +670,7 @@ class syntax_plugin_siteexport_toc extends DokuWiki_Syntax_Plugin {
     /**
      * Remove TOC, section edit buttons and tags
      */
-    function _cleanXHTML($xhtml) {
+    private function _cleanXHTML($xhtml) {
         $replace = array(
             '!<div class="toc">.*?(</div>\n</div>)!s' => '', // remove TOCs
             '#<!-- SECTION \[(\d*-\d*)\] -->#s'       => '', // remove section edit buttons
@@ -685,7 +685,7 @@ class syntax_plugin_siteexport_toc extends DokuWiki_Syntax_Plugin {
      *
      * @return bool   true if the plugin can not be instantiated more than once
      */
-    function isSingleton() {
+    public function isSingleton() {
         return true;
     }
 }
