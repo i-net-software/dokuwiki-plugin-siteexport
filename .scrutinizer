@@ -4,14 +4,7 @@ checks:
 filter:
     excluded_paths:
         - '_tests/*'
-    dependency_paths:
-        - '../../../'
-        - 'dokuwiki-dependency/'
 build:
-    root_path: 'lib/plugins/siteexport'
-    dependencies:
-        before:
-            - sh .scrutinizer.sh
     nodes:
         analysis:
             tests:
