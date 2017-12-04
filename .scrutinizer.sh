@@ -44,6 +44,8 @@ cp -a .[a-zA-Z0-9_-]* lib/${dir}/$BASE/
 DOKUWIKI=${DOKUWIKI:-master}
 echo ">CLONING DOKUWIKI: $DOKUWIKI"
 git init
+git config --global user.email "tools@inetsoftware.de"
+git config --global user.name "i-net /// software"
 git pull --depth 1 https://github.com/splitbrain/dokuwiki.git $DOKUWIKI
 
 # install additional requirements
