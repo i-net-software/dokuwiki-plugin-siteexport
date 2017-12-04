@@ -798,7 +798,7 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
         }
 
         // Finalize
-        return $this->__fetchAndReplaceLinkFinish( $DATA, $url, $currentID, $currentParent, $noDeepReplace, $newAdditionalParameters, $ORIGDATA2, $newDepth, $IDexists );
+        return $this->__fetchAndReplaceLinkFinish( $DATA, $url, $noDeepReplace, $newAdditionalParameters, $ORIGDATA2, $newDepth, $IDexists );
     }
 
     private function __fetchAndReplaceLinkMainSwitch( &$elements, &$DATA, &$url, &$newAdditionalParameters, &$PARAMS, &$noDeepReplace, &$fileName, &$newDepth, &$ID ) {
@@ -836,7 +836,6 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
             case 'indexer.php' :
                 $this->functions->debug->message("Skipping indexer", null, 2);
                 return "";
-                break;
             case 'detail.php' :
                 $noDeepReplace = false;
 
@@ -866,7 +865,6 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
 
                 $this->functions->debug->message("This is doku.php file with addParams", array($DATA, $ID, $fileName, $newDepth, $newAdditionalParameters), 2);
                 return $this->__rebuildLink($DATA);
-                break;
 
                 // Fetch Handling for media - rewriting everything
             case 'fetch.php':
@@ -888,7 +886,6 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
                 // default Handling for Pages
             case 'feed.php':
                 return ""; // Ignore. Has no sense to export.
-                break;
             default:
                 if (preg_match("%" . preg_quote(DOKU_BASE, '%') . "_detail/%", $DATA[2])) {
 
@@ -945,7 +942,8 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
         return null;
     }
 
-    private function __fetchAndReplaceLinkFinish( $DATA, $url, $currentID, $currentParent, $noDeepReplace, $newAdditionalParameters, $ORIGDATA2, $newDepth, $IDexists ) {
+    private function __fetchAndReplaceLinkFinish( $DATA, $url, $noDeepReplace, $newAdditionalParameters, $ORIGDATA2, $newDepth, $IDexists ) {
+        global $conf, $currentID, $currentParent;
 
         // Create Name to save the file at
         $DATA[2] = str_replace(':', '_', $DATA[2]);
@@ -975,7 +973,6 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
 
         $tmpID = $currentID;
         $tmpParent = $currentParent;
-        $tmpFile = false;
 
         $currentParent = $fileName;
         $this->functions->debug->message("Going to get the file", array($url, $noDeepReplace, $newAdditionalParameters), 2);
@@ -1271,10 +1268,8 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
         if ($tpl)
         {
             $tplinc = DOKU_INC . 'lib/tpl/' . $tpl . '/';
-            $tpldir = DOKU_BASE . 'lib/tpl/' . $tpl . '/';
         } else {
             $tplinc = DOKU_TPLINC;
-            $tpldir = DOKU_TPL;
         }
 
         // The generated script depends on some dynamic options
@@ -1286,21 +1281,12 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
      * Clear Cache
      */
     private function unlinkIfExists($cache) {
-        if (file_exists($cache) && unlink($cache) === false) {
+        if (file_exists($cache) && file_exists($cache) && unlink($cache) === false) {
             $this->functions->debug->message('Could not remove file ' . $cache );
         }
         
-        if (function_exists('gzopen') && unlink("$cache.gz") === false ) {
+        if (function_exists('gzopen') && file_exists("{$cache}.gz") && unlink("{$cache}.gz") === false ) {
             $this->functions->debug->message('Could not remove file ' . $cache . '.gz' );
-        }
-    }
-
-    // Private unset function
-    private function clear(&$variable)
-    {
-        if (isset($variable))
-        {
-            unset($variable);
         }
     }
 }

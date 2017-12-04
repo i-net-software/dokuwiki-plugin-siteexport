@@ -238,49 +238,6 @@ class siteexport_toc
     }
 
     /**
-     * internal Sort function
-     * @param unknown_type $a
-     * @param unknown_type $b
-     */
-    private function sortFunction($a, $b)
-    {
-        $idA = $a['id'];
-        $idB = $b['id'];
-        
-        $depthA = explode(':', getNS($idA));
-        $depthB = explode(':', getNS($idB));
-        $NSCMP = 0;
-        
-        for ($i = 0; $i < min(count($depthA), count($depthB)); $i++)
-        {
-            $NSCMP = strcmp($depthA[$i], $depthB[$i]);
-            if ($NSCMP != 0)
-            {
-                // Something is different!
-                return $NSCMP;
-            }
-        }
-        
-        // There is mor in B, than in A!
-        if (count($depthA) < count($depthB))
-        {
-            return -1;
-        } else if (count($depthA) > count($depthB))
-        {
-            // there is more in A than in B
-            return 1;
-        }
-
-        if ($NSCMP == 0)
-        {
-            // Something is different!
-            return strcmp(noNS($idA), noNS($idB));
-        }
-        
-        return 0;
-    }
-
-    /**
      * Build the Eclipse Documentation TOC XML
      **/
     public function __getTOCXML($DATA, $XML = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<?NLS TYPE=\"org.eclipse.help.toc\"?>\n") {

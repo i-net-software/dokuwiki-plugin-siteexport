@@ -46,7 +46,6 @@ class syntax_plugin_siteexport_siteexport extends DokuWiki_Syntax_Plugin {
             
             $formParams = array( 'id' => sectionID('siteexport_siteexporter', $this->headers), 'action' => wl($id), 'class' => 'siteexport siteexporter' );
             $form = new Doku_Form($formParams);
-            $functions=& plugin_load('helper', 'siteexport');
 
             $form->addHidden('ns', $id);
             $form->addHidden('site', $id);

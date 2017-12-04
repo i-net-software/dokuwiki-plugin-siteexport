@@ -3,7 +3,8 @@ checks:
     javascript: true
 filter:
     excluded_paths:
-        - '_tests/*'
+        - '_test/'
+        - 'jquery.filedownload.js'
 build:
     nodes:
         analysis:
