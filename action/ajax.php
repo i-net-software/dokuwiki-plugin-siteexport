@@ -51,7 +51,7 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
      * @param $event
      * @param $args
      */
-    function ajax_siteexport_provider(Doku_Event &$event, $args) {
+    public function ajax_siteexport_provider(Doku_Event &$event, $args) {
 
         // If this is not a siteexport call, ignore it.
         if (!strstr($event->data, '__siteexport'))
@@ -73,7 +73,7 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
      * Export from a URL - action
      * @param $event
      */
-    function siteexport_action( Doku_Event &$event ) {
+    public function siteexport_action( Doku_Event &$event ) {
         global $ID;
 
         // Check if the 'do' was siteexport
@@ -185,7 +185,7 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
      * Also gives back the parameters for this URL
      * @param $event init event of the ajax request
      */
-    function ajax_siteexport_prepareURL_and_POSTData(Doku_Event &$event) {
+    private function ajax_siteexport_prepareURL_and_POSTData(Doku_Event &$event) {
 
         $event->preventDefault();
         $event->stopPropagation();
@@ -204,7 +204,7 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
     /**
      * generate direct access URL
      **/
-    function ajax_siteexport_generateurl(Doku_Event &$event) {
+    private function ajax_siteexport_generateurl(Doku_Event &$event) {
 
         global $INPUT;
 
@@ -240,7 +240,7 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
     /**
      * Get List of sites to be exported for AJAX (wrapper)
      **/
-    function ajax_siteexport_getsitelist(Doku_Event &$event) {
+    private function ajax_siteexport_getsitelist(Doku_Event &$event) {
 
         global $INPUT;
 
@@ -279,7 +279,7 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
         return;
     }
 
-    function ajax_siteexport_aggregate(Doku_Event &$event) {
+    private function ajax_siteexport_aggregate(Doku_Event &$event) {
         
         // Quick preparations for one page only
         if ($this->filewriter->hasValidCacheFile($_REQUEST)) {
@@ -299,7 +299,7 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
     /**
      * Add a page to the package (for AJAX calls - Wrapper)
      **/
-    function ajax_siteexport_addsite(Doku_Event &$event) {
+    private function ajax_siteexport_addsite(Doku_Event &$event) {
 
         global $INPUT;
 
@@ -338,7 +338,7 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
     /**
      * Fetch the list of pages to be exported
      **/
-    function __get_siteexport_list($NS, $overrideCache = false) {
+    private function __get_siteexport_list($NS, $overrideCache = false) {
         global $conf;
 
         $NS = $this->namespace = $this->functions->getNamespaceFromID($NS, $PAGE);
@@ -413,7 +413,7 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
         return $data;
     }
 
-    function __get_siteexport_list_and_init_tocs($NS, $isRedirected = false) {
+    private function __get_siteexport_list_and_init_tocs($NS, $isRedirected = false) {
 
         // Clean up if not redirected
         if (!$isRedirected && !$this->__removeOldZip()) {
@@ -541,15 +541,11 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
         return $status;
     }
 
-    function __preg_quote($input) {
-        return preg_quote($input, '/');
-    }
-     
     /**
      * Download the file via HTTP URL + recurse if this is not an image
      * The file will be saved as temporary file. The filename is the result.
      **/
-    function __getHTTPFile($URL, $RECURSE=false, $newAdditionalParameters=null) {
+    private function __getHTTPFile($URL, $RECURSE=false, $newAdditionalParameters=null) {
         global $conf;
 
         $EXCLUDE = $this->getConf('exclude');
@@ -632,7 +628,7 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
     /**
      * Find internal links in the currently downloaded file. This also matches inside CSS files
      **/
-    function __getInternalLinks(&$DATA) {
+    private function __getInternalLinks(&$DATA) {
 
         $PATTERN = '(href|src|action)="([^"]*)"';
         if (!$this->functions->settings->exportLinkedPages) {
@@ -650,7 +646,7 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
     /**
      * Deep Fetch and replace of links inside the texts matched by __getInternalLinks
      **/
-    function __fetchAndReplaceLink($DATA) {
+    private function __fetchAndReplaceLink($DATA) {
         global $conf, $currentID, $currentParent;
 
         $noDeepReplace = true;
@@ -1077,7 +1073,7 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
     /**
      * build the new link to be put in place for the donwloaded site
      **/
-    function __rebuildLink($DATA, $DEPTH = null, $existingPageID = null) {
+    private function __rebuildLink($DATA, $DEPTH = null, $existingPageID = null) {
         global $currentID, $currentParent;
 
         // depth is set, skip this one
@@ -1125,7 +1121,7 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
     /**
      * remove an old zip file
      **/
-    function __removeOldZip($FILENAMEID = null, $checkForMore = true, $reauthenticated = false) {
+    private function __removeOldZip($FILENAMEID = null, $checkForMore = true, $reauthenticated = false) {
         global $INFO;
         global $conf;
 
@@ -1180,7 +1176,7 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
     /**
      * if confrewrite is set to internal rewrite, use this function - taken from a DW renderer
      **/
-    function __getInternalRewriteURL($url) {
+    private function __getInternalRewriteURL($url) {
         global $conf;
 
         //construct page id from request URI
@@ -1216,7 +1212,7 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
     /**
      * rewrite parameter calls
      **/
-    function __getParamsAndDataRewritten(&$DATA, &$PARAMS, $IDKEY = 'id') {
+    private function __getParamsAndDataRewritten(&$DATA, &$PARAMS, $IDKEY = 'id') {
 
         $PARRAY = explode('&', str_replace('&amp;', '&', $PARAMS));
         $PARAMS = array();
@@ -1242,7 +1238,7 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
     /**
      * rewrite detail.php calls
      **/
-    function __rebuildDataForNormalFiles(&$DATA, &$PARAMS, $addHash = false) {
+    private function __rebuildDataForNormalFiles(&$DATA, &$PARAMS, $addHash = false) {
         $PARTS = explode('.', $DATA[2]);
         if (count($PARTS) > 1) {
             $EXT = '.' . array_pop($PARTS);
@@ -1265,7 +1261,7 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
     /*
      * Clean JS and CSS cache files
      */
-    function cleanCacheFiles() {
+    private function cleanCacheFiles() {
 
         $_SERVER['HTTP_HOST'] = preg_replace("/:?\d+$/", '', $_SERVER['HTTP_HOST']);
         $cache = getCacheName('scripts' . $_SERVER['HTTP_HOST'] . '-siteexport-js-' . $_SERVER['SERVER_PORT'], '.js');
@@ -1286,10 +1282,16 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
         $this->unlinkIfExists($cache);
     }
 
-    function unlinkIfExists($cache) {
-        if (file_exists($cache)) {
-            @unlink($cache);
-            if (function_exists('gzopen')) @unlink("$cache.gz");
+    /**
+     * Clear Cache
+     */
+    private function unlinkIfExists($cache) {
+        if (file_exists($cache) && unlink($cache) === false) {
+            $this->functions->debug->message('Could not remove file ' . $cache );
+        }
+        
+        if (function_exists('gzopen') && unlink("$cache.gz") === false ) {
+            $this->functions->debug->message('Could not remove file ' . $cache . '.gz' );
         }
     }
 
