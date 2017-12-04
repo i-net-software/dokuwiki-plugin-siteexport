@@ -26,7 +26,7 @@ class siteexport_toc
         
         $url = explode('/', $inputURL);
         
-        for ($i = 0; $i < count($url); $i++)
+        for ($i = count($url); $i >=0 ; $i--)
         {
             if (in_array($url[$i], $checkArray))
             {
