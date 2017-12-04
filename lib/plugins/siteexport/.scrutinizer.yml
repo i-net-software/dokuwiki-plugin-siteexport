@@ -4,6 +4,8 @@ checks:
 filter:
     excluded_paths:
         - '_tests/*'
+    dependency_paths:
+        - '../../../'
 build:
     root_path: 'lib/plugins/siteexport'
     dependencies:
