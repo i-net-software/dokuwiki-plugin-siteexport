@@ -43,19 +43,7 @@ class renderer_plugin_siteexport_pdf extends Doku_Renderer_xhtml {
                                     5=>0
     );
 
-    /**
-     * return some info
-     */
-    function getInfo(){
-        if ( method_exists(parent, 'getInfo')) {
-            $info = parent::getInfo();
-        }
-        return array_merge(is_array($info) ? $info : confToHash(dirname(__FILE__).'/../plugin.info.txt'), array(
-
-        ));
-    }
-
-    function document_start() {
+    public function document_start() {
         global $TOC, $ID, $INFO;
 
         parent::document_start();
@@ -68,7 +56,7 @@ class renderer_plugin_siteexport_pdf extends Doku_Renderer_xhtml {
         }
     }
 
-    function document_end() {
+    public function document_end() {
 
         parent::document_end();
 
@@ -97,7 +85,7 @@ class renderer_plugin_siteexport_pdf extends Doku_Renderer_xhtml {
         $this->doc = preg_replace('#<p( class=".*?")?>\s*</p>#', '', $this->doc);
     }
 
-    function header($text, $level, $pos) {
+    public function header($text, $level, $pos) {
         global $conf;
         global $ID;
         global $INFO;
@@ -187,20 +175,20 @@ class renderer_plugin_siteexport_pdf extends Doku_Renderer_xhtml {
         $this->hasSeenHeader = true;
     }
 
-    function section_open($level) {
+    public function section_open($level) {
         $this->currentLevel = $level;
         parent::section_open($level);
     }
 
-    function p_open() {
+    public function p_open() {
         $this->doc .= DOKU_LF . '<p class="level' . $this->currentLevel . '">' . DOKU_LF;
     }
 
-    function listu_open($classes = null) {
+    public function listu_open($classes = null) {
         $this->doc .= '<ul class="level' . $this->currentLevel . '">' . DOKU_LF;
     }
 
-    function listo_open($classes = null) {
+    public function listo_open($classes = null) {
         $this->doc .= '<ol class="level' . $this->currentLevel . '">' . DOKU_LF;
     }
 
@@ -218,7 +206,7 @@ class renderer_plugin_siteexport_pdf extends Doku_Renderer_xhtml {
     /**
      * Wrap centered media in a div to center it
      */
-    function _media ($src, $title=NULL, $align=NULL, $width=NULL,
+    public function _media ($src, $title=NULL, $align=NULL, $width=NULL,
                         $height=NULL, $cache=NULL, $render = true) {
 
         $out = '';
@@ -235,7 +223,7 @@ class renderer_plugin_siteexport_pdf extends Doku_Renderer_xhtml {
         return $out;
     }
 
-    function internalmedia($src, $title = NULL, $align = NULL, $width = NULL, $height = NULL, $cache = NULL, $linking = NULL, $return = false) {
+    public function internalmedia($src, $title = NULL, $align = NULL, $width = NULL, $height = NULL, $cache = NULL, $linking = NULL, $return = false) {
         global $ID;
         list($src,$hash) = explode('#',$src,2);
         resolve_mediaid(getNS($ID),$src, $exists);
@@ -283,7 +271,7 @@ class renderer_plugin_siteexport_pdf extends Doku_Renderer_xhtml {
      *
      * @author Andreas Gohr <andi@splitbrain.org>
      */
-    function internallink($id, $name = NULL, $search = NULL, $returnonly = false, $linktype = 'content') {
+    public function internallink($id, $name = NULL, $search = NULL, $returnonly = false, $linktype = 'content') {
         global $conf;
         global $ID;
         // default name is based on $id as given
@@ -345,7 +333,7 @@ class renderer_plugin_siteexport_pdf extends Doku_Renderer_xhtml {
         }
     }
 
-    function acronym($acronym) {
+    public function acronym($acronym) {
 
         if (empty($this->acronymsExchanged)) {
             $this->acronymsExchanged = $this->acronyms;
@@ -362,7 +350,7 @@ class renderer_plugin_siteexport_pdf extends Doku_Renderer_xhtml {
     /**
      * @param string $string
      */
-    function _xmlEntities($string) {
+    public function _xmlEntities($string) {
 
         $string = parent::_xmlEntities($string);
         $string = htmlentities($string, 8, 'UTF-8');
@@ -383,7 +371,7 @@ class renderer_plugin_siteexport_pdf extends Doku_Renderer_xhtml {
     /**
      * @param string $str
      */
-    function superentities( $str ){
+    public function superentities( $str ){
         // get rid of existing entities else double-escape
         $str2 = '';
         $str = html_entity_decode(stripslashes($str),ENT_QUOTES,'UTF-8'); 
@@ -405,13 +393,13 @@ class renderer_plugin_siteexport_pdf extends Doku_Renderer_xhtml {
         return $str2;
     }
 
-    function preformatted($text) {
+    public function preformatted($text) {
         $this->doc .= '<div class="pre">';
         parent::preformatted($text);
         $this->doc .= '</div>';
     }
 
-    function _highlight($type, $text, $language = null, $filename = null) {
+    public function _highlight($type, $text, $language = null, $filename = null) {
         $this->doc .= '<div class="pre">';
         parent::_highlight($type, $text, $language, $filename);
         $this->doc .= '</div>';
@@ -444,7 +432,7 @@ class renderer_plugin_siteexport_pdf extends Doku_Renderer_xhtml {
      * @param bool   $returnonly whether to return html or write to doc attribute
      * @return void|string writes to doc attribute or returns html depends on $returnonly
      */
-    function locallink($hash, $name = null, $returnonly = false) {
+    public function locallink($hash, $name = null, $returnonly = false) {
         global $ID;
         $name  = $this->_getLinkTitle($name, $hash, $isImage);
         $hash  = $this->_headerToLink($hash);

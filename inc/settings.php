@@ -3,40 +3,46 @@
 if (!defined('DOKU_PLUGIN')) die('meh');
 class settings_plugin_siteexport_settings extends DokuWiki_Plugin
 {
-    public  $fileType = 'html';
-    public  $exportNamespace = '';
-    public  $pattern = null;
+    public $fileType = 'html';
+    public $exportNamespace = '';
+    public $pattern = null;
 
-    public  $isCLI = false;
+    public $isCLI = false;
 
-    public  $depth = '';
+    public $depth = '';
 
-    public  $zipFile = '';    
+    public $zipFile = '';    
 //    public  $origEclipseZipFile = 'doc.zip';
 //    public  $eclipseZipFile = '';
-    public  $addParams = false;
-    public  $origZipFile = '';
-    public  $downloadZipFile = '';
-    public  $exportLinkedPages = true;
-    public  $additionalParameters = array();
-    public  $isAuthed = false;
+    public $addParams = false;
+    public $origZipFile = '';
+    public $downloadZipFile = '';
+    public $exportLinkedPages = true;
+    public $additionalParameters = array();
+    public $isAuthed = false;
 
-    public  $TOCMapWithoutTranslation = false;
+    public $TOCMapWithoutTranslation = false;
 
-    public  $cachetime = 0;
-    public  $hasValidCacheFile = false;
+    public $cachetime = 0;
+    public $hasValidCacheFile = false;
 
-    public  $useTOCFile = false;
-    public  $cookie = null;
+    public $useTOCFile = false;
+    public $cookie = null;
 
-    public  $ignoreNon200 = true;
+    public $ignoreNon200 = true;
 
-    public  $defaultLang = 'en';
+    public $defaultLang = 'en';
+    
+    public $tmpDir = null;
+    
+    public $namespace = "";
+    
+    public $cookies = null;
 
     /**
      * @param siteexport_functions $functions
      */
-    function __construct($functions) {
+    public function __construct($functions) {
         global $ID, $conf, $INPUT;
 
         $functions->debug->setDebugFile($this->getConf('debugFile'));

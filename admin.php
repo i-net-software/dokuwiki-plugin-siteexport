@@ -1,6 +1,6 @@
 <?php
 if(!defined('DOKU_INC')) {
-    define('DOKU_INC',realpath(dirname(__FILE__).'/../../../').'/');
+    define('DOKU_INC', /** @scrutinizer ignore-type */ realpath(dirname(__FILE__).'/../../../').'/');
 }
 if(!defined('DOKU_PLUGIN')) {
     define('DOKU_PLUGIN',DOKU_INC.'lib/plugins/');
@@ -16,42 +16,31 @@ class admin_plugin_siteexport extends DokuWiki_Admin_Plugin {
     /**
      * Constructor
      */
-    function __construct() {
+    public function __construct() {
         $this->setupLocale();
-    }
-
-    /**
-     * for backward compatability
-     * @see inc/DokuWiki_Plugin#getInfo()
-     */
-    function getInfo() {
-        if (method_exists(parent, 'getInfo')) {
-            $info = parent::getInfo();
-        }
-        return is_array($info) ? $info : confToHash(dirname(__FILE__) . '/plugin.info.txt');
     }
 
     /**
      * return sort order for position in admin menu
      */
-    function getMenuSort() {
+    public function getMenuSort() {
         return 100;
     }
 
-    function forAdminOnly() {
+    public function forAdminOnly() {
         return false;
     }
 
     /**
      * handle user request
      */
-    function handle() {
+    public function handle() {
     }
 
     /**
      * output appropriate html
      */
-    function html() {
+    public function html() {
 
         if (!$functions = & plugin_load('helper', 'siteexport')) {
             msg("Can't initialize");

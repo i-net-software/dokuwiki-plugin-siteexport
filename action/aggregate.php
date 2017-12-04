@@ -8,7 +8,7 @@
  */
 
 // must be run within Dokuwiki
-if (!defined('DOKU_INC')) define('DOKU_INC', realpath(dirname(__FILE__) . '/../../') . '/');
+if (!defined('DOKU_INC')) define('DOKU_INC', /** @scrutinizer ignore-type */ realpath(dirname(__FILE__) . '/../../') . '/');
 if (!defined('DOKU_PLUGIN')) define('DOKU_PLUGIN', DOKU_INC . 'lib/plugins/');
 require_once(DOKU_PLUGIN . 'action.php');
 
@@ -22,7 +22,7 @@ class action_plugin_siteexport_aggregate extends DokuWiki_Action_Plugin {
         $controller->register_hook('TOOLBAR_DEFINE', 'AFTER', $this, 'siteexport_aggregate_button', array ());
     }
     
-    function siteexport_aggregate(Doku_Event &$event)
+    public function siteexport_aggregate(Doku_Event &$event)
     {
         global $ID, $INFO, $conf, $INPUT;
 
@@ -73,7 +73,7 @@ class action_plugin_siteexport_aggregate extends DokuWiki_Action_Plugin {
         $TOC .= ">\n";
         $thema = array();
         foreach( $values as $value ) {
-            list($id, $title, $sort) = $value;
+            list($id, $title) = $value;
 
             $thema[] = p_get_metadata($id, 'thema', METADATA_RENDER_USING_SIMPLE_CACHE);
             $TOC .= "  * [[{$id}|{$title}]]\n";
@@ -96,11 +96,12 @@ class action_plugin_siteexport_aggregate extends DokuWiki_Action_Plugin {
         $event->preventDefault();
 
         $html = p_render('xhtml', p_get_instructions($TOC), $INFO);
-        // $html = html_secedit($html,false);
         if ($INFO['prependTOC']) $html = tpl_toc(true) . $html;
 
-        @unlink(metaFN($ID, '.meta'));
-        
+        if (@unlink(metaFN($ID, '.meta')) === false) {
+            dbglog("Could not delete old meta file: " . metaFN($ID, '.meta') );
+        }
+
         $ID = (string) $originalID;
         echo $html;
         return true;
@@ -109,7 +110,7 @@ class action_plugin_siteexport_aggregate extends DokuWiki_Action_Plugin {
     /**
      * Inserts a toolbar button
      */
-    function siteexport_aggregate_button(& $event, $param) {
+    public function siteexport_aggregate_button(& $event, $param) {
         $event->data[] = array (
             'type' => 'mediapopup',
             'title' => $this->getLang('toolbarButton'),

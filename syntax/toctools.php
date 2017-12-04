@@ -7,7 +7,7 @@
  * @author     Gerry Weissbach <gweissbach@inetsoftware.de>
  */
  
-if (!defined('DOKU_INC')) define('DOKU_INC', realpath(dirname(__FILE__) . '/../../') . '/');
+if (!defined('DOKU_INC')) define('DOKU_INC', /** @scrutinizer ignore-type */ realpath(dirname(__FILE__) . '/../../') . '/');
 if (!defined('DOKU_PLUGIN')) define('DOKU_PLUGIN', DOKU_INC . 'lib/plugins/');
 require_once(DOKU_PLUGIN . 'syntax.php');
  
@@ -20,21 +20,21 @@ class syntax_plugin_siteexport_toctools extends DokuWiki_Syntax_Plugin {
     /**
      * What kind of syntax are we?
      */
-    function getType() {
+    public function getType() {
         return 'substition';
     }
  
     /**
      * What kind of syntax are we?
      */
-    function getPType() {
+    public function getPType() {
         return 'block';
     }
  
     /**
      * Where to sort in?
      */ 
-    function getSort() {
+    public function getSort() {
         return 999;
     }
  
@@ -42,21 +42,21 @@ class syntax_plugin_siteexport_toctools extends DokuWiki_Syntax_Plugin {
     /**
      * Connect pattern to lexer
      */
-    function connectTo($mode) {
+    public function connectTo($mode) {
         // not really a syntax plugin
     }
  
     /**
      * Handle the match
      */
-    function handle($match, $state, $pos, Doku_Handler $handler){
+    public function handle($match, $state, $pos, Doku_Handler $handler){
         // not really a syntax plugin
     }
  
     /**
      * Create output
      */
-    function render($mode, Doku_Renderer $renderer, $data) {
+    public function render($mode, Doku_Renderer $renderer, $data) {
         if ($mode == 'xhtml') {
             list( $type, $pos, $title, $id ) = $data;
             if ( $type == 'mergehint' ) {

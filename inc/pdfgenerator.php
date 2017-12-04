@@ -14,10 +14,10 @@ if (!empty($_REQUEST['pdfExport']) && intval($_REQUEST['pdfExport']) == 1 && fil
             $this->functions = $functions;
         }
 
-        function createPDFFromFile($filename, &$NAME) {
+        public function createPDFFromFile($filename, &$NAME) {
 
-            if (!preg_match("/" . $this->settings->fileType . "$/", $NAME)) {
-                $this->functions->debug->message("Filetype {$this->settings->fileType} did not match filename '$NAME'", null, 4);
+            if (!preg_match("/" . $this->functions->settings->fileType . "$/", $NAME)) {
+                $this->functions->debug->message("Filetype " . $this->functions->settings->fileType . " did not match filename '$NAME'", null, 4);
                 return false;
             }
 
@@ -42,12 +42,12 @@ if (!empty($_REQUEST['pdfExport']) && intval($_REQUEST['pdfExport']) == 1 && fil
             
             $mpdf->debug = false;
             $mpdf->list_indent_first_level = 1; // Indents the first level of lists.
-            //$mpdf->SetBasePath("/");
+
             $mpdf->usepre = false;
             $mpdf->margin_bottom_collapse = true;
             $mpdf->SetDisplayMode('fullpage');
             $mpdf->restoreBlockPageBreaks = true;
-            $this->img_dpi = 300;
+            $mpdf->img_dpi = 300;
 
             $mpdf->setBasePath(empty($this->functions->settings->depth) ? './' : $this->functions->settings->depth);
 
@@ -58,15 +58,11 @@ if (!empty($_REQUEST['pdfExport']) && intval($_REQUEST['pdfExport']) == 1 && fil
 
             $mpdf->WriteHTML($html);
             $mpdf->Output($filename, "F");
-/*
-            $this->functions->debug->message("Used images:", $mpdf->images, 1);
-            $this->functions->debug->message("Failed images:", $mpdf->failedimages, 1);
-/*/
-//*/
+
             return $html;
         }
 
-        function arrangeHtml(&$html, $norendertags = '')
+        private function arrangeHtml(&$html, $norendertags = '')
         {
             global $conf;
 
@@ -121,11 +117,7 @@ if (!empty($_REQUEST['pdfExport']) && intval($_REQUEST['pdfExport']) == 1 && fil
         }
 
         private function __pdfHeaderCallback($DATA) {
-            //*
             $contentText = htmlspecialchars_decode(preg_replace("/<\/?.*?>/s", '', $DATA[3]), ENT_NOQUOTES); // 2014-07-23 Do not encode again. or &auml; -> &amp;auml;
-            /*/
-            $contentText = $this->xmlEntities(preg_replace("/<\/?.*?>/s", '', $DATA[3])); // Double encoding - has to be decoded in mpdf once more.
-            //*/
             return '<h' . $DATA[1] . $DATA[2] . '><tocentry content="' . $contentText . '" level="' . ($DATA[1]-1) . '" /><bookmark content="' . $contentText . '" level="' . ($DATA[1]-1) . '" />' . $DATA[3] . '</h' . $DATA[1] . '>';
         }
 
@@ -148,10 +140,6 @@ if (!empty($_REQUEST['pdfExport']) && intval($_REQUEST['pdfExport']) == 1 && fil
         // Custom function for help in replacing &#039; &quot; &gt; &lt; &amp;
         private function strip_htmlencodedchars($str) {
             $str = str_replace('&#039;', '\'', $str);
-            //        $str = str_replace('&quot;', '"', $str);
-            //        $str = str_replace('&gt;', '>', $str);
-            //        $str = str_replace('&lt;', '<', $str);
-            //        $str = str_replace('&amp;', '&', $str);
             return $str;
         }
         // Custom function for help in replacing &#039; &quot; &gt; &lt; &amp;
@@ -164,14 +152,13 @@ if (!empty($_REQUEST['pdfExport']) && intval($_REQUEST['pdfExport']) == 1 && fil
 
             switch ($conf['mailguard']) {
                 case 'visible' :
-                    $obfuscate = array(' [at] ' => '@', ' [dot] ' => '.', ' [dash] ' => '-');
-                    return strtr($email, $obfuscate);
+                    return /** @scrutinizer ignore-call */ strtr($email, array(' [at] ' => '@', ' [dot] ' => '.', ' [dash] ' => '-'));
 
                 case 'hex' :
                     $encode = '';
                     $len = strlen($email);
                     for ($x = 0; $x < $len; $x += 6) {
-                        $encode .= chr(hexdec($email{$x+3} . $email{($x+4)}));
+                        $encode .= chr((int)hexdec($email{$x+3} . $email{($x+4)}));
                     }
                     return $encode;
 
@@ -179,13 +166,6 @@ if (!empty($_REQUEST['pdfExport']) && intval($_REQUEST['pdfExport']) == 1 && fil
                 default :
                     return $email;
             }
-        }
-
-        /**
-         * Encoding ()taken from DW - but without needing the renderer
-         **/
-        private function xmlEntities($string) {
-            return htmlspecialchars($string, ENT_QUOTES, 'UTF-8');
         }
     }
 }

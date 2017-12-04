@@ -1,6 +1,6 @@
 <?php
 
-@require_once(DOKU_PLUGIN . 'siteexport/inc/functions.php');
+require_once(DOKU_PLUGIN . 'siteexport/inc/functions.php');
 
 /**
  * @group plugin_siteexport

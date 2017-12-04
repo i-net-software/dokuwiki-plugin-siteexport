@@ -2,7 +2,6 @@
 
 class siteexport_debug
 {
-    private $debug = false;
     private $firstRE = true;
 
     private $debugLevel = 5;
@@ -68,6 +67,8 @@ class siteexport_debug
     public function message($info,$var=null,$level=4){
 
         $ajaxCanLog = $this->isAJAX && $level == 4;
+        $fh = false;
+
         if( $this->debugLevel > $level && !$ajaxCanLog  ) return; // only log certain Debug Levels
         
         if ( empty($this->debugFile) ) {
@@ -90,10 +91,10 @@ class siteexport_debug
             default: $TYPE = " NONE"; break;
         }
 
-        $prepend = "[" . @date('Y-m-d H:i:s') . " $TYPE] ";
+        $prepend = "[" . (date('Y-m-d H:i:s') ?: "") . " $TYPE] ";
         $log = $prepend . str_replace("\n", "\n" . $prepend . "\t", trim($info)) . "\n";
         
-        if ( $fh ) {
+        if ( $fh !== false ) {
             fwrite($fh, $log);
         }
         if ( $ajaxCanLog ) {
@@ -129,7 +130,7 @@ class siteexport_debug
         }
     }
 
-    function runtimeException($message, $wasDebug=false) {
+    public function runtimeException($message, $wasDebug=false) {
 
         if ( empty($message) ) { return; }
         
@@ -167,5 +168,3 @@ class siteexport_debug
         return;
     }
 }
-
-?>

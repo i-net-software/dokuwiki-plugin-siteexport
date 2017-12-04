@@ -19,22 +19,23 @@ class syntax_plugin_siteexport_aggregate extends DokuWiki_Syntax_Plugin {
 
     private $headers = array();
 
-    function getType() { return 'substition'; }
-    function getPType() { return 'block'; }
-    function getSort() { return 300; }
+    public function getType() { return 'substition'; }
+    public function getPType() { return 'block'; }
+    public function getSort() { return 300; }
 
-    function connectTo($mode) {
+    public function connectTo($mode) {
         // $this->Lexer->addSpecialPattern('\{\{(?=siteexport|siteexportAGGREGATOR).*?\}\}', $mode, 'plugin_siteexport_aggregate');
         $this->Lexer->addSpecialPattern('\{\{siteexportAGGREGATOR .*?\}\}', $mode, 'plugin_siteexport_aggregate');
     }
 
-    function handle($match, $state, $pos, Doku_Handler $handler) {
+    public function handle($match, $state, $pos, Doku_Handler $handler) {
     
-        $options = explode(' ', trim(substr($match, 2, -2)));
+        $options = explode(' ', trim(substr($match, 2, -2)?:""));
+
         return $options;
     }
     
-    function render($mode, Doku_Renderer $renderer, $data) {
+    public function render($mode, Doku_Renderer $renderer, $data) {
         global $ID, $conf;
 
         // $isAggregator = (array_shift($data) == 'siteexportAGGREGATOR');

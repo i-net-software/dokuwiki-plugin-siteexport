@@ -7,23 +7,23 @@
  * @author     Gerry Weissbach <gweissbach@inetsoftware.de>
  */
 
-// must be run within Dokuwiki
-if (!defined('DOKU_INC')) define('DOKU_INC', realpath(dirname(__FILE__) . '/../../') . '/');
-if (!defined('DOKU_PLUGIN')) define('DOKU_PLUGIN', DOKU_INC . 'lib/plugins/');
-
 if (file_exists(DOKU_PLUGIN . 'dw2pdf/mpdf/mpdf.php')) {
 
     global $conf;
-    if (!defined('_MPDF_TEMP_PATH')) define('_MPDF_TEMP_PATH', $conf['tmpdir'] . '/dwpdf/' . rand(1, 1000) . '/');
-    if (!defined('_MPDF_TTFONTDATAPATH')) define('_MPDF_TTFONTDATAPATH', $conf['cachedir'] . '/mpdf_ttf/');
+    if (!defined('_MPDF_TEMP_PATH')) {
+        define('_MPDF_TEMP_PATH', $conf['tmpdir'] . '/dwpdf/' . rand(1, 1000) . '/');
+    }
+    if (!defined('_MPDF_TTFONTDATAPATH')) {
+        define('_MPDF_TTFONTDATAPATH', $conf['cachedir'] . '/mpdf_ttf/');
+    }
 
     require_once(DOKU_PLUGIN . 'dw2pdf/mpdf/mpdf.php');
 
     class siteexportPDF extends mpdf {
 
-        private $debugObj = false;
+        private $debugObj = null;
 
-        function __construct($debug) {
+        public function __construct($debug) {
             global $INPUT;
             global $conf;
 
@@ -37,7 +37,9 @@ if (file_exists(DOKU_PLUGIN . 'dw2pdf/mpdf/mpdf.php')) {
             io_mkdir_p(_MPDF_TEMP_PATH);
 
             $format = $pagesize;
-            if ($orientation == 'landscape') $format .= '-L';
+            if ($orientation == 'landscape') {
+                $format .= '-L';
+            }
 
             switch ($conf['lang']) {
                 case 'zh':
@@ -62,23 +64,23 @@ if (file_exists(DOKU_PLUGIN . 'dw2pdf/mpdf/mpdf.php')) {
             $this->useSubstitutions = true;
         }
 
-        function message($msg, $vars = null, $lvl = 1)
+        public function message($msg, $vars = null, $lvl = 1)
         {
-            if ($this->debugObj !== false) {
+            if ($this->debugObj !== null) {
                 $this->debugObj->message($msg, $vars, $lvl);
             }
         }
 
-        function Error($msg)
+        public function Error($msg)
         {
-            if ($this->debugObj !== false && method_exists($this->debugObj, 'runtimeException')) {
+            if ($this->debugObj !== null && method_exists($this->debugObj, 'runtimeException')) {
                 $this->debugObj->runtimeException($msg);
             } else {
                 parent::Error($msg);
             }
         }
 
-        function GetFullPath(&$path,$basepath='') {
+        public function GetFullPath(&$path,$basepath='') {
 
             // Full Path might return a doubled path like /~gamma/documentation/lib//~gamma/documentation/lib/tpl/clearreports/./_print-images/background-bottom.jpg
 
@@ -116,11 +118,11 @@ if (file_exists(DOKU_PLUGIN . 'dw2pdf/mpdf/mpdf.php')) {
         /*
           Only when the toc is being generated  
         */
-        function MovePages($target_page, $start_page, $end_page = -1) {
+        public function MovePages($target_page, $start_page, $end_page = -1) {
             parent::MovePages($target_page, $start_page, $end_page);
         }
 
-        function OpenTag($tag, $attr, &$ahtml, &$ihtml) {
+        public function OpenTag($tag, $attr, &$ahtml, &$ihtml) {
             switch ($tag) {
                 case 'BOOKMARK':
                 case 'TOCENTRY':

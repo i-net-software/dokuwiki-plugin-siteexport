@@ -1,0 +1,16 @@
+checks:
+    php: true
+    javascript: true
+filter:
+    excluded_paths:
+        - '_test/'
+        - 'jquery.filedownload.js'
+build:
+    nodes:
+        analysis:
+            tests:
+                override:
+                    -
+                        command: phpcs-run
+                        use_website_config: true
+                    - php-scrutinizer-run

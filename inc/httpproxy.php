@@ -23,13 +23,13 @@ require_once(DOKU_INC . 'inc/HTTPClient.php');
 class HTTPProxy extends DokuHTTPClient {
 
     public $debugClass = null;
-    public $setttings = null;
+    public $settings = null;
 
     /**
      * Constructor.
      * @param siteexport_functions $functions
      */
-    function __construct($functions) {
+    public function __construct($functions) {
         global $conf;
 
         // The proxy should only be used if configured.
@@ -90,7 +90,6 @@ class HTTPProxy extends DokuHTTPClient {
             // We hacked directly into the login mechanism which provides the login information without encryption via $INPUT
             $this->user = $INPUT->str('u');
             $this->pass = $INPUT->str('p');
-            $sticky = $INPUT->str('r');
         } else {
             $secret = auth_cookiesalt(!$sticky, true); //bind non-sticky to session
             $this->pass = !empty($this->pass) ? $this->auth_decrypt($this->pass, $secret) : '';
@@ -118,7 +117,7 @@ class HTTPProxy extends DokuHTTPClient {
     /**
      * Remeber HTTPClient Cookie after successfull authentication
      */    
-    function sendRequest($url, $data = '', $method = 'GET') {
+    public function sendRequest($url, $data = '', $method = 'GET') {
 
         $returnCode = parent::sendRequest($url, $data, $method);
         if ($this->settings->cookie == null) {

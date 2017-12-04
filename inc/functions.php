@@ -64,7 +64,7 @@ class siteexport_functions extends DokuWiki_Plugin
      * @param $NS
      * @param $PAGE
      */
-    function getNamespaceFromID($NS, &$PAGE) {
+    public function getNamespaceFromID($NS, &$PAGE) {
         global $conf;
         // Check current page - if its an NS add the startpage
         $clean = true;
@@ -95,7 +95,6 @@ class siteexport_functions extends DokuWiki_Plugin
         }
 
         $url = $this->wl($this->cleanID($ID), null, true, null, null, $overrideRewrite); // this must be done with rewriting set to override
-        //$url = $this->wl($this->cleanID($ID), null, true); // this must be done with rewriting set to override
         $uri = @parse_url($url);
         if ($uri['path'][0] == '/') {
             $uri['path'] = substr($uri['path'], 1);
@@ -133,7 +132,7 @@ class siteexport_functions extends DokuWiki_Plugin
     /**
      * Create name for the file inside the zip and the replacements
      **/
-    function shortenName($NAME)
+    public function shortenName($NAME)
     {
         $NS = $this->settings->exportNamespace;
         $NAME = preg_replace("%^" . preg_quote(DOKU_BASE, '%') . "%", "", $NAME);
@@ -156,7 +155,7 @@ class siteexport_functions extends DokuWiki_Plugin
      * @param  boolean $ascii     Force ASCII
      * @param  boolean $media     Allow leading or trailing _ for media files
      */
-    function cleanID($raw_id, $ascii = false, $media = false) {
+    public function cleanID($raw_id, $ascii = false, $media = false) {
         global $conf;
         global $lang;
         static $sepcharpat = null;
@@ -174,7 +173,7 @@ class siteexport_functions extends DokuWiki_Plugin
         $sepcharpat = '#\\' . $sepchar . '+#';
 
         $id = trim((string) $raw_id);
-        //        $id = utf8_strtolower($id); // NO LowerCase for us!
+        // NO LowerCase for us! - Preserve it, that is why the call is missing here.
 
         //alternative namespace seperator
         $id = strtr($id, ';', ':');
@@ -218,7 +217,7 @@ class siteexport_functions extends DokuWiki_Plugin
      * @author Andreas Gohr <andi@splitbrain.org>
      */
 
-    function wl($id='',$more='',$abs=false,$sep='&amp;', $IDexists=true, $overrideRewrite=false, $hadBase=false){
+    public function wl($id='',$more='',$abs=false,$sep='&amp;', $IDexists=true, $overrideRewrite=false, $hadBase=false){
         global $conf;
 
         $this->debug->message("Starting to build WL-URL for '$id'", $more, 1);
@@ -299,8 +298,8 @@ class siteexport_functions extends DokuWiki_Plugin
 
     /**
      * Create the export file name - this is the file where everything is being stored
-     * @param $FILE
-     * @param $PATTERN - additional pattern for re-using old files
+     * @param $FILE String name of the file
+     * @param $PATTERN String additional pattern for re-using old files
      */
     public function getSpecialExportFileName($FILE, $PATTERN = null) {
 
@@ -344,7 +343,7 @@ class siteexport_functions extends DokuWiki_Plugin
     /**
      * @param integer $counter
      */
-    function startRedirctProcess($counter) {
+    public function startRedirctProcess($counter) {
         global $ID;
 
         $URL = wl($ID);
@@ -371,14 +370,12 @@ class siteexport_functions extends DokuWiki_Plugin
      * @param $URL
      * @param $newAdditionalParameters
      */
-    function addAdditionalParametersToURL(&$URL, $newAdditionalParameters) {
+    public function addAdditionalParametersToURL(&$URL, $newAdditionalParameters) {
          
         // Add additionalParameters
         if (!empty($newAdditionalParameters)) {
             foreach ($newAdditionalParameters as $key => $value) {
                 if (empty($key) || empty($value)) { continue; }
-
-                $append = '';
 
                 if (is_array($value)) {
                     foreach (array_values($value) as $aValue) { // Array Handling
@@ -388,7 +385,6 @@ class siteexport_functions extends DokuWiki_Plugin
                     $append = "$key=$value";
                     $URL .= empty($append) || strstr($URL, $append) ? '' : (strstr($URL, '?') ? '&' : '?') . $append;
                 }
-
             }
         }
     }
@@ -397,7 +393,7 @@ class siteexport_functions extends DokuWiki_Plugin
      * Cleans the wiki variables and returns a rebuild URL that has the new variables at hand
      * @param $data
      */
-    function prepare_POSTData($data)
+    public function prepare_POSTData($data)
     {
         $NS = !empty($data['ns']) ? $data['ns'] : $data['id'];
 
@@ -475,7 +471,7 @@ class siteexport_functions extends DokuWiki_Plugin
             $allPlugins = array();
             foreach ($plugin_controller->getList(null, true) as $plugin) {
                 // check for CSS or JS
-                if (!file_exists(DOKU_PLUGIN . "$plugin/script.js") && !file_exists(DOKU_PLUGIN . "$p/style.css")) { continue; }
+                if (!file_exists(DOKU_PLUGIN . $plugin . "/script.js") && !file_exists(DOKU_PLUGIN . $plugin . "/style.css")) { continue; }
                 $allPlugins[] = $plugin;
             }
 
@@ -494,43 +490,44 @@ class siteexport_functions extends DokuWiki_Plugin
      * @param $advanced
      * @param $isString
      */
-    function removeWikiVariables(&$removeArray, $advanced = false, $isString = false) {
+    public function removeWikiVariables(&$removeArray, $advanced = false, $isString = false) {
 
         $removeArray = $this->parseStringToRequestArray($removeArray);
+        $removeKeys = array();
 
         // 2010-08-23 - If there is still the media set, retain the id for e.g. detail.php
         if (!isset($removeArray['media'])) {
-            unset($removeArray['id']);
+            $removeKeys[] = 'id';
         }
 
         unset($removeArray['do']);
-        unset($removeArray['ns']);
-        unset($removeArray['call']);
-        unset($removeArray['sectok']);
-        unset($removeArray['rndval']);
-        unset($removeArray['tseed']);
-        unset($removeArray['http_credentials']);
-        unset($removeArray['u']);
-        unset($removeArray['p']);
-        unset($removeArray['r']);
-        unset($removeArray['base']);
-        unset($removeArray['siteexport']);
-        unset($removeArray['DokuWiki']);
+        $removeKeys[] = 'ns';
+        $removeKeys[] = 'call';
+        $removeKeys[] = 'sectok';
+        $removeKeys[] = 'rndval';
+        $removeKeys[] = 'tseed';
+        $removeKeys[] = 'http_credentials';
+        $removeKeys[] = 'u';
+        $removeKeys[] = 'p';
+        $removeKeys[] = 'r';
+        $removeKeys[] = 'base';
+        $removeKeys[] = 'siteexport';
+        $removeKeys[] = 'DokuWiki';
 
         if ($removeArray['renderer'] == 'xhtml') {
             $removeArray['do'] = 'export_' . $removeArray['renderer'];
-            unset($removeArray['renderer']);
+            $removeKeys[] = 'renderer';
         }
         
         // Keep custom options
         if (is_array($removeArray['customoptionname']) && is_array($removeArray['customoptionvalue']) && count($removeArray['customoptionname']) == count($removeArray['customoptionvalue']))
         {
-            for ($index = 0; $index < count($removeArray['customoptionname']); $index++)
+            for ($index = count($removeArray['customoptionname']); $index >= 0; $index--)
             {
                 $removeArray[$removeArray['customoptionname'][$index]] = $removeArray['customoptionvalue'][$index];
             }
-            unset($removeArray['customoptionname']);
-            unset($removeArray['customoptionvalue']);
+            $removeKeys[] = 'customoptionname';
+            $removeKeys[] = 'customoptionvalue';
         }
 
         if ($advanced) {
@@ -540,28 +537,32 @@ class siteexport_functions extends DokuWiki_Plugin
 
             // 2010-08-25 - Need fakeMedia for some _detail cases with rewrite = 2
             if (isset($removeArray['fakeMedia'])) {
-                unset($removeArray['media']);
-                unset($removeArray['fakeMedia']);
+                $removeKeys[] = 'media';
+                $removeKeys[] = 'fakeMedia';
             }
 
             /* remove internal params */
-            unset($removeArray['ens']);
-            unset($removeArray['renderer']);
-            unset($removeArray['site']);
-            unset($removeArray['namespace']);
-            unset($removeArray['exportbody']);
-            unset($removeArray['addParams']);
-            unset($removeArray['template']);
-            unset($removeArray['eclipseDocZip']);
-            unset($removeArray['useTocFile']);
-            unset($removeArray['JavaHelpDocZip']);
-            unset($removeArray['depth']);
-            unset($removeArray['depthType']);
-            unset($removeArray['startcounter']);
-            unset($removeArray['pattern']);
-            unset($removeArray['TOCMapWithoutTranslation']);
-            // unset($removeArray['disableCache']);
-            unset($removeArray['debug']);
+            $removeKeys[] = 'ens';
+            $removeKeys[] = 'renderer';
+            $removeKeys[] = 'site';
+            $removeKeys[] = 'namespace';
+            $removeKeys[] = 'exportbody';
+            $removeKeys[] = 'addParams';
+            $removeKeys[] = 'template';
+            $removeKeys[] = 'eclipseDocZip';
+            $removeKeys[] = 'useTocFile';
+            $removeKeys[] = 'JavaHelpDocZip';
+            $removeKeys[] = 'depth';
+            $removeKeys[] = 'depthType';
+            $removeKeys[] = 'startcounter';
+            $removeKeys[] = 'pattern';
+            $removeKeys[] = 'TOCMapWithoutTranslation';
+
+            $removeKeys[] = 'debug';
+        }
+        
+        foreach($removeKeys as $key) {
+            unset($removeArray[$key]);
         }
 
         if ($isString && is_array($removeArray)) {
@@ -580,7 +581,6 @@ class siteexport_functions extends DokuWiki_Plugin
                 }
             }
 
-            //$removeArray = implode( ($this->settings->fileType == 'pdf' ? "&" : "&amp;"), $removeArray);
             $removeArray = implode("&", $removeArray); // The &amp; made problems with the HTTPClient / Apache. It should not be a problem to have &
         }
     }
@@ -619,9 +619,9 @@ class siteexport_functions extends DokuWiki_Plugin
 
     /**
      * Check a replaceURL against a baseURL - and make the replaceURL relative against it
-     * @param replaceURL - URL which will be made relative if needed
-     * @param baseURL - URL which is the reference to be made relative against
-     * @param string $replaceURL
+     * @param replaceURL String URL which will be made relative if needed
+     * @param baseURL String URL which is the reference to be made relative against
+     * @param existingPageID Array
      */
     public function getRelativeURL($replaceURL, $baseURL, $existingPageID = null)
     {
@@ -683,7 +683,8 @@ class siteexport_functions extends DokuWiki_Plugin
             $offsiteTemplate = str_replace('RAWID', $existingPageID, $offsiteTemplate);
             
             $check = null;
-            $offsiteTemplate = str_replace('CONTEXTID', array_pop($this->getMapID($existingPageID, null, $check)), $offsiteTemplate);
+            $mapID = $this->getMapID($existingPageID, null, $check);
+            $offsiteTemplate = str_replace('CONTEXTID', array_pop($mapID), $offsiteTemplate);
             $offsiteTemplate = str_replace('LINK', $finalLink, $offsiteTemplate);
 
             $this->debug->message("Replacing finalLink '${finalLink}' with offsiteLink '${offsiteTemplate}'", null, 1);
@@ -693,13 +694,13 @@ class siteexport_functions extends DokuWiki_Plugin
         return $finalLink;
     }
 
-    function mapIDWithAnchor(&$n, $key, $postfix)
+    public function mapIDWithAnchor(&$n, $key, $postfix)
     {
         if (empty($postfix)) return;
         $n .= '-' . $postfix;
     }
     
-    function getMapID($elemID, $postfix, &$check)
+    public function getMapID($elemID, $postfix, &$check)
     {
         $meta = p_get_metadata($elemID, 'context', true);
 
@@ -741,12 +742,12 @@ class siteexport_functions extends DokuWiki_Plugin
      * @param null|boolean $softfail if a message is to be thrown.
      * @return bool success if the token matched
      */
-    function checkSecurityToken($token = null, $softfail = true) {
+    public function checkSecurityToken($token = null, $softfail = true) {
         /** @var Input $INPUT */
         $secToken = $this->getSecurityToken();
         if ( empty( $secToken) && empty ( $token ) ) return false;
         if($secToken != $token) {
-            if ( !$softfail ) msg('Security Token did not match. Possible CSRF attack.', -1);
+            if ( $softfail !== true ) msg('Security Token did not match. Possible CSRF attack.', -1);
             return false;
         }
         return true;
@@ -763,7 +764,7 @@ class siteexport_functions extends DokuWiki_Plugin
      *
      * @return  string
      */
-     function getSecurityToken() {
+     public function getSecurityToken() {
         /** @var Input $INPUT */
         global $INPUT;
         return PassHash::hmac('md5', session_id().'siteexport', 'siteexport_salt'.auth_cookiesalt());

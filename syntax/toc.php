@@ -23,32 +23,32 @@ class syntax_plugin_siteexport_toc extends DokuWiki_Syntax_Plugin {
     private $includedPages = array();
     private $merghintIds = array();
 
-    function getType() { return 'protected'; }
-    function getPType() { return 'block'; }
-    function getAllowedTypes() { return array('container'); }
-    function getSort() { return 100; }
+    public function getType() { return 'protected'; }
+    public function getPType() { return 'block'; }
+    public function getAllowedTypes() { return array('container'); }
+    public function getSort() { return 100; }
 
     /**
      * Connect pattern to lexer
      */
-    function connectTo($mode) {
+    public function connectTo($mode) {
         $this->Lexer->addEntryPattern('<toc>(?=.*?</toc>)', $mode, 'plugin_siteexport_toc');
         $this->Lexer->addEntryPattern('<toc .+?>(?=.*?</toc>)', $mode, 'plugin_siteexport_toc');
         $this->Lexer->addSpecialPattern("\[\[.+?\]\]", $mode, 'plugin_siteexport_toc');
     }
 
-    function postConnect() {
+    public function postConnect() {
         $this->Lexer->addExitPattern('</toc.*?>', 'plugin_siteexport_toc');
     }
 
-    function handle($match, $state, $pos, Doku_Handler $handler) {
+    public function handle($match, $state, $pos, Doku_Handler $handler) {
         global $ID, $INFO;
 
         switch ($state) {
             case DOKU_LEXER_ENTER:
 
                 $this->insideToc = true;
-                $this->options = explode(' ', substr($match, 5, -1));
+                $this->options = explode(' ', substr($match, 5, -1)?:"");
                 return array('start' => true, 'pos' => $pos, 'options' => $this->options);
 
             case DOKU_LEXER_SPECIAL:
@@ -111,7 +111,7 @@ class syntax_plugin_siteexport_toc extends DokuWiki_Syntax_Plugin {
         return false;
     }
 
-    function render($mode, Doku_Renderer $renderer, $data) {
+    public function render($mode, Doku_Renderer $renderer, $data) {
         global $ID, $lang, $INFO;
 
         list($SID, $NAME, $DEPTH) = $data;
@@ -158,7 +158,7 @@ class syntax_plugin_siteexport_toc extends DokuWiki_Syntax_Plugin {
                 }
 
                 // If this is not set, we may have it as Metadata
-                if ( empty( $this->mergedPages ) && $renderer->meta['sitetoc']['mergeDoc']) {
+                if (empty($this->mergedPages) && $renderer->meta['sitetoc']['mergeDoc']) {
                     $toc = $renderer->meta['sitetoc']['siteexportTOC'];
 
                     if (is_array($toc)) {
@@ -174,7 +174,7 @@ class syntax_plugin_siteexport_toc extends DokuWiki_Syntax_Plugin {
 
                     $renderer->doc = ''; // Start fresh!
 
-                    $renderer->section_open("1 mergedsite" . ($renderer->meta['sitetoc']['mergehint']?' mergehint':''));
+                    $renderer->section_open("1 mergedsite" . ($renderer->meta['sitetoc']['mergehint'] ? ' mergehint' : ''));
 
                     // Prepare lookup Array
                     foreach ($this->mergedPages as $tocItem) {
@@ -197,20 +197,20 @@ class syntax_plugin_siteexport_toc extends DokuWiki_Syntax_Plugin {
                         // Convert Link and header instructions
                         $instructions = $this->_convertInstructions($instructions, $addID = null, $renderer, $depth);
 
-                        if ($renderer->meta['sitetoc']['mergeHeader'] && count($this->mergedPages) > 1 ) {
+                        if ($renderer->meta['sitetoc']['mergeHeader'] && count($this->mergedPages) > 1) {
                             // get a hint for merged pages
                             if ($renderer->meta['sitetoc']['mergehint']) {
                                 // only if the first section is already there
-                                $mergeHint = p_get_metadata( $tocItem, 'mergehint', METADATA_RENDER_USING_SIMPLE_CACHE );
-                                if ( empty( $mergeHint) ) { $mergeHint = p_get_metadata( $tocItem, 'thema', METADATA_RENDER_USING_SIMPLE_CACHE ); }
-                                if ( empty( $mergeHint) ) { $mergeHint = tpl_pagetitle( $tocItem, true ); }
-                                $instructions = $this->_mergeWithHeaders( $this->_initialHeaderStructure( $instructions ), $instructions, 1, $mergeHint);
+                                $mergeHint = p_get_metadata($tocItem, 'mergehint', METADATA_RENDER_USING_SIMPLE_CACHE);
+                                if (empty($mergeHint)) { $mergeHint = p_get_metadata($tocItem, 'thema', METADATA_RENDER_USING_SIMPLE_CACHE); }
+                                if (empty($mergeHint)) { $mergeHint = tpl_pagetitle($tocItem, true); }
+                                $instructions = $this->_mergeWithHeaders($this->_initialHeaderStructure($instructions), $instructions, 1, $mergeHint);
                             }
                             // Merge
-                            $instr = $this->_mergeWithHeaders( $instr, $instructions, 1);
+                            $instr = $this->_mergeWithHeaders($instr, $instructions, 1);
                         } else
                         if ($renderer->meta['sitetoc']['pagebreak']) {
-                            $sitepagebreak = array( array(
+                            $sitepagebreak = array(array(
                                 'plugin',
                                 array(
                                     'siteexport_toctools',
@@ -252,21 +252,14 @@ class syntax_plugin_siteexport_toc extends DokuWiki_Syntax_Plugin {
             // Add ID to flags['mergeDoc']
             if ($renderer->meta['sitetoc']['mergeDoc'] === true) { // || (count($renderer->meta['sitetoc']['siteexportTOC']) > 0 && $renderer->meta['sitetoc']['siteexportMergeDoc'] === true) ) {
                 $this->mergedPages[] = array($SID, $DEPTH);
-                // $default = $renderer->_simpleTitle($SID); $isImage = false;
                 resolve_pageid(getNS($ID), $SID, $exists);
-
-                // $NAME = empty($NAME) ? p_get_first_heading($SID, true) : $NAME;
-                // $LNID = "$ID#" . sectionID($SID, $check);
-
             } else {
                 // // print normal internal link (XHTML odt)
                 $renderer->internallink($LNID, $NAME, null);
 
                 // Display Description underneath
                 if ($renderer->meta['sitetoc']['showDescription'] === true) {
-                    // $renderer->p_open();
                     $renderer->cdata(p_get_metadata($SID, 'description abstract', true));
-                    // $renderer->p_close();
                 }
             }
 
@@ -447,7 +440,7 @@ class syntax_plugin_siteexport_toc extends DokuWiki_Syntax_Plugin {
         $instr[1][0] += $depth;
     }
 
-    private function _mergeWithHeaders($existing, $newInstructions, $level = 1, $mergeHint = array() ) {
+    private function _mergeWithHeaders($existing, $newInstructions, $level = 1, $mergeHint = array()) {
 
         $returnInstructions = array();
         $preparedInstructions = array();
@@ -532,7 +525,7 @@ class syntax_plugin_siteexport_toc extends DokuWiki_Syntax_Plugin {
             $newInstructions = array();
         }
 
-        $this->_insertMergeHint( $section_prepend, $mergeHint );
+        $this->_insertMergeHint($section_prepend, $mergeHint);
 
         $returnInstructions = array_merge($returnInstructions, $section_prepend, $preparedInstructions, $newInstructions, $section_postpend);
 
@@ -617,31 +610,31 @@ class syntax_plugin_siteexport_toc extends DokuWiki_Syntax_Plugin {
             if (!in_array($instructions[$i][0], array('header', 'section_open', 'section_close', 'p_open', 'p_close'))) {
                 // found non-matching
                 array_splice($instructions, $i, 1);
-                $inCount --;
+                $inCount--;
                 $i--;
             }
         }
         return $instructions;
     }
 
-    private function _insertMergeHint( &$instructions, $mergeHint ) {
+    private function _insertMergeHint(&$instructions, $mergeHint) {
 
         // Surround new slice with a mergehint
-        if ( empty( $mergeHint ) ) { return; }
+        if (empty($mergeHint)) { return; }
 
         // No emtpy insruction sets.
-        $this->_cleanAllInstructions( $instructions );
-        if ( empty( $instructions ) ) { return; }
+        $this->_cleanAllInstructions($instructions);
+        if (empty($instructions)) { return; }
 
         // only section content should be surrounded.
-        if ( $instructions[0][0] != 'section_open' ) { return; }
+        if ($instructions[0][0] != 'section_open') { return; }
 
         // save for later use
         $mergeHints = array();
-        $mergeHintId = sectionid( $mergeHint, $mergeHints );
+        $mergeHintId = sectionid($mergeHint, $mergeHints);
         $this->merghintIds[$mergeHintId] = $mergeHint;
 
-        $mergeHintPrepend = array( array(
+        $mergeHintPrepend = array(array(
             'plugin',
             array(
                 'siteexport_toctools',
@@ -654,7 +647,7 @@ class syntax_plugin_siteexport_toc extends DokuWiki_Syntax_Plugin {
             )
         ));
 
-        $mergeHintPostpend = array( array(
+        $mergeHintPostpend = array(array(
             'plugin',
             array(
                 'siteexport_toctools',
@@ -671,13 +664,13 @@ class syntax_plugin_siteexport_toc extends DokuWiki_Syntax_Plugin {
         print_r($instructions);
         print "\nn#########\n\n";
 */
-        $instructions = array_merge( $mergeHintPrepend, $instructions, $mergeHintPostpend );
+        $instructions = array_merge($mergeHintPrepend, $instructions, $mergeHintPostpend);
     }
 
     /**
      * Remove TOC, section edit buttons and tags
      */
-    function _cleanXHTML($xhtml) {
+    private function _cleanXHTML($xhtml) {
         $replace = array(
             '!<div class="toc">.*?(</div>\n</div>)!s' => '', // remove TOCs
             '#<!-- SECTION \[(\d*-\d*)\] -->#s'       => '', // remove section edit buttons
@@ -692,7 +685,7 @@ class syntax_plugin_siteexport_toc extends DokuWiki_Syntax_Plugin {
      *
      * @return bool   true if the plugin can not be instantiated more than once
      */
-    function isSingleton() {
+    public function isSingleton() {
         return true;
     }
 }

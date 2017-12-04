@@ -21,11 +21,12 @@ class siteexport_toc
     {
         // Mandatory: we allways want '/' insteadf of ':' here
         $inputURL = str_replace(':', '/', $inputURL);
-        $checkArray = $this->translation ? $this->translation->translations : array(array_pop(explode(':', $this->NS)));
+
+        $checkArray = $this->translation ? $this->translation->translations : array(noNS($this->NS));
         
         $url = explode('/', $inputURL);
         
-        for ($i = 0; $i < count($url); $i++)
+        for ($i = count($url); $i >=0 ; $i--)
         {
             if (in_array($url[$i], $checkArray))
             {
@@ -65,7 +66,6 @@ class siteexport_toc
         
         $TOCXML = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<toc>";
         $MAPXML = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<map version=\"1.0\">";
-        // usort($DATA, array($this, 'sortFunction'));
 
         // Go through the pages
         $CHECKDATA = array();
@@ -236,57 +236,6 @@ class siteexport_toc
         // Close and return
         return $XML . ($didOpenItem ? $this->__TOCItemClose($DEPTH) : '');
     }
-    
-    
-    function post(&$value, $key, array $additional) {
-        $inner_glue = $additional[0];
-        $prefix = isset($additional[1]) ? $additional[1] : false;
-        if ($prefix === false) $prefix = $key;
-    
-        $value = $value . $inner_glue . $prefix;
-    }
-    
-    /**
-     * internal Sort function
-     * @param unknown_type $a
-     * @param unknown_type $b
-     */
-    private function sortFunction($a, $b)
-    {
-        $idA = $a['id'];
-        $idB = $b['id'];
-        
-        $depthA = explode(':', getNS($idA));
-        $depthB = explode(':', getNS($idB));
-        
-        for ($i = 0; $i < min(count($depthA), count($depthB)); $i++)
-        {
-            $NSCMP = strcmp($depthA[$i], $depthB[$i]);
-            if ($NSCMP != 0)
-            {
-                // Something is different!
-                return $NSCMP;
-            }
-        }
-        
-        // There is mor in B, than in A!
-        if (count($depthA) < count($depthB))
-        {
-            return -1;
-        } else if (count($depthA) > count($depthB))
-        {
-            // there is more in A than in B
-            return 1;
-        }
-
-        if ($NSCMP == 0)
-        {
-            // Something is different!
-            return strcmp(noNS($idA), noNS($idB));
-        }
-        
-        return 0;
-    }
 
     /**
      * Build the Eclipse Documentation TOC XML
@@ -373,15 +322,16 @@ class siteexport_toc
 
         $isEmptyNode = count($DATA) == 1 && empty($indexFile);
 
-        if (!$isEmptyNode && ($this->emptyNSToc || count($DATA) > 0))
-        $XML = "$DEPTH<$ITEM label=\"$indexTitle\" $indexFile>";
+        if (!$isEmptyNode && ($this->emptyNSToc || count($DATA) > 0)) {
+            $XML = "$DEPTH<$ITEM label=\"$indexTitle\" $indexFile>";
+        } else {
+            $XML = "";
+        }
 
         if (!$isEmptyNode && count($DATA) > 0) $XML .= "\n";
 
         foreach ($DATA as $NODENAME => $NS) {
-
             $XML .= $this->__addXMLTopic($NS, (!($this->emptyNSToc || count($DATA) > 1) && $ITEM != 'topic' ? $ITEM : 'topic'), $LEVEL+(!$isEmptyNode ? 1 : 0), $NODENAME);
-
         }
 
         if (!$isEmptyNode && count($DATA) > 0) $XML .= "$DEPTH";
