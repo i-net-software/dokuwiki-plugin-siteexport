@@ -36,7 +36,7 @@ class action_plugin_siteexport_startup extends DokuWiki_Action_Plugin {
     /**
      * Check for Template changes
      **/
-    function siteexport_check_template()
+    public function siteexport_check_template()
     {
         global $conf, $INFO;
 
@@ -52,7 +52,7 @@ class action_plugin_siteexport_startup extends DokuWiki_Action_Plugin {
     /**
      * Check for Template changes in JS
      **/
-    function siteexport_check_js_cache(Doku_Event &$event)
+    public function siteexport_check_js_cache(Doku_Event &$event)
     {
         global $conf, $INFO;
 
@@ -61,7 +61,7 @@ class action_plugin_siteexport_startup extends DokuWiki_Action_Plugin {
         $event->data->cache = getCacheName($event->data->key,$event->data->ext);
     }
 
-    function siteexport_check_export(Doku_Event &$event)
+    public function siteexport_check_export(Doku_Event &$event)
     {
         global $conf;
         $command = is_array($event->data) ? array_shift(array_keys($event->data)) : $event->data;
@@ -71,15 +71,15 @@ class action_plugin_siteexport_startup extends DokuWiki_Action_Plugin {
             $conf['renderer_xhtml'] = 'siteexport_pdf';
         } 
 
-        if ( $command == 'siteexport_addpage' && ($this->getConf('allowallusers') || auth_isadmin() || auth_ismanager() ) )
+        if ( $command == 'siteexport_addpage' && $this->__executeCommand() )
         {
             $event->preventDefault();
         }
     }
 
-    function siteexport_addpage(Doku_Event &$event)
+    public function siteexport_addpage(Doku_Event &$event)
     {
-        if ( $event->data != 'siteexport_addpage' || ! ($this->getConf('allowallusers') || auth_isadmin() || auth_ismanager()) ) { return; }
+        if ( $event->data != 'siteexport_addpage' || ! $this->__executeCommand() ) { return; }
         if ( ! $functions=& plugin_load('helper', 'siteexport') ) {
             msg("Can't initialize");
             return false;
@@ -89,11 +89,11 @@ class action_plugin_siteexport_startup extends DokuWiki_Action_Plugin {
         $event->preventDefault();
     }
 
-    function siteexport_add_page_export(Doku_Event &$event)
+    public function siteexport_add_page_export(Doku_Event &$event)
     {
         global $ID;
 
-        if ( ($this->getConf('allowallusers') || auth_isadmin() || auth_ismanager()) ) {
+        if ( $this->__executeCommand() ) {
             $event->data['items'][] = '<li>' . tpl_link(wl($ID, array('do' => 'siteexport_addpage')), '<span>Export Page</span>',
                                                 'class="action siteexport_addpage" title="Export Page (Siteexport)"', 1) . '</li>';
 
@@ -110,7 +110,7 @@ class action_plugin_siteexport_startup extends DokuWiki_Action_Plugin {
         }
     }
 
-    function siteexport_metaheaders(Doku_Event &$event)
+    public function siteexport_metaheaders(Doku_Event &$event)
     {
         global $conf;
         $template = defined('SITEEXPORT_TPL') ? SITEEXPORT_TPL : $conf['template'];
@@ -126,12 +126,16 @@ class action_plugin_siteexport_startup extends DokuWiki_Action_Plugin {
         return true;
     }
 
-    function siteexport_toolbar_define(Doku_Event &$event) {
+    public function siteexport_toolbar_define(Doku_Event &$event) {
 
         if ( $this->hasSiteexportHeaders() ) {
             // Remove Toolbar
             // This is pr 5.4 syntax.
             $event->data = array();
         }
+    }
+    
+    private function __executeCommand() {
+        return ($this->getConf('allowallusers') || auth_isadmin() || auth_ismanager());
     }
 }
