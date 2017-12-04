@@ -56,9 +56,9 @@ class siteexport_zipfilewriter
 
     /**
      * Adds a file to the zip file
-     * @param $FILE file-name of the zip
-     * @param $NAME name of the file that is being added
-     * @param $ZIP name of the zip file to which we add
+     * @param $FILE String file-name of the zip
+     * @param $NAME String name of the file that is being added
+     * @param $ZIP String name of the zip file to which we add
      */
     public function __addFileToZip($FILE, $NAME, $ZIP = null) {
 
@@ -88,9 +88,9 @@ class siteexport_zipfilewriter
 
     /**
      * This really writes a file to a zip-file
-     * @param $FILE file-name of the zip
-     * @param $NAME name of the file that is being added
-     * @param $ZIP name of the zip file to which we add
+     * @param $FILE String file-name of the zip
+     * @param $NAME String name of the file that is being added
+     * @param $ZIP String name of the zip file to which we add
      */
     private function __writeFileToZip($FILE, $NAME, $ZIPFILE) {
         if (empty($ZIPFILE)) $ZIPFILE = $this->functions->settings->zipFile;
@@ -127,7 +127,7 @@ class siteexport_zipfilewriter
 
     /**
      * check if a file exists allready
-     * @param $NAME name of the file in the zip
+     * @param $NAME String name of the file in the zip
      */
     public function fileExistsInZip($NAME)
     {

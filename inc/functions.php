@@ -298,8 +298,8 @@ class siteexport_functions extends DokuWiki_Plugin
 
     /**
      * Create the export file name - this is the file where everything is being stored
-     * @param $FILE
-     * @param $PATTERN - additional pattern for re-using old files
+     * @param $FILE String name of the file
+     * @param $PATTERN String additional pattern for re-using old files
      */
     public function getSpecialExportFileName($FILE, $PATTERN = null) {
 
@@ -619,9 +619,9 @@ class siteexport_functions extends DokuWiki_Plugin
 
     /**
      * Check a replaceURL against a baseURL - and make the replaceURL relative against it
-     * @param replaceURL - URL which will be made relative if needed
-     * @param baseURL - URL which is the reference to be made relative against
-     * @param string $replaceURL
+     * @param replaceURL String URL which will be made relative if needed
+     * @param baseURL String URL which is the reference to be made relative against
+     * @param existingPageID Array
      */
     public function getRelativeURL($replaceURL, $baseURL, $existingPageID = null)
     {
