@@ -56,4 +56,3 @@ class CSSMgrPatch {
         return $this->_code;
     }
 }
-?>

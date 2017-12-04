@@ -2,7 +2,6 @@
 
 class siteexport_debug
 {
-    private $debug = false;
     private $firstRE = true;
 
     private $debugLevel = 5;

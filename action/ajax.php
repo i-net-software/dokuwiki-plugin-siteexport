@@ -228,7 +228,8 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
 
         echo $url;
         echo "\n";
-        echo 'wget ' . $maxRedirect . '--output-document=' . array_pop((explode(":", ($this->getConf('zipfilename'))))) . ' --post-data="' . $POSTData . '" ' . wl(cleanID($path), null, true) . ' --http-user=USER --http-passwd=PASSWD';
+        $zipFile = explode(":", ($this->getConf('zipfilename')));
+        echo 'wget ' . $maxRedirect . '--output-document=' . array_pop($zipFile) . ' --post-data="' . $POSTData . '" ' . wl(cleanID($path), null, true) . ' --http-user=USER --http-passwd=PASSWD';
         echo "\n";
         echo 'curl -L ' . $maxRedirs . '-o ' . array_pop(explode(":", ($this->getConf('zipfilename')))) . ' -d "' . $POSTData . '" ' . wl(cleanID($path), null, true) . ' --anyauth --user USER:PASSWD';
         echo "\n";
@@ -342,6 +343,7 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
     private function __get_siteexport_list($NS, $overrideCache = false) {
         global $conf;
 
+        $PAGE = "";
         $NS = $this->namespace = $this->functions->getNamespaceFromID($NS, $PAGE);
         $this->functions->debug->message("ROOT Namespace to export from: '{$NS}' / {$this->namespace}", null, 1);
 
@@ -716,7 +718,7 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
         $ID = $DATA[2];
         $MEDIAMATCHER = "#(_media(/|:)|media=|_detail(/|:)|_export(/|:)|do=export_)#i"; // 2010-10-23 added "(/|:)" for the ID may not contain slashes anymore
         $ISMEDIA = preg_match($MEDIAMATCHER, $DATA[2]);
-        if ($ISMEDIA && $conf['userewrite'] == 1) {
+        if ($ISMEDIA !== false && $conf['userewrite'] == 1) {
             //$DATA[2] = preg_replace($MEDIAMATCHER, "", $DATA[2]);
             $ID = preg_replace("#^_(detail|media)(/|:)#", "", $ID);
         }
@@ -731,7 +733,8 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
         $IDexists = false;
 
         $this->functions->debug->message("Resolving ID: '$ID'", null, 2);
-        if ($ISMEDIA) {
+        $IDexists = false;
+        if ($ISMEDIA !== false) {
             resolve_mediaid(null, $ID, $IDexists);
              
             $this->functions->debug->message("Current mediaID to filename: '" . mediaFN($ID) . "'", null, 2);
@@ -801,7 +804,7 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
         }
 
         // Finalize
-        return $this->__fetchAndReplaceLinkFinish( $DATA, $url, $noDeepReplace, $newAdditionalParameters, $ORIGDATA2, $newDepth, $IDexists );
+        return $this->__fetchAndReplaceLinkFinish( $DATA, $url, $noDeepReplace, $newAdditionalParameters, $ORIGDATA2, $newDepth, $IDexists, $fileName );
     }
 
     private function __fetchAndReplaceLinkMainSwitch( &$elements, &$DATA, &$url, &$newAdditionalParameters, &$PARAMS, &$noDeepReplace, &$fileName, &$newDepth, &$ID ) {
@@ -946,7 +949,7 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
         return null;
     }
 
-    private function __fetchAndReplaceLinkFinish( $DATA, $url, $noDeepReplace, $newAdditionalParameters, $ORIGDATA2, $newDepth, $IDexists ) {
+    private function __fetchAndReplaceLinkFinish( $DATA, $url, $noDeepReplace, $newAdditionalParameters, $ORIGDATA2, $newDepth, $IDexists, $fileName ) {
         global $conf, $currentID, $currentParent;
 
         // Create Name to save the file at
@@ -1200,6 +1203,7 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
         $request = preg_replace('/\/\/+/', '/', $url);
 
         //remove script URL and Querystring to gain the id
+        $id = $request;
         if (preg_match('/^' . preg_quote($script, '/') . '(.*)/', $request, $match)) {
             $id = preg_replace('/\?.*/', '', $match[1]);
         }
@@ -1241,6 +1245,7 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
      **/
     private function __rebuildDataForNormalFiles(&$DATA, &$PARAMS, $addHash = false) {
         $PARTS = explode('.', $DATA[2]);
+        $EXT = '';
         if (count($PARTS) > 1) {
             $EXT = '.' . array_pop($PARTS);
         }
@@ -1277,7 +1282,7 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
         }
 
         // The generated script depends on some dynamic options
-        $cache = getCacheName('styles' . $_SERVER['HTTP_HOST'] . '-siteexport-js-' . $_SERVER['SERVER_PORT'] . DOKU_BASE . $tplinc . $style, '.css');
+        $cache = getCacheName('styles' . $_SERVER['HTTP_HOST'] . '-siteexport-js-' . $_SERVER['SERVER_PORT'] . DOKU_BASE . $tplinc , '.css');
         $this->unlinkIfExists($cache);
     }
 
