@@ -8,6 +8,8 @@
 # @author Andreas Gohr <andi@splitbrain.org>
 # @author Gerry Weißbach <gerry.w@gammaproduction.de>
 
+set -x
+
 # make sure this runs on travis only
 if [ -z "$SCRUTINIZER" ] || [ -z "$CI" ]  ; then
     echo 'This script is only intended to run on scrutinizer-ci build servers'
