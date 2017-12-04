@@ -168,5 +168,3 @@ class siteexport_debug
         return;
     }
 }
-
-?>

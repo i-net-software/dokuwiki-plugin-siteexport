@@ -226,12 +226,14 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
             return;
         }
 
+        $zipFile = explode(":", ($this->getConf('zipfilename')));
+        $zipFile = array_pop($zipFile);
+
         echo $url;
         echo "\n";
-        $zipFile = explode(":", ($this->getConf('zipfilename')));
-        echo 'wget ' . $maxRedirect . '--output-document=' . array_pop($zipFile) . ' --post-data="' . $POSTData . '" ' . wl(cleanID($path), null, true) . ' --http-user=USER --http-passwd=PASSWD';
+        echo 'wget ' . $maxRedirect . '--output-document=' . $zipFile . ' --post-data="' . $POSTData . '" ' . wl(cleanID($path), null, true) . ' --http-user=USER --http-passwd=PASSWD';
         echo "\n";
-        echo 'curl -L ' . $maxRedirs . '-o ' . array_pop(explode(":", ($this->getConf('zipfilename')))) . ' -d "' . $POSTData . '" ' . wl(cleanID($path), null, true) . ' --anyauth --user USER:PASSWD';
+        echo 'curl -L ' . $maxRedirs . '-o ' . $zipFile . ' -d "' . $POSTData . '" ' . wl(cleanID($path), null, true) . ' --anyauth --user USER:PASSWD';
         echo "\n";
 
         $this->functions->debug->message("Checking for Cron parameters: ", $combined, 1);
@@ -733,7 +735,6 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
         $IDexists = false;
 
         $this->functions->debug->message("Resolving ID: '$ID'", null, 2);
-        $IDexists = false;
         if ($ISMEDIA !== false) {
             resolve_mediaid(null, $ID, $IDexists);
              
