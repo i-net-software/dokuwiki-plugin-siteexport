@@ -236,16 +236,7 @@ class siteexport_toc
         // Close and return
         return $XML . ($didOpenItem ? $this->__TOCItemClose($DEPTH) : '');
     }
-    
-    
-    private function post(&$value, $key, array $additional) {
-        $inner_glue = $additional[0];
-        $prefix = isset($additional[1]) ? $additional[1] : false;
-        if ($prefix === false) $prefix = $key;
-    
-        $value = $value . $inner_glue . $prefix;
-    }
-    
+
     /**
      * internal Sort function
      * @param unknown_type $a

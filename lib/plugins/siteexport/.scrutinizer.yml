@@ -6,6 +6,7 @@ filter:
         - '_tests/*'
     dependency_paths:
         - '../../../'
+        - 'dokuwiki'
 build:
     root_path: 'lib/plugins/siteexport'
     dependencies:

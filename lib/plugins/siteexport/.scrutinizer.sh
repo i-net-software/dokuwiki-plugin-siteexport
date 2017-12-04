@@ -65,6 +65,7 @@ fi
 
 # change working directory
 cd -
+ln -s ../../../ dokuwiki
 
 # we now have a full dokuwiki environment with our plugin installed
 # scrutinizer can take over
