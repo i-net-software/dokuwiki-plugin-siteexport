@@ -343,7 +343,7 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
      * Fetch the list of pages to be exported
      **/
     private function __get_siteexport_list($NS, $overrideCache = false) {
-        global $conf;
+        global $conf, $INPUT;
 
         $PAGE = "";
         $NS = $this->namespace = $this->functions->getNamespaceFromID($NS, $PAGE);
@@ -353,10 +353,11 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
         $query = '';
         $doSearch = 'search_allpages';
 
-        switch (intval($_REQUEST['depthType'])) {
+        switch ($INPUT->int('depthType')) {
             case 0:
-                $query = $this->functions->cleanID(str_replace(":", "/", $NS . ':' . $PAGE));
-                resolve_pageid($NS, $PAGE, $exists = null);
+                print $query = $this->functions->cleanID(str_replace(":", "/", $NS . ':' . $PAGE));
+                $exists = false;
+                resolve_pageid($NS, $PAGE, $exists);
 
                 if ($exists) {
                     $data = array(array('id' => $PAGE));
@@ -373,7 +374,7 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
                 }
             case 1:    $depth = 0;
             break;
-            case 2:    $depth = intval($_REQUEST['depth']);
+            case 2:    $depth = $INPUT->int('depth');
             break;
         }
 
