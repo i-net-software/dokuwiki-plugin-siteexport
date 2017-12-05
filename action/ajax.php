@@ -355,7 +355,7 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
 
         switch ($INPUT->int('depthType')) {
             case 0:
-                print $query = $this->functions->cleanID(str_replace(":", "/", $NS . ':' . $PAGE));
+                $query = $this->functions->cleanID(str_replace(":", "/", $NS . ':' . $PAGE));
                 $exists = false;
                 resolve_pageid($NS, $PAGE, $exists);
 
