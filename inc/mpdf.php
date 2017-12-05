@@ -7,54 +7,24 @@
  * @author     Gerry Weissbach <gweissbach@inetsoftware.de>
  */
 
-if (file_exists(DOKU_PLUGIN . 'dw2pdf/mpdf/mpdf.php')) {
+if (!empty($_REQUEST['pdfExport']) && intval($_REQUEST['pdfExport']) == 1 && plugin_load('action', 'dw2pdf') ) {
 
-    global $conf;
-    if (!defined('_MPDF_TEMP_PATH')) {
-        define('_MPDF_TEMP_PATH', $conf['tmpdir'] . '/dwpdf/' . rand(1, 1000) . '/');
-    }
-    if (!defined('_MPDF_TTFONTDATAPATH')) {
-        define('_MPDF_TTFONTDATAPATH', $conf['cachedir'] . '/mpdf_ttf/');
-    }
-
-    require_once(DOKU_PLUGIN . 'dw2pdf/mpdf/mpdf.php');
-
-    class siteexportPDF extends mpdf {
+    require_once(DOKU_PLUGIN . 'dw2pdf/DokuPDF.class.php');
+    class siteexportPDF extends DokuPDF {
 
         private $debugObj = null;
 
         public function __construct($debug) {
             global $INPUT;
-            global $conf;
 
-            $dw2pdf = plugin_load('action', 'dw2pdf');
+            $this->debugObj = $debug;
 
             // decide on the paper setup from param or config
-            $pagesize    = $INPUT->str('pagesize', $dw2pdf->getConf('pagesize'), true);
-            $orientation = $INPUT->str('orientation', $dw2pdf->getConf('orientation'), true);
-
-            io_mkdir_p(_MPDF_TTFONTDATAPATH);
-            io_mkdir_p(_MPDF_TEMP_PATH);
-
-            $format = $pagesize;
-            if ($orientation == 'landscape') {
-                $format .= '-L';
-            }
-
-            switch ($conf['lang']) {
-                case 'zh':
-                case 'zh-tw':
-                case 'ja':
-                case 'ko':
-                    $mode = '+aCJK';
-                    break;
-                default:
-                    $mode = 'UTF-8-s';
-
-            }
+            $pagesize    = $INPUT->str('pagesize', null, true);
+            $orientation = $INPUT->str('orientation', null, true);
 
             // we're always UTF-8
-            parent::__construct($mode, $format);
+            parent::__construct($pagesize, $orientation);
             $this->ignore_invalid_utf8 = true;
             $this->tabSpaces = 4;
             $this->debugObj = $debug;
@@ -135,16 +105,4 @@ if (file_exists(DOKU_PLUGIN . 'dw2pdf/mpdf/mpdf.php')) {
             return parent::OpenTag($tag, $attr, $ahtml, $ihtml); 
         }
     }
-
-    if (file_exists(DOKU_PLUGIN . 'dw2pdf/mpdf/classes/cssmgr.php') && !class_exists('cssmgr', false)) {
-//*        
-        require_once(DOKU_PLUGIN . 'siteexport/inc/patchCSSmgr.php');
-        $objPatch = new CSSMgrPatch(DOKU_PLUGIN . 'dw2pdf/mpdf/classes/cssmgr.php');
-        if ($objPatch->redefineFunction(file_get_contents(DOKU_PLUGIN . 'siteexport/inc/readCSS.patch'))) {
-            eval($objPatch->getCode());
-        }
-/*/
-//*/
-    }
-
 }
