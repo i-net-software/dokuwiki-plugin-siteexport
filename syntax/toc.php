@@ -231,8 +231,8 @@ class syntax_plugin_siteexport_toc extends DokuWiki_Syntax_Plugin {
                     if (!empty($instr)) {
                         $this->_cleanAllInstructions($instr);
 
-                        //if its the document start, cut off the first element(document information)
-                        if ($instr[count($instr)-1][1][0] == 'siteexport_toctools') {
+                        // if the last element is a pagebreak, remove it.
+                        if ($instr[count($instr)-1][1][0] == 'siteexport_toctools' && $instr[count($instr)-1][1][1][0] == 'pagebreak' ) {
                             $instr = array_slice($instr, 0, -1);
                         }
 
