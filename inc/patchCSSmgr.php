@@ -40,6 +40,7 @@ class CSSMgrPatch {
             $search_code = $aryMatches[1];
     
             $new_code = str_replace($search_code, $new_function . "\n\n", $this->_code);
+            $new_code = str_replace("function cssmgr", "function __construct", $new_code);
     
             $this->setCode($new_code);
     
