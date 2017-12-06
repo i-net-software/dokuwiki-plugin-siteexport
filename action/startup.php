@@ -21,11 +21,14 @@ class action_plugin_siteexport_startup extends DokuWiki_Action_Plugin {
         $controller->register_hook('INIT_LANG_LOAD', 'BEFORE', $this, 'siteexport_check_template');
         $controller->register_hook('DOKUWIKI_STARTED', 'AFTER', $this, 'siteexport_check_template');
         $controller->register_hook('ACTION_ACT_PREPROCESS', 'BEFORE', $this, 'siteexport_check_export');
-        $controller->register_hook('TEMPLATE_PAGETOOLS_DISPLAY', 'BEFORE', $this, 'siteexport_add_page_export');
         $controller->register_hook('TPL_ACT_UNKNOWN', 'BEFORE',  $this, 'siteexport_addpage');
         $controller->register_hook('TPL_METAHEADER_OUTPUT', 'BEFORE', $this, 'siteexport_metaheaders');
         $controller->register_hook('JS_CACHE_USE', 'BEFORE', $this, 'siteexport_check_js_cache');
+
         $controller->register_hook('TOOLBAR_DEFINE', 'AFTER', $this, 'siteexport_toolbar_define');
+
+        $controller->register_hook('TEMPLATE_PAGETOOLS_DISPLAY', 'BEFORE', $this, 'siteexport_add_page_export');
+        $controller->register_hook('MENU_ITEMS_ASSEMBLY', 'AFTER', $this, 'siteexport_add_svg_page_export', array());
     }
 
     private function hasSiteexportHeaders() {
@@ -109,6 +112,12 @@ class action_plugin_siteexport_startup extends DokuWiki_Action_Plugin {
                                                    'class="action siteexport_mapid" title="Show Map-ID"" data-mapid="'.$mapID.'" onclick="copyMapIDToClipBoard.call(this); return false;"', 1) . '</li>';
             }
         }
+    }
+
+    public function siteexport_add_svg_page_export(Doku_Event $event) {      
+       /* if this is not a page OR ckgedit/ckgedoku is not  active -> return */
+      if($event->data['view'] != 'page') return;
+       array_splice($event->data['items'], -1, 0, [new \dokuwiki\plugin\siteexport\MenuItem()]);
     }
 
     public function siteexport_metaheaders(Doku_Event &$event)
