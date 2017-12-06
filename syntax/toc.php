@@ -83,7 +83,8 @@ class syntax_plugin_siteexport_toc extends DokuWiki_Syntax_Plugin {
                                 if (in_array($item[0], array('list_item', 'list_open'))) { $call = $item; break; }
                             }
 
-                            $depth = $handler->CallWriter->interpretSyntax($call[1][0], $listType = null)-1; // Minus one because of plus one inside the interpret function
+                            $listType = null;
+                            $depth = $handler->CallWriter->interpretSyntax($call[1][0], $listType)-1; // Minus one because of plus one inside the interpret function
                         }
 
                         if (empty($link[0])) { break; } // No empty elements. This would lead to problems
