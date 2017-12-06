@@ -466,10 +466,10 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
      * Add page with ID to the package
      **/
     private function __siteexport_add_site($ID) {
-        global $conf, $currentID, $currentParent;
+        global $conf, $CURRENT_ID, $CURRENT_PARENT;
 
         // Which is the current ID?
-        $currentID = $ID;
+        $CURRENT_ID = $ID;
 
         $this->functions->debug->message("========================================", null, 2);
         $this->functions->debug->message("Adding Site: '$ID'", null, 2);
@@ -510,7 +510,7 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
         $url = $this->functions->wl($ID, $request, true, '&');
 
         // Parse URI PATH and add "html"
-        $currentParent = $fileName = $this->functions->getSiteName($ID, true);
+        $CURRENT_PARENT = $fileName = $this->functions->getSiteName($ID, true);
         $this->functions->debug->message("Filename could be:", $fileName, 2);
 
         $this->fileChecked[$url] = $fileName; // 2010-09-03 - One URL to one FileName
@@ -655,7 +655,7 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
      * Deep Fetch and replace of links inside the texts matched by __getInternalLinks
      **/
     private function __fetchAndReplaceLink($DATA) {
-        global $conf, $currentID, $currentParent;
+        global $conf, $CURRENT_ID, $CURRENT_PARENT;
 
         $noDeepReplace = true;
         $newAdditionalParameters = $this->functions->settings->additionalParameters;
@@ -665,7 +665,7 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
         // Clean data[2], remote ' and "
         $DATA[2] = preg_replace("/^\s*?['\"]?(.*?)['\"]?\s*?$/", '\1', trim($DATA[2]));
 
-        $this->functions->debug->message("Starting Link Replacement", array('data' => $DATA, 'additional Params' => $newAdditionalParameters, 'newDepth' => $newDepth, 'currentID' => $currentID, 'currentParent' => $currentParent), 2);
+        $this->functions->debug->message("Starting Link Replacement", array('data' => $DATA, 'additional Params' => $newAdditionalParameters, 'newDepth' => $newDepth, 'currentID' => $CURRENT_ID, 'currentParent' => $CURRENT_PARENT), 2);
 
         // STEP 1: check for well known links that can be returned
         if ( $this->__fetchAndReplaceWellKnownLinks( $DATA ) ) {
@@ -685,7 +685,7 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
 
         // 2014-05-12 - fix problem with URLs starting with a ./ or ../ ... they seem to need the current IDs root
         if (preg_match("#^\.\.?/#", $DATA[2])) {
-            $DATA[2] = getNS($currentID) . ':' . $DATA[2];
+            $DATA[2] = getNS($CURRENT_ID) . ':' . $DATA[2];
         }
 
         // 2010-08-25 - fix problem with relative movement in links ( "test/../test2" )
@@ -715,14 +715,13 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
 
         // If Data was empty this must be the same file!;
         if (empty($DATA[2])) {
-            $DATA[2] = $currentID;
+            $DATA[2] = $CURRENT_ID;
         }
 
         $ID = $DATA[2];
         $MEDIAMATCHER = "#(_media(/|:)|media=|_detail(/|:)|_export(/|:)|do=export_)#i"; // 2010-10-23 added "(/|:)" for the ID may not contain slashes anymore
         $ISMEDIA = preg_match($MEDIAMATCHER, $DATA[2]);
         if ($ISMEDIA !== false && $conf['userewrite'] == 1) {
-            //$DATA[2] = preg_replace($MEDIAMATCHER, "", $DATA[2]);
             $ID = preg_replace("#^_(detail|media)(/|:)#", "", $ID);
         }
         
@@ -738,7 +737,6 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
         $this->functions->debug->message("Resolving ID: '$ID'", null, 2);
         if ($ISMEDIA !== false) {
             resolve_mediaid(null, $ID, $IDexists);
-             
             $this->functions->debug->message("Current mediaID to filename: '" . mediaFN($ID) . "'", null, 2);
         } else {
             resolve_pageid(null, $ID, $IDexists);
@@ -773,8 +771,7 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
 
         // Second Rewrite for UseRewrite = 2
         if ($conf['userewrite'] == 2 && preg_match("%((/lib/exe/(fetch|detail|indexer)|feed|doku)\.php)/?(.*?)$%", $DATA[2], $matches)) {
-        
-        
+
             // The actual file in lib
             $DATA[2] = $matches[1];
             $PARAMS .= '&' . (in_array($matches[3], array('fetch', 'detail')) ? 'media' : 'id') . '=' . cleanID(str_replace('/', ':', $matches[4]));
@@ -952,7 +949,7 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
     }
 
     private function __fetchAndReplaceLinkFinish( $DATA, $url, $noDeepReplace, $newAdditionalParameters, $ORIGDATA2, $newDepth, $IDexists, $fileName ) {
-        global $conf, $currentID, $currentParent;
+        global $conf, $CURRENT_ID, $CURRENT_PARENT;
 
         // Create Name to save the file at
         $DATA[2] = str_replace(':', '_', $DATA[2]);
@@ -980,16 +977,16 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
         $origDepth = $this->functions->settings->depth;
         $this->functions->settings->depth = $newDepth;
 
-        $tmpID = $currentID;
-        $tmpParent = $currentParent;
+        $tmpID = $CURRENT_ID;
+        $tmpParent = $CURRENT_PARENT;
 
-        $currentParent = $fileName;
+        $CURRENT_PARENT = $fileName;
         $this->functions->debug->message("Going to get the file", array($url, $noDeepReplace, $newAdditionalParameters), 2);
         $tmpFile = $this->__getHTTPFile($url, $noDeepReplace, $newAdditionalParameters);
         $this->functions->debug->message("The getHTTPFile result is still empty", $tmpFile === false ? 'YES' : 'NO', 2);
 
-        $currentParent = $tmpParent;
-        $currentID = $tmpID;
+        $CURRENT_PARENT = $tmpParent;
+        $CURRENT_ID = $tmpID;
         $this->functions->settings->depth = $origDepth; // 2010-09-03 - Reset depth at the very end
 
         if ($tmpFile === false) {
@@ -1080,7 +1077,7 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
      * build the new link to be put in place for the donwloaded site
      **/
     private function __rebuildLink($DATA, $DEPTH = null, $existingPageID = null) {
-        global $currentID, $currentParent;
+        global $CURRENT_ID, $CURRENT_PARENT;
 
         // depth is set, skip this one
         if (is_null($DEPTH)) $DEPTH = $this->functions->settings->depth;
@@ -1088,35 +1085,13 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
 
         $intermediateURL = $DEPTH . $DATA[2];
 
-//*        
         // 2012-06-15 originally has an absolute path ... we might need a relative one if not in our namespace
         if (empty($_REQUEST['absolutePath']) && preg_match("#^(\.\./)+#", $intermediateURL)) {
 
-            $this->functions->debug->message("OK, this is not to be absolute: ", array($intermediateURL, $currentParent), 1);
-            // Experimental
-            $intermediateURL = $this->functions->getRelativeURL($intermediateURL, $currentParent, $existingPageID);
+            $this->functions->debug->message("OK, this is not to be absolute: ", array($intermediateURL, $CURRENT_PARENT), 1);
+            $intermediateURL = $this->functions->getRelativeURL($intermediateURL, $CURRENT_PARENT, $existingPageID);
         }
-/*/
-        // Check if the URL has a ../../something/somethingelse
-        // and basically goes back to our current page or something in parallel
-        // 1) remove all ../ at begining
-        
-        $this->functions->debug->message("currentID: '{$currentID}'", null, 1);
-        $checkURL = preg_replace("#^(\.\./)+#", '', $intermediateURL);
-        if ( $checkURL != $intermediateURL ) {
-            $this->functions->debug->message("Found ../: '$checkURL' / currentIDPart: '{$currentIDPart}'", null, 2);
-            
-            // 2) check if the URLs next parts match the current ENS to all NS parts of the current ID
-            // $this->functions->debug->message("Found ENS: '{$this->functions->settings->exportNamespace}', currentID: {$currentID}'", null, 2);
-            $currentIDPart = preg_replace("#^{$this->functions->settings->exportNamespace}/#", "", str_replace(':', '/', getNS($currentID) . '/'));
 
-            if ( ($newURL = preg_replace("#^{$currentIDPart}#", "./", $checkURL)) != $checkURL ) {
-                // 3) if so, remove these parts
-                $intermediateURL = $newURL;
-                $this->functions->debug->message("Found ./ URL: '$newURL'", null, 2);
-            }
-        }
-//*/
         $newURL = $DATA[1] == 'url' ? $DATA[1] . '(' . $intermediateURL . ')' : $DATA[1] . '="' . $intermediateURL . '"';
         $this->functions->debug->message("Re-created URL: '$newURL'", $DEPTH, 2);
 
