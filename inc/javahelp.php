@@ -39,7 +39,7 @@ class siteexport_javahelp
             $lang = '';
             if ($this->translation)
             {
-                $this->translation->translationsNs = $this->translation->setupTNS($data[$i]['id']);
+                $this->translation->translationsNs = $this->translation->setupTNS($data[$i]['id'], true);
                 $lang = $this->translation->getLangPart($data[$i]['id']);
                 $this->functions->debug->message("Setting up translation:", array(
                     'id' => $data[$i]['id'],
