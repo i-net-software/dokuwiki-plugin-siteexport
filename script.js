@@ -275,6 +275,13 @@
             _.settings = function(call) {
                 var settings = $(_.allElements).serializeArray();
 
+                /* Because serializeArray() ignores unset checkboxes and radio buttons: */
+                settings = settings.concat(
+                    $('form#siteexport label.sendIfNotSet input[type=checkbox]:not(:checked)').map(function() {
+                        return { "name": this.name, "value": '0' /* false */ }
+                    }).get()
+                );
+
                 if (call) { settings.push({ name: 'call', value: call}); }
                 if ( $('input#pdfExport:checked').size() > 0 ) { settings.push({ name: 'renderer', value: 'siteexport_pdf'}); } // is disabled and would not get pushed
                 return settings;

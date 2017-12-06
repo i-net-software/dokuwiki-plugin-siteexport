@@ -83,7 +83,7 @@ class settings_plugin_siteexport_settings extends DokuWiki_Plugin
         $this->zipFile = mediaFN($this->downloadZipFile);
 
         $this->tmpDir = mediaFN(getNS($this->origZipFile));
-        $this->exportLinkedPages = $INPUT->bool( 'exportLinkedPages', false, true );
+        $this->exportLinkedPages = $INPUT->bool( 'exportLinkedPages', true );
 
         $this->namespace = $functions->getNamespaceFromID( $INPUT->str('ns'), $PAGE );
         $this->addParams = $INPUT->bool( 'addParams' );
