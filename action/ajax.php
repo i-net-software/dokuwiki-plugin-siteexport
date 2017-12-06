@@ -1083,8 +1083,7 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
         if (is_null($DEPTH)) $DEPTH = $this->functions->settings->depth;
         $DATA[2] .= (!empty($DATA['PARAMS']) && $this->functions->settings->addParams ? '?' . $DATA['PARAMS'] : '') . (!empty($DATA['ANCHOR']) ? '#' . $DATA['ANCHOR'] : '');
 
-        // 2017-12-06 make sure there are no multiple slashes 
-        $intermediateURL = preg_replace( '#/+#', '/', $DEPTH . $DATA[2] );
+        $intermediateURL = $DEPTH . $DATA[2];
 
         // 2012-06-15 originally has an absolute path ... we might need a relative one if not in our namespace
         if (empty($_REQUEST['absolutePath']) && preg_match("#^(\.\./)+#", $intermediateURL)) {
