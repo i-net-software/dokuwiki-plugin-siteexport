@@ -3,11 +3,11 @@
 /**
  * @license    GPL 2 (http://www.gnu.org/licenses/gpl.html)
  *
+ * @author Schplurtz le Déboulonné <schplurtz@laposte.net>
  * @author Alain Becker <alain@alain-becker.com>
  * @author NICOLAS ORTH <nicolas.orth@gmail.com>
  * @author Florian TASSIN <florian.tassin@gmail.com>
  * @author tuxun <tuxuntrash@gmail.com>
- * @author Schplurtz le Déboulonné <schplurtz@laposte.net>
  * @author ubibene <services.m@benard.info>
  */
 $lang['encoding']              = 'utf-8';
@@ -27,7 +27,7 @@ $lang['eclipseDocZip']         = 'Crée une aide Eclipse';
 $lang['JavaHelpDocZip']        = 'Crée une aide Java';
 $lang['TOCMapWithoutTranslation'] = 'Retire la traduction à la racine';
 $lang['useTocFile']            = 'Utilisez un fichier TOC dans le nom de l\'espace';
-$lang['emptyTocElem']          = 'Des noms d\'espace dans TOC sont vides';
+$lang['emptyTocElem']          = 'Catégorie vide dans la TDM';
 $lang['startProcess']          = 'Démarrer le processus';
 $lang['directDownloadLink']    = 'Lien de téléchargement direct';
 $lang['wgetURLLink']           = 'Lien de téléchargement wget';
@@ -35,12 +35,12 @@ $lang['curlURLLink']           = 'Lien de téléchargement curl';
 $lang['start']                 = 'Démarrer';
 $lang['status']                = 'Statut';
 $lang['ns']                    = 'Définir l\'espace de nom';
-$lang['ens']                   = 'Espace de nom parent à exporter';
-$lang['defaultLang']           = 'Langue par défaut pour les espaces de nom multilingues.';
+$lang['ens']                   = 'Catégorie parente à exporter';
+$lang['defaultLang']           = 'Langue par défaut pour les catégories multilingues.';
 $lang['disablePluginsOption']  = 'Désactive les plugins (JS/CSS) durant l\'export';
 $lang['depthType']             = 'Type d\'export';
 $lang['depth.pageOnly']        = 'cette page uniquement';
-$lang['depth.allSubNameSpaces'] = 'Tous les sous espaces de noms';
+$lang['depth.allSubNameSpaces'] = 'Toutes les sous catégories';
 $lang['depth.specifiedDepth']  = 'Profondeur spécifié';
 $lang['depth']                 = 'Profondeur';
 $lang['renderer']              = 'Moteur de rendu';
@@ -56,6 +56,7 @@ $lang['SiteSubmitLabel']       = 'Télécharger au format PDF';
 $lang['toolbarButton']         = 'Insérer Siteexporter';
 $lang['useOptionsInEditor']    = 'Utiliser ces options et insérer l\'élément {{siteAggregator}}';
 $lang['NoEntriesFoundHint']    = 'Aucune page n\'a été trouvé pour aggrégation';
+$lang['siteexport_button']     = 'Exporter la page en HTML/PDF';
 $lang['js']['loadingpage']     = 'Création du document';
 $lang['js']['startdownload']   = 'Début du téléchargement';
 $lang['js']['downloadfinished'] = 'Téléchargement terminé';
