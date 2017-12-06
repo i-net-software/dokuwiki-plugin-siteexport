@@ -784,7 +784,7 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
         $elements = explode('/', $DATA[2]);
 
         // Main Switch to check the link
-        $result = $this->__fetchAndReplaceLinkMainSwitch( $elements, $DATA, $url, $newAdditionalParameters, $PARAMS, $noDeepReplace, $fileName, $newDepth, $ID );
+        $result = $this->__fetchAndReplaceLinkMainSwitch( $elements, $DATA, $url, $newAdditionalParameters, $PARAMS, $noDeepReplace, $fileName, $newDepth, $ID, $IDexists );
         if ( $result !== null ) {
             return $result;
         }
@@ -806,7 +806,7 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
         return $this->__fetchAndReplaceLinkFinish( $DATA, $url, $noDeepReplace, $newAdditionalParameters, $ORIGDATA2, $newDepth, $IDexists, $fileName );
     }
 
-    private function __fetchAndReplaceLinkMainSwitch( &$elements, &$DATA, &$url, &$newAdditionalParameters, &$PARAMS, &$noDeepReplace, &$fileName, &$newDepth, &$ID ) {
+    private function __fetchAndReplaceLinkMainSwitch( &$elements, &$DATA, &$url, &$newAdditionalParameters, &$PARAMS, &$noDeepReplace, &$fileName, &$newDepth, &$ID, &$IDexists ) {
         switch (array_pop($elements)) {
             // CSS Extra Handling with extra rewrites
             case 'css.php'    :    // $DATA[2] .=  ( !$this->functions->settings->addParams || empty($PARAMS) ? '' : '.' . $this->functions->cleanID(preg_replace("/(=|\?|&amp;)/", ".", $PARAMS))) . '.css';
