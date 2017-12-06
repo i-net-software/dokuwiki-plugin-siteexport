@@ -720,7 +720,7 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
 
         $ID = $DATA[2];
         $MEDIAMATCHER = "#(_media(/|:)|media=|_detail(/|:)|_export(/|:)|do=export_)#i"; // 2010-10-23 added "(/|:)" for the ID may not contain slashes anymore
-        $ISMEDIA = preg_match($MEDIAMATCHER, $DATA[2]);
+        $ISMEDIA = preg_match($MEDIAMATCHER, $DATA[2]) === 1;
         if ($ISMEDIA !== false && $conf['userewrite'] == 1) {
             $ID = preg_replace("#^_(detail|media)(/|:)#", "", $ID);
         }
