@@ -3,6 +3,7 @@
 /**
  * @license    GPL 2 (http://www.gnu.org/licenses/gpl.html)
  *
+ * @author Schplurtz le Déboulonné <schplurtz@laposte.net>
  * @author Alain Becker <alain@alain-becker.com>
  * @author NICOLAS ORTH <nicolas.orth@gmail.com>
  * @author Florian TASSIN <florian.tassin@gmail.com>
@@ -13,7 +14,7 @@
 $lang['depth']                 = 'Profondeur d\'export par défaut';
 $lang['skipacl']               = 'Essayer d\'exporter des pages non-publiques';
 $lang['zipfilename']           = 'Chemin et nom du wiki pour le fichier ZIP exporté';
-$lang['exclude']               = 'Modèle pour exclure des ressources';
+$lang['exclude']               = 'Motif pour exclure des ressources';
 $lang['max_execution_time']    = 'Temps d\'exécution maximum pour un script';
 $lang['cachetime']             = 'Durée du cache pour l\'exportation';
 $lang['allowallusers']         = 'Autoriser tous les utilisateurs à exporter des pages';
