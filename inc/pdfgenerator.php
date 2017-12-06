@@ -15,6 +15,8 @@ if (!empty($_REQUEST['pdfExport']) && intval($_REQUEST['pdfExport']) == 1 && fil
         }
 
         public function createPDFFromFile($filename, &$NAME) {
+            
+            global $INPUT;
 
             if (!preg_match("/" . $this->functions->settings->fileType . "$/", $NAME)) {
                 $this->functions->debug->message("Filetype " . $this->functions->settings->fileType . " did not match filename '$NAME'", null, 4);
@@ -47,7 +49,9 @@ if (!empty($_REQUEST['pdfExport']) && intval($_REQUEST['pdfExport']) == 1 && fil
             $mpdf->margin_bottom_collapse = true;
             $mpdf->SetDisplayMode('fullpage');
             $mpdf->restoreBlockPageBreaks = true;
-            $mpdf->img_dpi = 300;
+
+            $mpdf->dpi = $INPUT->int('dpi', 96, true);
+            $mpdf->img_dpi = $INPUT->int('dpi', 96, true);
 
             $mpdf->setBasePath(empty($this->functions->settings->depth) ? './' : $this->functions->settings->depth);
 
