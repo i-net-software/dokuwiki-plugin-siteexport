@@ -54,8 +54,10 @@ class action_plugin_siteexport_pdfstyles extends DokuWiki_Action_Plugin {
      * @return void
      */
     public function handle_css_styles(Doku_Event &$event, $param) {
-        global $INPUT;
-        
+        global $INPUT, $conf;
+
+        $conf['cssdatauri'] = false;
+
         switch( $event->data['mediatype'] ) {
             
             case 'print':
