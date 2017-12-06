@@ -40,7 +40,8 @@ if (!empty($_REQUEST['pdfExport']) && intval($_REQUEST['pdfExport']) == 1 && plu
             // Save HTML too
             $this->functions->debug->message("Arranging HTML", null, 2);
             $this->arrangeHtml($html, 'bl,acronym');
-            $this->functions->debug->message("Done arranging HTML:", $html, 1);
+            $this->functions->debug->message("Done arranging HTML:", null, 2);
+            $this->functions->debug->message("This is the HTML:", $html, 0);
             
             $mpdf->debug = false;
             $mpdf->list_indent_first_level = 1; // Indents the first level of lists.

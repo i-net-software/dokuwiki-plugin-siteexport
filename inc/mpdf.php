@@ -12,12 +12,8 @@ if (!empty($_REQUEST['pdfExport']) && intval($_REQUEST['pdfExport']) == 1 && plu
     require_once(DOKU_PLUGIN . 'dw2pdf/DokuPDF.class.php');
     class siteexportPDF extends DokuPDF {
 
-        private $debugObj = null;
-
         public function __construct($debug) {
             global $INPUT;
-
-            $this->debugObj = $debug;
 
             // decide on the paper setup from param or config
             $pagesize    = $INPUT->str('pagesize', null, true);
@@ -27,27 +23,10 @@ if (!empty($_REQUEST['pdfExport']) && intval($_REQUEST['pdfExport']) == 1 && plu
             parent::__construct($pagesize, $orientation);
             $this->ignore_invalid_utf8 = true;
             $this->tabSpaces = 4;
-            $this->debugObj = $debug;
-            $this->debug = $debug !== false;
+            $this->setLogger( new SiteexportLogger( $debug ) );
             $this->shrink_tables_to_fit = 1; // Does not shrink tables by default, only in emergency
             $this->use_kwt = true; // avoids page-breaking in H1-H6 if a table follows directly
             $this->useSubstitutions = true;
-        }
-
-        public function message($msg, $vars = null, $lvl = 1)
-        {
-            if ($this->debugObj !== null) {
-                $this->debugObj->message($msg, $vars, $lvl);
-            }
-        }
-
-        public function Error($msg)
-        {
-            if ($this->debugObj !== null && method_exists($this->debugObj, 'runtimeException')) {
-                $this->debugObj->runtimeException($msg);
-            } else {
-                parent::Error($msg);
-            }
         }
 
         public function GetFullPath(&$path,$basepath='') {
@@ -103,6 +82,55 @@ if (!empty($_REQUEST['pdfExport']) && intval($_REQUEST['pdfExport']) == 1 && plu
                     break;
             }
             return parent::OpenTag($tag, $attr, $ahtml, $ihtml); 
+        }
+    }
+
+    /**
+     * This Logger can be used to avoid conditional log calls.
+     *
+     * Logging should always be optional, and if no logger is provided to your
+     * library creating a NullLogger instance to have something to throw logs at
+     * is a good way to avoid littering your code with `if ($this->logger) { }`
+     * blocks.
+     *
+     * The logger has to be there if we reached this point in code.
+     */
+    class SiteexportLogger extends Psr\Log\AbstractLogger
+    {
+        private $debugObj = null;
+
+        public function __construct($debug) {
+            $this->debugObj = $debug;
+        }
+
+        /**
+         * Logs with an arbitrary level.
+         *
+         * @param mixed  $level
+         * @param string $message
+         * @param array  $context
+         *
+         * @return void
+         */
+        public function log($level, $message, array $context = array())
+        {
+            if ($this->debugObj !== null) {
+                $this->debugObj->message($message, $context, $this->logLevelToSiteexportLog( $level ));
+            }
+        }
+
+        private function logLevelToSiteexportLog( $level ) {
+            switch( $level ) {
+                case 'error': return 4;
+                case 'warning': return 3;
+                case 'notice':
+                case 'info': return 2;
+                case 'debug': return 1;
+                case 'emergency':
+                case 'alert':
+                case 'critical':
+                default : return 5;
+            }
         }
     }
 }
