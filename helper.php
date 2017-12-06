@@ -298,7 +298,13 @@ class helper_plugin_siteexport extends DokuWiki_Plugin {
     
             $form->addElement(form_makeCloseTag('span'));
             $form->addElement(form_makeOpenTag('span', array('class' => 'siteexport__throbber')));
-            $form->addElement(form_makeTag('img', array('src' => DOKU_BASE.'lib/images/loading.gif', 'id' => 'siteexport__throbber')));
+
+            $throbber = DOKU_BASE.'lib/images/loading.gif';
+            if ( !file_exists( $throbber) ) {
+                $throbber = DOKU_BASE.'lib/images/throbber.gif';
+            }
+
+            $form->addElement(form_makeTag('img', array('src' => $throbber, 'id' => 'siteexport__throbber')));
             $form->addElement(form_makeCloseTag('span'));
             $form->endFieldset();
             $form->addElement(form_makeTag('br'));
