@@ -62,45 +62,15 @@ class action_plugin_siteexport_pdfstyles extends DokuWiki_Action_Plugin {
             
             case 'print':
             case 'all':
-                // Filter for user styles
-                $allowed = array_filter( array_keys($event->data['files']), array($this, 'filter_css') );
-                $event->data['files'] = array_intersect_key($event->data['files'], array_flip($allowed));
+                // Keep the styles
                 break;
-
             case 'screen':
             case 'speech':
             case 'DW_DEFAULT':
+                // throw away
                 $event->preventDefault();
                 break;
         }
-    }
-    
-    /**
-     * A simple filter function to check the input string against a list of path-parts that are allowed
-     *
-     * @param string    $str   the script file to check against the list
-     * @param mixed     $list  the list of path parts to test
-     * @return boolean
-     */
-    private function includeFilter( $str, $list ) {
-        
-        foreach( $list as $entry ) {
-            if ( strpos( $str, $entry ) ) return true;
-        }
-        
-        return false;
-    }
-    
-    /**
-     * Filters scripts that are intended for admins only
-     *
-     * @param string    $script   the script file to check against the list
-     * @return boolean
-     */
-    private function filter_css( $script ) {
-        return $this->includeFilter( $script, array(
-            '/lib/tpl/',
-        ));
     }
 }
 
