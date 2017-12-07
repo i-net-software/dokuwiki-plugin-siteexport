@@ -40,8 +40,6 @@ class action_plugin_siteexport_pdfstyles extends DokuWiki_Action_Plugin {
         // We need different keys for each style sheet.
         $event->data->key .= $INPUT->str('pdfExport', '0');
         $event->data->cache = getCacheName( $event->data->key, $event->data->ext );
-
-        return true;
     }
 
     /**
