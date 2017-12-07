@@ -146,11 +146,7 @@ class helper_plugin_siteexport extends DokuWiki_Plugin {
             $templateSwitching = true;
         }
 
-        $dw2pdf = plugin_load('action', 'dw2pdf');
-        if ($dw2pdf) {
-            $info = $dw2pdf->getInfo();
-            $pdfExport = strtotime($info['date']) >= strtotime("2017-11-29");
-        }
+        $pdfExport = self::checkDW2PDF();
 
         $translation = plugin_load('helper', 'autotranslation');
         if ($translation) {
@@ -332,5 +328,17 @@ class helper_plugin_siteexport extends DokuWiki_Plugin {
         $form->addElement($moreHints);
         $form->addElement(form_makeCloseTag('p'));
     }
-
+    
+    /**
+     * Check for dw2pdf and its version
+     */
+    public static function checkDW2PDF() {
+        $pdfExport = false;
+        $dw2pdf = plugin_load('action', 'dw2pdf');
+        if ($dw2pdf) {
+            $info = $dw2pdf->getInfo();
+            $pdfExport = strtotime($info['date']) >= strtotime("2017-11-29");
+        }
+        return $pdfExport;
+    }
 }

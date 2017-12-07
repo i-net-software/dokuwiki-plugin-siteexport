@@ -7,7 +7,7 @@
  * @author     Gerry Weissbach <gweissbach@inetsoftware.de>
  */
 
-if (!empty($_REQUEST['pdfExport']) && intval($_REQUEST['pdfExport']) == 1 && plugin_load('action', 'dw2pdf') ) {
+if (!empty($_REQUEST['pdfExport']) && intval($_REQUEST['pdfExport']) == 1 && (plugin_load('helper', 'siteexport')::checkDW2PDF()) ) {
 
     require_once(DOKU_PLUGIN . 'dw2pdf/DokuPDF.class.php');
     class siteexportPDF extends DokuPDF {

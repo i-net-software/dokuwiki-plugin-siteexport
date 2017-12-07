@@ -2,7 +2,7 @@
 
 if (!defined('DOKU_PLUGIN')) die('meh');
 
-if (!empty($_REQUEST['pdfExport']) && intval($_REQUEST['pdfExport']) == 1 && plugin_load('action', 'dw2pdf') ) {
+if (!empty($_REQUEST['pdfExport']) && intval($_REQUEST['pdfExport']) == 1 && (plugin_load('helper', 'siteexport')::checkDW2PDF()) ) {
 
     require_once(DOKU_PLUGIN . 'siteexport/inc/mpdf.php');
     class siteexport_pdfgenerator
