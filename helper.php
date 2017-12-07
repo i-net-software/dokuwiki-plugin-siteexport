@@ -148,7 +148,8 @@ class helper_plugin_siteexport extends DokuWiki_Plugin {
 
         $dw2pdf = plugin_load('action', 'dw2pdf');
         if ($dw2pdf) {
-            $pdfExport = true;
+            $info = $dw2pdf->getInfo();
+            $pdfExport = strtotime($info['date']) >= strtotime("2018-11-29");
         }
 
         $translation = plugin_load('helper', 'autotranslation');
@@ -208,7 +209,7 @@ class helper_plugin_siteexport extends DokuWiki_Plugin {
         $form->addElement(form_makeCheckboxField('pdfExport', 1, $this->getLang('pdfExport') . ':', 'pdfExport', null, $pdfExport ? array() : array_merge(array('disabled' => 'disabled'))));
 
         // Hint for dw2pdf
-        $this->addPluginHint( $form, $pdfExport, "the PDF export", "dw2pdf" );
+        $this->addPluginHint( $form, $pdfExport, "the PDF export", "dw2pdf", "You have to install at least version 2017-11-29" );
 
         $form->addElement(form_makeTag('br'));
         $form->addElement(form_makeCheckboxField('usenumberedheading', 1, $this->getLang('usenumberedheading') . ':', 'usenumberedheading', null, $usenumberedheading && $pdfExport ? array() : array_merge(array('disabled' => 'disabled'))));
@@ -320,7 +321,7 @@ class helper_plugin_siteexport extends DokuWiki_Plugin {
         $form->printForm();
     }
     
-    private function addPluginHint( &$form, $condition, $hint, $plugin ) {
+    private function addPluginHint( &$form, $condition, $hint, $plugin, $moreHints = "" ) {
         if ($condition) { return; }
 
         $form->addElement(form_makeOpenTag('p', array('style' => 'color: #a00;')));
@@ -328,6 +329,7 @@ class helper_plugin_siteexport extends DokuWiki_Plugin {
         $form->addElement(form_makeOpenTag('a', array('href' => 'http://www.dokuwiki.org/plugin:' . $plugin, 'alt' => 'install plugin', 'target' => '_blank')));
         $form->addElement('install the ' . $plugin . ' plugin.');
         $form->addElement(form_makeCloseTag('a'));
+        $form->addElement($moreHints);
         $form->addElement(form_makeCloseTag('p'));
     }
 
