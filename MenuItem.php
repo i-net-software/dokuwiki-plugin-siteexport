@@ -9,7 +9,7 @@ use dokuwiki\Menu\Item\AbstractItem;
  *
  * Implements the PDF export button for DokuWiki's menu system
  *
- * @package dokuwiki\plugin\dw2pdf
+ * @package dokuwiki\plugin\siteexport
  */
 class MenuItem extends AbstractItem {
 
