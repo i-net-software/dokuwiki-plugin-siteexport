@@ -149,7 +149,7 @@ class helper_plugin_siteexport extends DokuWiki_Plugin {
         $dw2pdf = plugin_load('action', 'dw2pdf');
         if ($dw2pdf) {
             $info = $dw2pdf->getInfo();
-            $pdfExport = strtotime($info['date']) >= strtotime("2018-11-29");
+            $pdfExport = strtotime($info['date']) >= strtotime("2017-11-29");
         }
 
         $translation = plugin_load('helper', 'autotranslation');
