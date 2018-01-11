@@ -116,7 +116,7 @@ class action_plugin_siteexport_startup extends DokuWiki_Action_Plugin {
 
     public function siteexport_add_svg_page_export(Doku_Event $event) {      
        /* if this is not a page OR ckgedit/ckgedoku is not  active -> return */
-      if($event->data['view'] != 'page') return;
+       if($event->data['view'] != 'page') return;
        array_splice($event->data['items'], -1, 0, [new \dokuwiki\plugin\siteexport\MenuItem()]);
     }
 
