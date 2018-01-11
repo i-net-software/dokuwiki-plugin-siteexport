@@ -35,6 +35,7 @@ class syntax_plugin_siteexport_toc extends DokuWiki_Syntax_Plugin {
         $this->Lexer->addEntryPattern('<toc>(?=.*?</toc>)', $mode, 'plugin_siteexport_toc');
         $this->Lexer->addEntryPattern('<toc .+?>(?=.*?</toc>)', $mode, 'plugin_siteexport_toc');
         $this->Lexer->addSpecialPattern("\[\[.+?\]\]", $mode, 'plugin_siteexport_toc');
+        $this->Lexer->addSpecialPattern('{{indexmenu>.+?}}', $mode, 'plugin_siteexport_toc');
     }
 
     public function postConnect() {
@@ -43,6 +44,13 @@ class syntax_plugin_siteexport_toc extends DokuWiki_Syntax_Plugin {
 
     public function handle($match, $state, $pos, Doku_Handler $handler) {
         global $ID, $INFO;
+
+        if ( substr($match, 0, 12) == "{{indexmenu>" ) {
+            $indexmenu = plugin_load("syntax", "indexmenu_indexmenu");
+            if ( $indexmenu ) {
+                return array('indexmenu_forwarder' => true, 'indexmenu_data' => $indexmenu->handle($match, $state, $pos, $handler));
+            }
+        }
 
         switch ($state) {
             case DOKU_LEXER_ENTER:
@@ -113,7 +121,7 @@ class syntax_plugin_siteexport_toc extends DokuWiki_Syntax_Plugin {
     }
 
     public function render($mode, Doku_Renderer $renderer, $data) {
-        global $ID, $lang, $INFO;
+        global $ID, $lang, $INFO, $conf;
 
         list($SID, $NAME, $DEPTH) = $data;
 
@@ -122,6 +130,11 @@ class syntax_plugin_siteexport_toc extends DokuWiki_Syntax_Plugin {
 
         //    Render XHTML and ODT
         if ($mode == 'xhtml' || $mode == 'odt') {
+
+            if (is_array($data) && $data['indexmenu_forwarder'] == true ) {
+                $indexmenu = plugin_load("syntax", "indexmenu_indexmenu");
+                return $indexmenu->render($mode, $renderer, $data['indexmenu_data']);
+            }
 
             // TOC Title
             if (is_array($data) && $data['start'] == true) {
@@ -266,6 +279,44 @@ class syntax_plugin_siteexport_toc extends DokuWiki_Syntax_Plugin {
 
             // Render Metadata
         } else if ($mode == 'metadata') {
+            if ( is_array($data) && $data['indexmenu_forwarder'] == true ) {
+
+                $indexmenu = plugin_load("syntax", "indexmenu_indexmenu");
+                if ( ! $indexmenu->render($mode, $renderer, $data['indexmenu_data']) ) {
+                    return;
+                }
+
+                /* =========================================================== */
+                /* Use setup code from indexmenu->_indexmenu which is private */
+                //Navbar with nojs
+                if($data['indexmenu_data'][1]['navbar'] && !$data['indexmenu_data'][6]['js']) {
+                    if(!isset($data['indexmenu_data'][0])) $data['indexmenu_data'][0] = '..';
+                    $data['indexmenu_data'][6]['nss'][] = array(getNS($INFO['id']));
+                }
+    
+                if($data['indexmenu_data'][1]['context']) {
+                    //resolve current id relative namespaces
+                    $data['indexmenu_data'][0] = $indexmenu->_parse_ns($data['indexmenu_data'][0], $INFO['id']);
+                    foreach($data['indexmenu_data'][6]['nss'] as $key=> $value) {
+                        $data['indexmenu_data'][6]['nss'][$key][0] = $indexmenu->_parse_ns($value[0], $INFO['id']);
+                    }
+                }
+
+                $pagesData = array();
+                $opts = $data['indexmenu_data'][6];
+                $fsdir = $data['indexmenu_data'][0];
+                if($indexmenu->sort || $indexmenu->msort || $indexmenu->rsort || $indexmenu->hsort) {
+                    $indexmenu->_search($pagesData, $conf['datadir'], array($indexmenu, '_search_index'), $opts, $fsdir);
+                } else {
+                    search($pagesData, $conf['datadir'], array($indexmenu, '_search_index'), $opts, $fsdir);
+                }
+                /* =========================================================== */
+                foreach( $pagesData as $page ) {
+                    $this->savedToc[] = $this->__addTocItem($page['id'], null, $page['level'], $renderer);
+                }
+                $data = 'save__meta';
+            }
+
             if (!is_array($data) && $data == 'save__meta') {
                 $renderer->meta['sitetoc']['siteexportTOC'] = $this->savedToc;
 
