@@ -65,6 +65,7 @@ class siteexport_toc
             return false;
         }
         
+        $this->debug("#### STARTING ####");
         $TOCXML = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<toc>";
         $MAPXML = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<map version=\"1.0\">";
 

@@ -32,6 +32,8 @@ class siteexport_javahelp
 
         // Split Tree for translation
         $translationHSFiles = array();
+        $toc = new siteexport_toc($this->functions, $this->NS);
+        $toc->debug("### Starting to create TOC Files ###");
 
         $count = count($data);
         for ($i = 0; $i < $count ; $i++)
@@ -48,11 +50,11 @@ class siteexport_javahelp
                 ), 3);
             }
 
+            $toc->debug($lang . " -> " . $data[$i]['id'] );
             // get all the relative URLs
             $translationHSFiles[$lang][] = $data[$i];
         }
         
-        $toc = new siteexport_toc($this->functions, $this->NS);
         // +":" at the end becaus this is already a namespace
         $baseNameSpace = str_replace('/', ':', $this->translation && !empty($this->translation->translationsNs) ? $this->translation->translationsNs : $this->NS . ':');
         $translationRoot = curNS($baseNameSpace);
@@ -75,6 +77,8 @@ class siteexport_javahelp
                 $toc->translation = null;
                 $rootNode = '';
             }
+
+            $toc->debug("*** Writing for Language rootNode: '".$rootNode."'***");
             
             $tsRootPath = $hsPrename . '/' . $this->translationRootPath($translationRoot);
             $this->functions->debug->message("Generating JavaHelpDocZip for language '$lang'", $tsRootPath, 3);
