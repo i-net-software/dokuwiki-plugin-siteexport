@@ -3,6 +3,7 @@
 /**
  * @license    GPL 2 (http://www.gnu.org/licenses/gpl.html)
  *
+ * @author HokkaidoPerson <dosankomali@yahoo.co.jp>
  * @author Hideaki SAWADA <chuno@live.jp>
  */
 $lang['encoding']              = 'utf-8';
@@ -51,6 +52,7 @@ $lang['SiteSubmitLabel']       = 'PDF ファイルとしてダウンロードす
 $lang['toolbarButton']         = 'サイトエクスポートを挿入';
 $lang['useOptionsInEditor']    = 'これらのオプションを使用し {{siteAggregator}} 要素を挿入する';
 $lang['NoEntriesFoundHint']    = '統合されるページがありません';
+$lang['siteexport_button']     = 'ページをHTML/PDFに出力';
 $lang['js']['loadingpage']     = '読み込み';
 $lang['js']['startdownload']   = 'ダウンロードを開始する';
 $lang['js']['downloadfinished'] = 'ダウンロードが終了した';
