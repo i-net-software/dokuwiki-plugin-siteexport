@@ -175,7 +175,7 @@ class syntax_plugin_siteexport_toc extends DokuWiki_Syntax_Plugin {
 
                     $renderer->doc = ''; // Start fresh!
 
-                    $renderer->section_open("1 mergedsite" . ($renderer->meta['sitetoc']['mergehint'] ? ' mergehint' : ''));
+                    $renderer->section_open("1 mergedsite" . ($renderer->meta['sitetoc']['mergehint'] && count($this->mergedPages) > 1 ? ' mergehint' : ''));
 
                     // Prepare lookup Array
                     foreach ($this->mergedPages as $tocItem) {
