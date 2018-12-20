@@ -49,7 +49,7 @@ class action_plugin_siteexport_aggregate extends DokuWiki_Action_Plugin {
             $lookupNS = noNS($namespace) == $conf['start'] ? $namespace : $namespace . ':' . $conf['start'];
             
             if ( $INPUT->has( 'mergecompare_start' ) && $INPUT->has( 'mergecompare_end' ) ) {
-                    $values = $functions->__getOrderedListOfPagesForStartEnd($lookupNS, $INPUT->int( 'mergecompare_start' ), $INPUT->int( 'mergecompare_end' ) );
+                    $values = $functions->__getOrderedListOfPagesForStartEnd($lookupNS, $INPUT->int( 'mergecompare_start' ), $INPUT->int( 'mergecompare_end', PHP_INT_MAX ) );
             } else {
                 $values = $functions->__getOrderedListOfPagesForID($lookupNS, $exportBase);
                 $values = array(end( $values )); // the list above has the $exportBase element at the very end
