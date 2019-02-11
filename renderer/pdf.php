@@ -141,7 +141,7 @@ class renderer_plugin_siteexport_pdf extends Doku_Renderer_xhtml {
             $class = array();
             if ($INFO['perm'] > AUTH_READ &&
                 $level <= $conf['maxseclevel']) {
-                $class[] = $this->startSectionEdit($pos, 'section', $text);
+                $class[] = $this->startSectionEdit($pos, array( 'target' => 'section', 'name' => $text ) );
             }
 
             if ( !empty($headingNumber) ) {
@@ -169,7 +169,8 @@ class renderer_plugin_siteexport_pdf extends Doku_Renderer_xhtml {
 
             // write the header
             $name = rand() . $level;
-            $this->doc .= DOKU_LF.'<a name="'. $this->startSectionEdit($pos, 'section_empty', $name) .'" class="' . $this->startSectionEdit($pos, 'section_empty', $name) . '" ></a>'.DOKU_LF;
+            $sectionEdit = $this->startSectionEdit($pos, array( 'target' => 'section_empty', 'name' => $name));
+            $this->doc .= DOKU_LF.'<a name="'. $sectionEdit .'" class="' . $sectionEdit . '" ></a>'.DOKU_LF;
         }
 
         $this->hasSeenHeader = true;
@@ -199,7 +200,7 @@ class renderer_plugin_siteexport_pdf extends Doku_Renderer_xhtml {
     /**
      * @param string $type
      */
-    public function startSectionEdit($start, $type, $title = null, $hid = null) {
+    public function startSectionEdit($start, $data) {
         return '';
     }
 
