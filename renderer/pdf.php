@@ -399,9 +399,9 @@ class renderer_plugin_siteexport_pdf extends Doku_Renderer_xhtml {
         $this->doc .= '</div>';
     }
 
-    public function _highlight($type, $text, $language = null, $filename = null) {
+    public function _highlight($type, $text, $language = NULL, $filename = NULL, $options = NULL) {
         $this->doc .= '<div class="pre">';
-        parent::_highlight($type, $text, $language, $filename);
+        parent::_highlight($type, $text, $language, $filename, $options);
         $this->doc .= '</div>';
     }
 
