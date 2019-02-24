@@ -3,9 +3,9 @@
 /**
  * @license    GPL 2 (http://www.gnu.org/licenses/gpl.html)
  *
+ * @author Tim Wimmer <twimmer@78h.de>
  * @author Thor Weinreich <thorweinreich@nefkom.net>
  * @author Gerry Weißbach <gweissbach@inetsoftware.de>
- * @author Gerry Weißbach <gerry.w@gammaproduction.de>
  * @author Padhie <develop@padhie.de>
  */
 $lang['encoding']              = 'utf-8';
@@ -54,6 +54,7 @@ $lang['SiteSubmitLabel']       = 'Als PDF speichern';
 $lang['toolbarButton']         = 'Site Exporter einfügen';
 $lang['useOptionsInEditor']    = 'Ein {{siteAggregator}} Element mit diesen Einstellungen erzeugen';
 $lang['NoEntriesFoundHint']    = 'Es wurden keine Seiten zum Zusammenfassen gefunden';
+$lang['siteexport_button']     = 'Exportiere Seite in HTML/PDL';
 $lang['js']['loadingpage']     = 'Dokument wird erstellt';
 $lang['js']['startdownload']   = 'Download beginnt';
 $lang['js']['downloadfinished'] = 'Download beendet';
