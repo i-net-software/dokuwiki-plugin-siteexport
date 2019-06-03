@@ -56,7 +56,8 @@ class action_plugin_siteexport_aggregate extends DokuWiki_Action_Plugin {
             }
         }
         
-        if( !$INPUT->bool('includeSelectedVersion', true, true ) && count( $values ) > 1 ) {
+        $includeSelected = $INPUT->str('includeSelectedVersion', 'true', true ) === 'true';
+        if( !$includeSelected && count( $values ) > 1 ) {
             array_pop( $values ); // Remove last entry which is the selected version, but only if more than one entry exists
         }
 
