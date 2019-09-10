@@ -9,6 +9,7 @@
  * @author Florian TASSIN <florian.tassin@gmail.com>
  * @author tuxun <tuxuntrash@gmail.com>
  * @author ubibene <services.m@benard.info>
+ * @author Olivier Humbert <trebmuh@tuxfamily.org>
  */
 $lang['encoding']              = 'utf-8';
 $lang['direction']             = 'ltr';
@@ -41,7 +42,7 @@ $lang['disablePluginsOption']  = 'Désactive les plugins (JS/CSS) durant l\'expo
 $lang['depthType']             = 'Type d\'export';
 $lang['depth.pageOnly']        = 'cette page uniquement';
 $lang['depth.allSubNameSpaces'] = 'Toutes les sous catégories';
-$lang['depth.specifiedDepth']  = 'Profondeur spécifié';
+$lang['depth.specifiedDepth']  = 'Profondeur spécifiée';
 $lang['depth']                 = 'Profondeur';
 $lang['renderer']              = 'Moteur de rendu';
 $lang['exportLinkedPages']     = 'Exporter les pages liées';
