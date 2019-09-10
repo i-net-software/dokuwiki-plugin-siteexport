@@ -26,7 +26,7 @@ This is about the Admin --> Configuration Manager page.
  * **Pattern to exclude resources:**<br>
  A regular expression to define paths that should not be exported
  * **Maximum script execution time:**<br>
- Defines an execution time in seconds for how long the script may run while exporting a site via URL Request or wget/curl request. Due to PHP settings this may be very limited and if you export a very large site or namespace the script will time out. This option will take care of redirecting the request as many times as needed until the export is finished for all pages (the time should be lonf enough to have at least one page exported).
+ Defines an execution time in seconds for how long the script may run while exporting a site via URL Request or wget/curl request. Due to PHP settings this may be very limited and if you export a very large site or namespace the script will time out. This option will take care of redirecting the request as many times as needed until the export is finished for all pages (the time should be long enough to have at least one page exported).
  * **Debug Level:**<br>
  Level of Debug during export job. This may be important to find errors for the support.
  * **Debug File:**<br>
@@ -48,7 +48,7 @@ The namespace/page you actually want to export. This will be predefined with the
 #### Parent Namespace to export
 By default this is the same namespace/page that you are going to export. That will result in a flat structure, with the pages at the top level.
 
-You can define a higher namespace which will result in the structure below being exported with potentially empty folders but habing the lib (plugins, template) directories beeing at top level.
+You can define a higher namespace which will result in the structure below being exported with potentially empty folders but having the lib (plugins, template) directories beeing at top level.
 
 This is usefull for exporting translated namespaces starting with the root of the translation.
 
@@ -66,7 +66,7 @@ How many pages should be exported?
 Number of namespaces to go down into.
 
 ##### Export Linked Pages
-Will export linked pages outside or even deeper of the defined namespace as well
+Will export linked pages outside or even deeper of the defined namespace as well.
 
 ### Select your Options
 
@@ -87,11 +87,11 @@ Allows to export the pages with a different template than the default one.
 
 #### PDF Export
 **Only available if the dw2pdf plugin is installed.**<br>
-Exports the pages into PDF files, one per page. There are options ([TOC](#Table Of Contents definition)) to export multiple pages into one large PDF.
+Exports the pages into PDF files, one per page. There are options ([TOC](#table-of-contents-definition)) to export multiple pages into one large PDF.
 
 #### Numbered Headings
 **Only available if the dw2pdf plugin is installed.**<br>
-Adds a number to each heading. Usefull for a Table Of Contents inside the PDF
+Adds a number to each heading. Usefull for a Table Of Contents inside the PDF.
 
 ### Select one of the Help Creation Options (optional)
 This is totaly optional.
@@ -107,7 +107,7 @@ If you do not want the export to be structured like your DokuWiki is, you can cr
 
 This is great for having all the chapters of a documentation in their own file and exporting them into PDF as a single file.
 
-See [Table Of Contents definition](#table-of-contents-definition)
+See [Table Of Contents definition](#table-of-contents-definition).
 
 ### Disable (JS/CSS) Plugins while export
 The checkboxes stand for each plugin. By checking it the plugin will be disabled temporarily and therefore not generate any CSS or JS output.
