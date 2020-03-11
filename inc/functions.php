@@ -650,12 +650,14 @@ class siteexport_functions extends DokuWiki_Plugin
 
         // Kick all ../
         $originalBasePartsCount = count($baseParts);
+        $didKickSomeParts = 0; // true means, that some parts of the base URL were identical
         while (count($replaceParts) > 0 && count($baseParts) > 0) {
         
             if ($baseParts[0] == $replaceParts[0]) {
                 // Beginning is OK, so remove it.
                 array_shift($replaceParts);
                 array_shift($baseParts);
+                $didKickSomeParts++;
             } else {
                 break;
             }
@@ -669,16 +671,27 @@ class siteexport_functions extends DokuWiki_Plugin
         
         // do the final link calculation
         $finalLink = str_repeat('../', count($baseParts)) . implode('/', $replaceParts);
-        
-        // find out if this is outside of our own export context, becond the baseURL
+
+        // Means nothing was kicked, so other plugin
+        $isExternalPage = count($baseParts) == $originalBasePartsCount;
+
+        // the new page is in the same plugin, with a different subcontext and same language
+        $isExternalPage = $isExternalPage || ($didKickSomeParts == 1 && $baseParts[0] != $replaceParts[0] && $baseParts[1] == $replaceParts[1] );
+
+        // find out if this is outside of our own export context, beyond the baseURL
         $offsiteTemplate = $this->getConf("offSiteLinkTemplate");
         $this->debug->message("Checking for offsite links", array(
             "baseParts" => count($baseParts),
             "originalBaseParts" => $originalBasePartsCount,
             "ExistingPageID" => $existingPageID,
-            "offsiteTemplate" => $offsiteTemplate
+            "finalLink" => $finalLink,
+            "offsiteTemplate" => $offsiteTemplate,
+            "isExternalPage" => $isExternalPage,
+            "didKickSomeParts" => $didKickSomeParts
+            
         ), 1);
-        if (count($baseParts) == $originalBasePartsCount && $existingPageID != null && !empty($offsiteTemplate)) {
+
+        if ( $isExternalPage && $existingPageID != null && !empty($offsiteTemplate)) {
 
             $offsiteTemplate = str_replace('RAWID', $existingPageID, $offsiteTemplate);
             
