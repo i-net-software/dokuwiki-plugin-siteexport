@@ -38,6 +38,8 @@ class settings_plugin_siteexport_settings extends DokuWiki_Plugin
     public $namespace = "";
     
     public $cookies = null;
+    
+    public $excludePattern = "";
 
     /**
      * @param siteexport_functions $functions
@@ -103,5 +105,7 @@ class settings_plugin_siteexport_settings extends DokuWiki_Plugin
         // Strip params that should be forwarded
         $this->additionalParameters = $_REQUEST;
         $functions->removeWikiVariables($this->additionalParameters, true);
+
+        $this->excludePattern = $INPUT->str( 'exclude', $this->getConf('exclude'), true );
     }
 }

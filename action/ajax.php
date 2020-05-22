@@ -556,7 +556,7 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
     private function __getHTTPFile($URL, $RECURSE=false, $newAdditionalParameters=null) {
         global $conf;
 
-        $EXCLUDE = $this->getConf('exclude');
+        $EXCLUDE = $this->functions->settings->excludePattern;
         if ( !empty($EXCLUDE) ) {
             $PATTERN = "/(" . implode('|', explode(' ', preg_quote($EXCLUDE, '/'))) . ")/i";
 
