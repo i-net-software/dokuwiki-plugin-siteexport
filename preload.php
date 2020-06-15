@@ -24,9 +24,7 @@ class preload_plugin_siteexport {
 
         if (!empty($_REQUEST['q'])) {
 
-            require_once(DOKU_INC . 'inc/JSON.php');
-            $json = new JSON();
-            $tempREQUEST = (array) $json->dec(stripslashes($_REQUEST['q']));
+            $tempREQUEST = (array) json_decode(stripslashes($_REQUEST['q'], true));
 
         } else if (array_key_exists('template', $_REQUEST)) {
             $tempREQUEST = $_REQUEST;
