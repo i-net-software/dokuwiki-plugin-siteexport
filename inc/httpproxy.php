@@ -18,9 +18,14 @@
  ******************************************************************** */
 
 if (!defined('DOKU_INC')) die('meh');
-require_once(DOKU_INC . 'inc/HTTPClient.php');
+if ( file_exists(DOKU_INC . 'inc/HTTPClient.php') ) {
+    require_once(DOKU_INC . 'inc/HTTPClient.php');
+    class _HTTPProxy extends DokuHTTPClient {}
+} else if ( class_exists( "\dokuwiki\HTTP\DokuHTTPClient", true ) ) {
+    class _HTTPProxy extends \dokuwiki\HTTP\DokuHTTPClient {}
+}
 
-class HTTPProxy extends DokuHTTPClient {
+class HTTPProxy extends _HTTPProxy {
 
     public $debugClass = null;
     public $settings = null;
