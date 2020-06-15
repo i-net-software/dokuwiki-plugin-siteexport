@@ -9,7 +9,7 @@
 (function($){
     $(function(){
             
-        if ( !$('form#siteexport, form#siteexport_site_aggregator, form#siteexport_siteexporter').size() ) {
+        if ( !$('form#siteexport, form#siteexport_site_aggregator, form#siteexport_siteexporter').length ) {
             return;
         }
         
@@ -24,9 +24,9 @@
             
             _.url = DOKU_BASE + 'lib/exe/ajax.php';
             _.aggregateForm = $('form#siteexport_site_aggregator, form#siteexport_siteexporter');
-            _.suspendGenerate = _.aggregateForm.size() > 0;
+            _.suspendGenerate = _.aggregateForm.length > 0;
             _.allElements = 'form#siteexport :input:not([readonly]):not([disabled]):not([type=submit]):not(button):not(.dummy), form#siteexport_site_aggregator :input:not([type=submit]):not(button), form#siteexport_siteexporter :input:not([type=submit]):not(button)';
-            _.isManager = $('div#siteexport__manager').size() > 0;
+            _.isManager = $('div#siteexport__manager').length > 0;
             _.forbidden_options = [ 'call', 'sectok' ];
 
             _.generate = function() {
@@ -149,7 +149,7 @@
 
                     var frameQuery = "iframe#" + iframeProps.id;
                     var frame = $(frameQuery);
-                    if ( frame.size() == 0 ) {
+                    if ( frame.length == 0 ) {
                         frame = $('<iframe/>')
                         .hide()
                         .appendTo(iframeProps.root)
@@ -283,7 +283,7 @@
                 );
 
                 if (call) { settings.push({ name: 'call', value: call}); }
-                if ( $('input#pdfExport:checked').size() > 0 ) { settings.push({ name: 'renderer', value: 'siteexport_pdf'}); } // is disabled and would not get pushed
+                if ( $('input#pdfExport:checked').length > 0 ) { settings.push({ name: 'renderer', value: 'siteexport_pdf'}); } // is disabled and would not get pushed
                 return settings;
             };
             
@@ -329,7 +329,7 @@
                     return;
                 }
         
-                if (!$('#siteexport__errorlog').size()) {
+                if (!$('#siteexport__errorlog').length) {
                     $('#siteexport__out').parent().append($('<div id="siteexport__errorlog"></div>'));
                 }
         
@@ -390,7 +390,7 @@
             };
             
             _.updateValue = function( elem, value ) {
-                if ( !elem.size() ) {
+                if ( !elem.length ) {
                     return;
                 }
                 switch(elem[0].type) {
