@@ -15,5 +15,5 @@ install:
   - "mv req-travis.txt requirements.txt"
   - "sh travis.sh"
 script:
-  - "cd _test && phpunit --stderr --group plugin_siteexport"
+  - "cd _test && php phpunit.phar --stderr --group plugin_siteexport"
   - "cd ../lib/plugins/siteexport/_test && sh phantomjs/runPhantomJs.sh"
