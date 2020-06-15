@@ -132,17 +132,27 @@ class HTTPProxy extends _HTTPProxy {
         return $returnCode;
     }
 
-     /**
+    /**
      * print debug info to file if exists
      * @param string $info
+     * @param mixed  $var
      */
-    public function _debug($info, $var = null) {
+    protected function _debug($info, $var = null) {
 
         if (!$this->debugClass) {
             return;
         }
 
         $this->debugClass->message("[HTTPClient] " . $info, $var, 1);
+    }
+
+    /**
+     * print debug info to file if exists
+     * @param string $info
+     * @param mixed  $var
+     */
+    protected function debug($info, $var = null) {
+        $this->_debug( $info, $var );
     }
 }
 
