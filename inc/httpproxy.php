@@ -137,7 +137,7 @@ class HTTPProxy extends _HTTPProxy {
      * @param string $info
      * @param mixed  $var
      */
-    protected function _debug($info, $var = null) {
+    public function _debug($info, $var = null) {
 
         if (!$this->debugClass) {
             return;
