@@ -3,7 +3,15 @@ if (!defined('DOKU_INC')) {
     define('DOKU_INC', /** @scrutinizer ignore-type */ realpath(dirname(__FILE__) . '/../../../') . '/');
 }
 
-include_once(DOKU_INC . 'inc/plugincontroller.class.php');
+if ( file_exists(DOKU_INC . 'inc/plugincontroller.class.php') ) {
+    include_once(DOKU_INC . 'inc/plugincontroller.class.php');
+    class _preload_plugin_siteexport_controller extends Doku_Plugin_Controller {}
+} else if ( file_exists(DOKU_INC . 'inc/Extension/PluginController.php') ) {
+    include_once(DOKU_INC . 'inc/Extension/PluginController.php');
+    class _preload_plugin_siteexport_controller extends \dokuwiki\Extension\PluginController {}
+} else if ( class_exists( "\dokuwiki\Extension\PluginController", true ) ) {
+    class _preload_plugin_siteexport_controller extends \dokuwiki\Extension\PluginController {}
+}
 
 class preload_plugin_siteexport {
 
@@ -162,7 +170,7 @@ OUTPUT;
 }
 
 // return a custom plugin list
-class preload_plugin_siteexport_controller extends Doku_Plugin_Controller {
+class preload_plugin_siteexport_controller extends _preload_plugin_siteexport_controller {
 
     protected $tmp_plugins = array();
 
