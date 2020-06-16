@@ -24,7 +24,7 @@ class preload_plugin_siteexport {
 
         if (!empty($_REQUEST['q'])) {
 
-            $tempREQUEST = (array) json_decode(stripslashes($_REQUEST['q'], true));
+            $tempREQUEST = (array) json_decode(stripslashes($_REQUEST['q']), true);
 
         } else if (array_key_exists('template', $_REQUEST)) {
             $tempREQUEST = $_REQUEST;
