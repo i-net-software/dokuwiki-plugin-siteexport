@@ -21,20 +21,20 @@ class syntax_plugin_siteexport_toctools extends DokuWiki_Syntax_Plugin {
     protected $entry_pattern   = '<mergehint\b.*?>(?=.*?</mergehint>)';
     protected $exit_pattern    = '</mergehint>';
 
-    function getType(){ return 'substition';}
-    function getAllowedTypes() { return array('container', 'formatting', 'substition', 'protected', 'disabled', 'paragraphs'); }
-    function getPType(){ return 'stack';}
-    function getSort(){ return 999; }
+    public function getType(){ return 'substition';}
+    public function getAllowedTypes() { return array('container', 'formatting', 'substition', 'protected', 'disabled', 'paragraphs'); }
+    public function getPType(){ return 'stack';}
+    public function getSort(){ return 999; }
 
     /**
      * Connect pattern to lexer
      */
-    function connectTo($mode) {
+    public function connectTo($mode) {
         $this->Lexer->addSpecialPattern($this->special_pattern,$mode,'plugin_siteexport_toctools');
         $this->Lexer->addEntryPattern($this->entry_pattern,$mode,'plugin_siteexport_toctools');
     }
 
-    function postConnect() {
+    public function postConnect() {
         $this->Lexer->addExitPattern($this->exit_pattern, 'plugin_siteexport_toctools');
     }
     
@@ -62,7 +62,7 @@ class syntax_plugin_siteexport_toctools extends DokuWiki_Syntax_Plugin {
     /**
      * Handle the match
      */
-    function handle($match, $state, $pos, Doku_Handler $handler){
+    public function handle($match, $state, $pos, Doku_Handler $handler){
         global $conf;
         switch ($state) {
             case DOKU_LEXER_ENTER:
