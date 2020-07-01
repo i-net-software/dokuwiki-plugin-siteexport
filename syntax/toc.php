@@ -625,15 +625,8 @@ class syntax_plugin_siteexport_toc extends DokuWiki_Syntax_Plugin {
 
         // No emtpy insruction sets.
         $this->_cleanAllInstructions($instructions);
+
         if (empty($instructions)) { return; }
-
-        // only section content should be surrounded.
-        if ($instructions[0][0] != 'section_open') { return; }
-
-        // save for later use
-        $mergeHints = array();
-        $mergeHintId = sectionid($mergeHint, $mergeHints);
-        $this->merghintIds[$mergeHintId] = $mergeHint;
 
         $mergeHintPrepend = array(array(
             'plugin',
@@ -660,11 +653,31 @@ class syntax_plugin_siteexport_toc extends DokuWiki_Syntax_Plugin {
             )
         ));
 
+        if ($instructions[0][0] == 'plugin' && $instructions[0][1][0] == 'siteexport_toctools' && $instructions[0][1][1][1] == 'start' ) {
 /*
-        print "\n\n#########\n";
-        print_r($instructions);
-        print "\nn#########\n\n";
-*/
+        print "<pre>"; print_r($instructions); print "</pre>"; 
+//*/
+            // This is already section merge hint ... but it will have a section at its end ... hopefully
+            $mergeHintPrependPrepend = array();
+            do {
+                array_push( $mergeHintPrependPrepend, array_shift( $instructions ) );
+            } while( $instructions[0][0] != 'section_open' );
+            array_splice($mergeHintPrepend, 0, 0, $mergeHintPrependPrepend);
+
+        }
+
+        // only section content should be surrounded.
+        if ($instructions[0][0] != 'section_open') { return; }
+
+        // save for later use
+        $mergeHints = array();
+        $mergeHintId = sectionid($mergeHint, $mergeHints);
+        $this->merghintIds[$mergeHintId] = $mergeHint;
+
+/*
+        print "<pre>"; print_r($instructions); print "</pre>"; 
+//*/
+
         $instructions = array_merge($mergeHintPrepend, $instructions, $mergeHintPostpend);
     }
 
