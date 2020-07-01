@@ -628,7 +628,18 @@ class syntax_plugin_siteexport_toc extends DokuWiki_Syntax_Plugin {
 
         if (empty($instructions)) { return; }
 
-        $mergeHintPrepend = array(array(
+        $mergeHintPrepend = $this->_toctoolPrepends( $instructions );
+
+        // only section content should be surrounded.
+        if ($instructions[0][0] != 'section_open') { return; }
+
+        // save for later use
+        $mergeHints = array();
+        $mergeHintId = sectionid($mergeHint, $mergeHints);
+        $this->merghintIds[$mergeHintId] = $mergeHint;
+
+        // Insert section information
+        array_push( $mergeHintPrepend, array(
             'plugin',
             array(
                 'siteexport_toctools',
@@ -639,7 +650,7 @@ class syntax_plugin_siteexport_toc extends DokuWiki_Syntax_Plugin {
                     $mergeHintId
                 )
             )
-        ));
+        ) );
 
         $mergeHintPostpend = array(array(
             'plugin',
@@ -652,40 +663,29 @@ class syntax_plugin_siteexport_toc extends DokuWiki_Syntax_Plugin {
                 )
             )
         ));
-/*
-        print "<pre>"; print_r($instructions); print "</pre>"; 
-//*/
 
-        if ( $instructions[0][0] == 'plugin' && $instructions[0][1][0] == 'siteexport_toctools' && $instructions[0][1][1][1] == 'start' ) {
 /*
         print "<pre>"; print_r($instructions); print "</pre>"; 
 //*/
+        $instructions = array_merge($mergeHintPrepend, $instructions, $mergeHintPostpend);
+    }
+    
+    private function _toctoolPrepends( &$instructions ) {
+
+        $mergeHintPrependPrepend = array();
+        if ( $instructions[0][0] == 'plugin' && $instructions[0][1][0] == 'siteexport_toctools' && $instructions[0][1][1][1] == 'start' ) {
+
             // This is already section merge hint ... but it will have a section at its end ... hopefully
-            $mergeHintPrependPrepend = array();
             do {
                 $_instructions = array_shift( $instructions );
                 array_push( $mergeHintPrependPrepend, $_instructions);
             } while( !($_instructions[0] == 'plugin' && $_instructions[1][0] == 'siteexport_toctools' && $_instructions[1][1][1] == 'end' ) ) ;
             array_splice($mergeHintPrepend, 0, 0, $mergeHintPrependPrepend);
-
-/*
-        print "<pre>"; print_r($instructions); print "</pre>"; 
-//*/
         }
-
-        // only section content should be surrounded.
-        if ($instructions[0][0] != 'section_open') { return; }
-
-        // save for later use
-        $mergeHints = array();
-        $mergeHintId = sectionid($mergeHint, $mergeHints);
-        $this->merghintIds[$mergeHintId] = $mergeHint;
-
 /*
         print "<pre>"; print_r($instructions); print "</pre>"; 
 //*/
-
-        $instructions = array_merge($mergeHintPrepend, $instructions, $mergeHintPostpend);
+        return $mergeHintPrependPrepend;
     }
 
     /**
