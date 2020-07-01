@@ -652,18 +652,25 @@ class syntax_plugin_siteexport_toc extends DokuWiki_Syntax_Plugin {
                 )
             )
         ));
+/*
+        print "<pre>"; print_r($instructions); print "</pre>"; 
+//*/
 
-        if ($instructions[0][0] == 'plugin' && $instructions[0][1][0] == 'siteexport_toctools' && $instructions[0][1][1][1] == 'start' ) {
+        if ( $instructions[0][0] == 'plugin' && $instructions[0][1][0] == 'siteexport_toctools' && $instructions[0][1][1][1] == 'start' ) {
 /*
         print "<pre>"; print_r($instructions); print "</pre>"; 
 //*/
             // This is already section merge hint ... but it will have a section at its end ... hopefully
             $mergeHintPrependPrepend = array();
             do {
-                array_push( $mergeHintPrependPrepend, array_shift( $instructions ) );
-            } while( $instructions[0][0] != 'section_open' );
+                $_instructions = array_shift( $instructions );
+                array_push( $mergeHintPrependPrepend, $_instructions);
+            } while( !($_instructions[0] == 'plugin' && $_instructions[1][0] == 'siteexport_toctools' && $_instructions[1][1][1] == 'end' ) ) ;
             array_splice($mergeHintPrepend, 0, 0, $mergeHintPrependPrepend);
 
+/*
+        print "<pre>"; print_r($instructions); print "</pre>"; 
+//*/
         }
 
         // only section content should be surrounded.
