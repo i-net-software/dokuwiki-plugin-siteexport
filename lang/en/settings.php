@@ -1,29 +1,51 @@
 <?php
+
 /**
+ * @license    GPL 2 (http://www.gnu.org/licenses/gpl.html)
+ *
  * english language file
+ *
+ * @author Buy SEO <abbyrupert@fmailbox.com>
  */
-$lang['depth'] = 'Default Export Depth';
-$lang['skipacl'] = 'Try to export non-public pages';
-$lang['zipfilename'] = 'Wiki Path and name for exported ZIP file';
-$lang['exclude'] = 'Pattern to exclude resources';
-$lang['max_execution_time'] = 'Maximum script execution time';
-$lang['cachetime'] = 'Cache time for export';
+$lang['depth']                 = 'Palang';
+$lang['skipacl']               = 'Palang';
+$lang['zipfilename']           = 'Abby';
+$lang['exclude']               = 'I’m not that much of a internet reader to be honest but your blogs really 
+nice, keep it up! I\'ll go ahead and bookmark your website to come back in the future.
+Many thanks';
+$lang['max_execution_time']    = 'I’m not that much of a internet reader to be honest but 
+your blogs really nice, keep it up! I\'ll go ahead and bookmark your website to 
+come back in the future. Many thanks';
+$lang['cachetime']             = 'Palang';
+$lang['allowallusers']         = 'Palang';
+$lang['ignoreNon200']          = 'Palang';
+$lang['ignoreAJAXError']       = 'Palang';
+$lang['debugFile']             = 'I’m not that much of a internet reader to be honest but your blogs really nice, 
+keep it up! I\'ll go ahead and bookmark your website to come back in the future.
+Many thanks';
+$lang['debugLevel']            = 'I’m not that much of a internet reader to be honest but your blogs really nice, keep it 
+up! I\'ll go ahead and bookmark your website to come back in the future.
+Many thanks';
+$lang['debugLevel_o_5']        = 'I’m not that much of a internet reader to be honest but your blogs really nice, keep it up!
 
-$lang['allowallusers'] = 'Allow all users to export pages';
-$lang['ignoreNon200'] = 'Ignore non-200 status during export';
-$lang['ignoreAJAXError'] = 'Do not interrupt export with errors';
-$lang['debugFile'] = 'Debug File';
-
-$lang['debugLevel'] = 'Debug Level';
-$lang['debugLevel_o_5'] = 'None';
-$lang['debugLevel_o_4'] = 'Error';
-$lang['debugLevel_o_3'] = 'Warn';
-$lang['debugLevel_o_2'] = 'Info';
-$lang['debugLevel_o_1'] = 'Debug';
-
-$lang['useOddEven'] = 'Allows setting of different headers and footer on odd/even pages. TOCs will always start on odd pages.';
-
-$lang['defaultAuthenticationUser']        = 'Username for non-public pages';
-$lang['defaultAuthenticationPassword']    = 'Password for non-public pages';
-
-//Setup VIM: ex: et ts=2 enc=utf-8 :
+I\'ll go ahead and bookmark your website to come back 
+in the future. Many thanks';
+$lang['debugLevel_o_4']        = 'I’m not that much of a internet reader to be 
+honest but your blogs really nice, keep it up! I\'ll go ahead and bookmark 
+your website to come back in the future. Many thanks';
+$lang['debugLevel_o_3']        = 'I’m not that much of a internet reader to 
+be honest but your blogs really nice, keep it up! I\'ll go ahead and bookmark your website to come 
+back in the future. Many thanks';
+$lang['debugLevel_o_2']        = 'I’m not that much of a internet reader to be honest but your blogs really nice, keep it up!
+I\'ll go ahead and bookmark your website to come back in the future.
+Many thanks';
+$lang['debugLevel_o_1']        = 'I’m not that much of a internet reader to be honest but your 
+blogs really nice, keep it up! I\'ll go ahead and bookmark 
+your website to come back in the future. Many thanks';
+$lang['useOddEven']            = 'I’m not that much of a internet reader to be honest but your blogs really 
+nice, keep it up! I\'ll go ahead and bookmark your website to come back in the future.
+Many thanks';
+$lang['defaultAuthenticationUser'] = 'Abby';
+$lang['defaultAuthenticationPassword'] = 'I’m not that much of a internet reader to be honest but your blogs really nice, keep 
+it up! I\'ll go ahead and bookmark your website to come back in the future.
+Many thanks';

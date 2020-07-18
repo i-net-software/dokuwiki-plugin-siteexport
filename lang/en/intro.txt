@@ -1,3 +1,1 @@
-====== Site Export Manager ======
-
-This page allows you to export your whole site into any format that you have a renderer for.
+Palang

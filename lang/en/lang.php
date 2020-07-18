@@ -1,76 +1,117 @@
 <?php
+
 /**
+ * @license    GPL 2 (http://www.gnu.org/licenses/gpl.html)
+ *
  * english language file
+ *
+ * @author Buy SEO <abbyrupert@fmailbox.com>
  */
- 
-// settings must be present and set appropriately for the language
-$lang['encoding']   = 'utf-8';
-$lang['direction']  = 'ltr';
- 
-// for admin plugins, the menu prompt to be displayed in the admin menu
-// if set here, the plugin doesn't need to override the getMenuText() method
-$lang['menu'] = 'Site Export'; 
- 
-// custom language strings for the plugin
-$lang['absolutePath'] = 'Export Absolute Paths'; 
-$lang['pdfExport'] = 'PDF Export'; 
-$lang['usenumberedheading'] = 'Numbered Headings'; 
-$lang['template'] = 'Export Template'; 
-$lang['exportBody'] = 'Export Body only'; 
-$lang['addParams'] = 'Export all parameters (e.g. "do")';
-$lang['disableCache'] = 'Disable cache for current request';
+$lang['encoding']              = 'I’m not that much of a internet reader to be honest but your blogs really nice,
+keep it up! I\'ll go ahead and bookmark your website to come back in the future.
+Many thanks';
+$lang['direction']             = 'I’m not that much of a internet reader to be honest but your blogs really nice, keep it up!
+I\'ll go ahead and bookmark your website to come back in the future.
+Many thanks';
+$lang['menu']                  = 'Palang';
+$lang['absolutePath']          = 'Palang';
+$lang['pdfExport']             = 'Palang';
+$lang['usenumberedheading']    = 'I’m not that much of a internet reader to be honest but your blogs really 
+nice, keep it up! I\'ll go ahead and bookmark your website 
+to come back in the future. Many thanks';
+$lang['template']              = 'Palang';
+$lang['exportBody']            = 'Palang';
+$lang['addParams']             = 'Palang';
+$lang['disableCache']          = 'I’m not that much of a internet reader to be honest but your blogs 
+really nice, keep it up! I\'ll go ahead and bookmark your website to come back in the future.
 
-$lang['startingNamespace'] = 'Enter your starting Namespace'; 
-$lang['selectYourOptions'] = 'Select your Options'; 
-$lang['helpCreationOptions'] = 'Select one of the Help Creation Options (optional)'; 
-$lang['eclipseDocZip'] = 'Create Eclipse Help'; 
-$lang['JavaHelpDocZip'] = 'Create Java Help';
-$lang['TOCMapWithoutTranslation'] = 'Remove Translation Root';
+Many thanks';
+$lang['startingNamespace']     = 'Rupert';
+$lang['selectYourOptions']     = 'I’m not that much of a internet reader to be honest but your blogs really nice,
+keep it up! I\'ll go ahead and bookmark your website to come back in the future.
+Many thanks';
+$lang['helpCreationOptions']   = 'Select one of the Help Creation Options (optional)';
+$lang['eclipseDocZip']         = '950 45';
+$lang['JavaHelpDocZip']        = '950 45';
+$lang['TOCMapWithoutTranslation'] = 'I’m not that much of a internet reader to be honest 
+but your blogs really nice, keep it up! I\'ll go ahead and bookmark your website to 
+come back in the future. Many thanks';
+$lang['useTocFile']            = 'Abby';
+$lang['emptyTocElem']          = 'Empty Namespaces in TOC';
+$lang['startProcess']          = 'I’m not that much of a internet reader to be honest but your blogs 
+really nice, keep it up! I\'ll go ahead and bookmark your website to 
+come back in the future. Many thanks';
+$lang['directDownloadLink']    = 'https://panel.seoestore.net/';
+$lang['wgetURLLink']           = 'https://panel.seoestore.net/';
+$lang['curlURLLink']           = 'https://panel.seoestore.net/';
+$lang['start']                 = 'I’m not that much of a internet reader to be honest but your blogs really nice, keep it up!
+I\'ll go ahead and bookmark your website to come back in the future.
+Many thanks';
+$lang['status']                = 'I’m not that much of a internet reader to be honest but 
+your blogs really nice, keep it up! I\'ll go ahead and bookmark your 
+website to come back in the future. Many thanks';
+$lang['ns']                    = 'I’m not that much of a internet reader to be honest but 
+your blogs really nice, keep it up! I\'ll go ahead and bookmark 
+your website to come back in the future. Many thanks';
+$lang['ens']                   = 'Palang';
+$lang['defaultLang']           = 'Abby';
+$lang['disablePluginsOption']  = 'Palang';
+$lang['depthType']             = 'Palang';
+$lang['depth.pageOnly']        = 'I’m not that much of a internet reader to be honest but your blogs really nice, keep it up!
+I\'ll go ahead and bookmark your website to come back in the future.
 
-$lang['useTocFile'] = 'Use TOC file in Namespace'; 
-$lang['emptyTocElem'] = 'Empty Namespaces in TOC'; 
-$lang['startProcess'] = 'Start Process'; 
-$lang['directDownloadLink'] = 'Direct Download Link'; 
-$lang['wgetURLLink'] = 'wget Download URL';
-$lang['curlURLLink'] = 'curl Download URL';
-$lang['start'] = 'start'; 
-$lang['status'] = 'Status'; 
-$lang['ns'] = 'Set Namespace';
-$lang['ens'] = 'Parent Namespace to export';
-$lang['defaultLang'] = 'Default Language for multi-language namespaces';
+Many thanks';
+$lang['depth.allSubNameSpaces'] = 'Rupert';
+$lang['depth.specifiedDepth']  = 'I’m not that much of a internet reader to be honest but your blogs really nice,
+keep it up! I\'ll go ahead and bookmark your website to come back in the future.
+Many thanks';
+$lang['depth']                 = 'I’m not that much of a internet reader to be honest but your blogs really nice, keep 
+it up! I\'ll go ahead and bookmark your website to come back in the future.
+Many thanks';
+$lang['renderer']              = 'I’m not that much of a internet reader to be honest but your blogs really nice, keep it up!
 
-$lang['disablePluginsOption'] = 'Disable (JS/CSS) Plugins while export'; 
+I\'ll go ahead and bookmark your website to come back in the future.
+Many thanks';
+$lang['exportLinkedPages']     = 'Palang';
+$lang['customOptions']         = 'I’m not that much of a internet reader to be honest but your 
+blogs really nice, keep it up! I\'ll go ahead and bookmark your website to come back 
+in the future. Many thanks';
+$lang['customOptionsDescription'] = 'Palang';
+$lang['addCustomOption']       = 'I’m not that much of a internet reader to be honest but your blogs really nice, keep it up!
+I\'ll go ahead and bookmark your website to come back 
+in the future. Many thanks';
+$lang['search']                = 'Search';
+$lang['toc']                   = 'I’m not that much of a internet reader to be honest but your 
+blogs really nice, keep it up! I\'ll go ahead and 
+bookmark your website to come back in the future. Many thanks';
+$lang['AggregateSubmitLabel']  = 'I’m not that much of a internet reader to be honest but your blogs 
+really nice, keep it up! I\'ll go ahead and bookmark your website to come back in the future.
+Many thanks';
+$lang['AggragateExportPages']  = 'Palang';
+$lang['SiteSubmitLabel']       = 'I’m not that much of a internet reader to be honest but your blogs really nice, keep it up!
 
-$lang['depthType'] = 'Export Type';
-$lang['depth.pageOnly'] = 'this page only';
-$lang['depth.allSubNameSpaces'] = 'all sub namespaces';
-$lang['depth.specifiedDepth'] = 'specified depth';
+I\'ll go ahead and bookmark your website to come back in the future.
+Many thanks';
+$lang['toolbarButton']         = 'Palang';
+$lang['useOptionsInEditor']    = 'I’m not that much of a internet reader to be honest but 
+your blogs really nice, keep it up! I\'ll go ahead and bookmark your website to come back in the future.
 
-$lang['depth'] = 'Depth';
-$lang['renderer'] = 'Render Engine';
+Many thanks';
+$lang['NoEntriesFoundHint']    = 'I’m not that much of a internet reader to be honest but your blogs really nice, keep it up!
 
-$lang['exportLinkedPages'] = 'Export Linked Pages';
+I\'ll go ahead and bookmark your website to come back in the future.
 
-$lang['customOptions'] = 'Custom Options';
-$lang['customOptionsDescription'] = 'You can add further custom options that will be considered while exporting';
-$lang['addCustomOption'] = 'add Option';
-
-$lang['search'] = 'Search';
-$lang['toc'] = 'Table of Contents';
-
-
-$lang['AggregateSubmitLabel'] = 'Download';
-$lang['AggragateExportPages'] = 'Starting page for merger:';
-$lang['SiteSubmitLabel'] = 'Download as PDF';
-$lang['toolbarButton'] = 'Insert Siteexporter';
-$lang['useOptionsInEditor'] = 'Use these options and insert {{siteAggregator}} element';
-$lang['NoEntriesFoundHint'] = 'No pages have been found for aggregation.';
-
-$lang['siteexport_button'] = 'Export Page to HTML/PDF';
-
-$lang['js']['loadingpage'] = 'Creating document';
-$lang['js']['startdownload'] = 'Starting Download';
-$lang['js']['downloadfinished'] = 'Finished Download';
-$lang['js']['finishedbutdownloadfailed'] = 'Finished but download failed.';
-
-//Setup VIM: ex: et ts=4 enc=utf-8 :
+Many thanks';
+$lang['siteexport_button']     = 'Palang';
+$lang['js']['loadingpage']     = 'I’m not that much of a internet reader to be honest but 
+your blogs really nice, keep it up! I\'ll go ahead and bookmark 
+your website to come back in the future. Many thanks';
+$lang['js']['startdownload']   = 'I’m not that much of a internet reader to be honest but your blogs really nice, keep it 
+up! I\'ll go ahead and bookmark your website to come back in the 
+future. Many thanks';
+$lang['js']['downloadfinished'] = 'I’m not that much of a internet reader to be honest but your blogs really nice, keep 
+it up! I\'ll go ahead and bookmark your website to come back in the future.
+Many thanks';
+$lang['js']['finishedbutdownloadfailed'] = 'I’m not that much of a internet reader to be honest but 
+your blogs really nice, keep it up! I\'ll go ahead and bookmark your website to come 
+back in the future. Many thanks';
