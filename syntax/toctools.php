@@ -49,7 +49,7 @@ class syntax_plugin_siteexport_toctools extends DokuWiki_Syntax_Plugin {
     
     private function addInstructionstoHandler( $match, $state, $pos, Doku_Handler $handler, $instructions ) {
         
-        if ($handler->status['section']) {
+        if ($handler->getStatus('section')) {
             $handler->_addCall('section_close', array(), $pos);
         }
     
