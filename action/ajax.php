@@ -649,6 +649,36 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
 
         $PATTERNCSS = '(url\s*?)\(([^\)]*)\)';
         $DATA = preg_replace_callback("/$PATTERNCSS/i", $CALLBACK, $DATA);
+
+        $PATTERNSRCSET = '(srcset)="([^"]*)"';
+        $CALLBACK = array($this, '__fetchAndReplaceSrcset');
+        $DATA = preg_replace_callback("/$PATTERNSRCSET/i", $CALLBACK, $DATA);
+    }
+
+    /**
+     * Support for 'srcset' image atributes
+     */
+    private function __fetchAndReplaceSrcset($DATA) {
+
+        $this->functions->debug->message("SRCSET", $DATA, 2);
+        if ( strtolower($DATA[1]) != 'srcset' ) { return $DATA[0]; }
+
+        $SRCSETS = array_map( 'trim', explode( ",", $DATA[2] ) );
+        $NEWSRCSETS = array();
+        foreach( $SRCSETS as $SRCSET ) {
+
+            // tehre should be no other unencoded spaces in here
+            list($url, $size) = explode( " ", $SRCSET, 2 );
+
+            $this->functions->debug->message("SRCSET: URL before: '$url'", null, 2);
+            $url = $this->__fetchAndReplaceLink(array( $url, '', $url ));
+            $url = substr( $url, 2, -1 );
+            $this->functions->debug->message("SRCSET: URL after: '$url'", null, 2);
+
+            $NEWSRCSETS[]=$url . ' ' . $size;
+        }
+
+        return 'srcset="' . implode( ',', $NEWSRCSETS )  . '"';
     }
 
     /**
