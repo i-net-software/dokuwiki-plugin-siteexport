@@ -635,7 +635,7 @@ class syntax_plugin_siteexport_toc extends DokuWiki_Syntax_Plugin {
 
         // save for later use
         $mergeHints = array();
-        $mergeHintId = sectionid($mergeHint, $mergeHints);
+        $mergeHintId = sectionID($mergeHint, $mergeHints);
         $this->merghintIds[$mergeHintId] = $mergeHint;
 
         // Insert section information

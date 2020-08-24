@@ -20,6 +20,8 @@ class syntax_plugin_siteexport_toctools extends DokuWiki_Syntax_Plugin {
     protected $special_pattern = '<mergehint\b[^>\r\n]*?/>';
     protected $entry_pattern   = '<mergehint\b.*?>(?=.*?</mergehint>)';
     protected $exit_pattern    = '</mergehint>';
+    
+    private $checkArray = array();
 
     public function getType(){ return 'substition';}
     public function getAllowedTypes() { return array('container', 'formatting', 'substition', 'protected', 'disabled', 'paragraphs'); }
@@ -68,7 +70,7 @@ class syntax_plugin_siteexport_toctools extends DokuWiki_Syntax_Plugin {
             case DOKU_LEXER_ENTER:
             case DOKU_LEXER_SPECIAL:
                 $data = trim(substr($match,strpos($match,' '),-1)," \t\n/");
-                $this->addInstructionstoHandler( $match, $state, $pos, $handler, array('mergehint', 'start', $data, sectionid( $data ) ) );
+                $this->addInstructionstoHandler( $match, $state, $pos, $handler, array('mergehint', 'start', $data, sectionID( $data, $checkArray ) ) );
                 break;
             case DOKU_LEXER_UNMATCHED:
                 $handler->_addCall('cdata', array($match), $pos);
