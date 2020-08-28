@@ -50,8 +50,9 @@ class syntax_plugin_siteexport_toctools extends DokuWiki_Syntax_Plugin {
     }
     
     private function addInstructionstoHandler( $match, $state, $pos, Doku_Handler $handler, $instructions ) {
-        
-        if ($handler->getStatus('section')) {
+
+        // Switch for DW Hogfather+
+        if ( ( method_exists( $handler, 'getStatus') && $handler->getStatus('section') ) || $handler->status['section'] ) {
             $handler->_addCall('section_close', array(), $pos);
         }
     
