@@ -209,6 +209,7 @@ class syntax_plugin_siteexport_toc extends DokuWiki_Syntax_Plugin {
                             }
                             // Merge
                             $instr = $this->_mergeWithHeaders($instr, $instructions, 1);
+
                         } else
                         if ($renderer->meta['sitetoc']['pagebreak']) {
                             $sitepagebreak = array(array(
@@ -236,7 +237,6 @@ class syntax_plugin_siteexport_toc extends DokuWiki_Syntax_Plugin {
                         if ($instr[count($instr)-1][1][0] == 'siteexport_toctools' && $instr[count($instr)-1][1][1][0] == 'pagebreak' ) {
                             $instr = array_slice($instr, 0, -1);
                         }
-
 
                         // print "<pre>"; print_r($instr); print "</pre>";
                         $this->_render_output($renderer, $mode, $instr);
@@ -577,6 +577,13 @@ class syntax_plugin_siteexport_toc extends DokuWiki_Syntax_Plugin {
      */
     private function _cleanInstructions(&$instructions, $tag) {
 
+
+/*
+        print "<pre>";
+        print "$tag ->\n";
+        print_r($instructions);
+        print "</pre>";
+//*/
         $inCount = count($instructions);
         for ($i = 0; $i < $inCount; $i++) {
 
@@ -586,14 +593,30 @@ class syntax_plugin_siteexport_toc extends DokuWiki_Syntax_Plugin {
             }
 
             if (preg_match($tag, $instructions[$i][0]) && preg_match($tag, $instructions[$i+1][0]) && $instructions[$i][0] != $instructions[$i+1][0]) {
+/*
+        print "<pre>";
+        print "Removed ->\n";
+        print_r($instructions[$i-1]);
+        print "---\n";
+        print_r($instructions[$i]);
+        print_r($instructions[$i+1]);
+        print "---\n";
+        print_r($instructions[$i+2]);
+        print "</pre>";
+//*/
 
                 // found different tags, but both match the expression and follow each other - so they can be elliminated
                 array_splice($instructions, $i, 2);
                 $inCount -= 2;
                 $i--;
             }
-
         }
+/*
+        print "<pre>";
+        print "$tag ->\n";
+        print_r($instructions);
+        print "</pre>";
+//*/
     }
     
     /**
@@ -635,7 +658,7 @@ class syntax_plugin_siteexport_toc extends DokuWiki_Syntax_Plugin {
 
         // save for later use
         $mergeHints = array();
-        $mergeHintId = sectionID($mergeHint, $mergeHints);
+        $mergeHintId = sectionid($mergeHint, $mergeHints);
         $this->merghintIds[$mergeHintId] = $mergeHint;
 
         // Insert section information
@@ -673,6 +696,9 @@ class syntax_plugin_siteexport_toc extends DokuWiki_Syntax_Plugin {
     private function _toctoolPrepends( &$instructions ) {
 
         $mergeHintPrependPrepend = array();
+        
+        // 2021-01-14 This did no good - if a merged page had two mergehints, the first was stripped.
+/*
         if ( $instructions[0][0] == 'plugin' && $instructions[0][1][0] == 'siteexport_toctools' && $instructions[0][1][1][1] == 'start' ) {
 
             // This is already section merge hint ... but it will have a section at its end ... hopefully
@@ -682,6 +708,7 @@ class syntax_plugin_siteexport_toc extends DokuWiki_Syntax_Plugin {
             } while( !($_instructions[0] == 'plugin' && $_instructions[1][0] == 'siteexport_toctools' && $_instructions[1][1][1] == 'end' ) ) ;
             array_splice($mergeHintPrepend, 0, 0, $mergeHintPrependPrepend);
         }
+//*/
 /*
         print "<pre>"; print_r($instructions); print "</pre>"; 
 //*/
