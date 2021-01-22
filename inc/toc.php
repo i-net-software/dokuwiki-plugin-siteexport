@@ -180,7 +180,7 @@ class siteexport_toc
         if (empty($targetID)) {
             $targetID = strtolower($item['name']);
         }
-        return "\n" . str_repeat("\t", max($depth, 0)+1) . "<tocitem target=\"" . $targetID . "\"" . (intval($item['exists']) == 1 ? " text=\"" . $item['name'] . "\"" : "") . ($selfClosed ? '/' : '') . ( array_key_exists('tags', $item) && !empty($item['tags']) ? " tags=\"" . implode(' ', $item['tags']) . "\"": "") . ">";
+        return "\n" . str_repeat("\t", max($depth, 0)+1) . "<tocitem target=\"" . $targetID . "\"" . (intval($item['exists']) == 1 ? " text=\"" . $item['name'] . "\"" : "") . ( array_key_exists('tags', $item) && !empty($item['tags']) ? " tags=\"" . implode(' ', $item['tags']) . "\"": "")  . ($selfClosed ? '/' : '') . ">";
     }
     
     /**
