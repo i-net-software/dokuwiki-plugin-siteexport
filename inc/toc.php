@@ -17,6 +17,10 @@ class siteexport_toc
         $this->NS = $NS;
     }
     
+    private function isNotEmpty( $val ) {
+        return !empty($val);
+    }
+    
     private function shortenByTranslation(&$inputURL, $deepSearch = false)
     {
         // Mandatory: we allways want '/' insteadf of ':' here
@@ -94,6 +98,9 @@ class siteexport_toc
 
             // if not there, no map ids will be generated
             $elem['mapID'] = intval($elem['exists']) == 1 ? $this->functions->getMapID($elem['id'], $elem['anchor'], $check) : array();
+            $elem['tags'] = explode(' ', p_get_metadata($elem['id'], 'context tags', true)); // thats from the tag plugin
+            $elem['tags'] = array_filter($elem['tags'], array($this, 'isNotEmpty'));
+            $elem['tags'] = array_map(array($this->functions, 'cleanId'), $elem['tags']);
 
             if ( empty($elem['depth']) ) {
                 $elem['depth'] = count(explode('/', $elem['url']));
@@ -113,7 +120,7 @@ class siteexport_toc
             // Go on building mapXML
             $this->shortenByTranslation($elem['mapURL'], true); // true to already remove all language stuff - false if not
             foreach ( $elem['mapID'] as $VIEWID ) {
-                $MAPXML .= "\n\t<mapID target=\"$VIEWID\" url=\"" . $elem['mapURL'] . $anchor . "\"/>";
+                $MAPXML .= "\n\t<mapID target=\"" . $VIEWID . "\" url=\"" . $elem['mapURL'] . $anchor . "\"/>";
             }
 
             $elem['tocNS'] = getNS(cleanID($elem['url']));
@@ -173,7 +180,7 @@ class siteexport_toc
         if (empty($targetID)) {
             $targetID = strtolower($item['name']);
         }
-        return "\n" . str_repeat("\t", max($depth, 0)+1) . "<tocitem target=\"$targetID\"" . (intval($item['exists']) == 1 ? " text=\"" . $item['name'] . "\"" : "") . ($selfClosed ? '/' : '') . ">";
+        return "\n" . str_repeat("\t", max($depth, 0)+1) . "<tocitem target=\"" . $targetID . "\"" . (intval($item['exists']) == 1 ? " text=\"" . $item['name'] . "\"" : "") . ($selfClosed ? '/' : '') . ( array_key_exists('tags', $item) && !empty($item['tags']) ? " tags=\"" . implode(' ', $item['tags']) . "\"": "") . ">";
     }
     
     /**
