@@ -719,7 +719,7 @@ class siteexport_functions extends DokuWiki_Plugin
 
         if (empty($meta['id'])) {
             $title = empty($meta['title']) ? $this->getSiteTitle($elemID) : $meta['title'];
-            $meta['id'] = sectionID($this->cleanId(strtolower($title)), $check);
+            $meta['id'] = sectionID($this->cleanId($title), $check);
         }
 
         $mapID = explode('|', $meta['id']);
