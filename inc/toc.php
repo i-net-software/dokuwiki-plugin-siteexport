@@ -178,7 +178,7 @@ class siteexport_toc
         $this->debug($item);
         $targetID = $item['mapID'][0];
         if (empty($targetID)) {
-            $targetID = strtolower($item['name']);
+            $targetID = $this->functions->cleanID($item['name']);
         }
         return "\n" . str_repeat("\t", max($depth, 0)+1) . "<tocitem target=\"" . $targetID . "\"" . (intval($item['exists']) == 1 ? " text=\"" . $item['name'] . "\"" : "") . ( array_key_exists('tags', $item) && !empty($item['tags']) ? " tags=\"" . implode(' ', $item['tags']) . "\"": "")  . ($selfClosed ? '/' : '') . ">";
     }
