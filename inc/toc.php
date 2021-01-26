@@ -114,6 +114,7 @@ class siteexport_toc
             
             if ( empty( $elem['name'] ) || $elem['name'] == noNs($elem['id']) ) {
                 $elem['name'] = $this->functions->getSiteTitle($elem['id']);
+                $this->debug("no name, get site title");
                 $this->debug($elem);
             }
 
@@ -175,10 +176,12 @@ class siteexport_toc
      **/
     private function __TOCItem($item, $depth, $selfClosed = true)
     {
+        $this->debug("creating toc item");
         $this->debug($item);
         $targetID = $item['mapID'][0];
         if (empty($targetID)) {
             $targetID = $this->functions->cleanID($item['name']);
+            $this->debug("no map ID, using: " . $targetID);
         }
         return "\n" . str_repeat("\t", max($depth, 0)+1) . "<tocitem target=\"" . $targetID . "\"" . (intval($item['exists']) == 1 ? " text=\"" . $item['name'] . "\"" : "") . ( array_key_exists('tags', $item) && !empty($item['tags']) ? " tags=\"" . implode(' ', $item['tags']) . "\"": "")  . ($selfClosed ? '/' : '') . ">";
     }
@@ -226,7 +229,7 @@ class siteexport_toc
         } else if ($CURRENTNODENAME != null) {
             // We have a parent node for what is comming … lets honor that
             $didOpenItem = !(count($CURRENTNODE) == 0);
-            $XML .= $this->__TOCItem(array('name' => ucwords($CURRENTNODENAME)), $DEPTH, !$didOpenItem);
+            $XML .= $this->__TOCItem(array('name' => $CURRENTNODENAME), $DEPTH, !$didOpenItem);
         } else {
             // Woohoo … empty node? do not count up!
             $DEPTH--;
