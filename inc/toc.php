@@ -114,7 +114,12 @@ class siteexport_toc
             
             if ( empty( $elem['name'] ) || $elem['name'] == noNs($elem['id']) ) {
                 $elem['name'] = $this->functions->getSiteTitle($elem['id']);
-                $this->debug("no name, get site title");
+                
+                if ( is_array($elem['mapID']) && empty( $elem['mapID'] ) ) {
+                    array_push($elem['mapID'], noNs($elem['id']));
+                }
+                
+                $this->debug("no name, get site title " . $elem['name']);
                 $this->debug($elem);
             }
 
