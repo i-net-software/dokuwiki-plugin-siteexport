@@ -22,6 +22,10 @@ class action_plugin_siteexport_aggregate extends DokuWiki_Action_Plugin {
         $controller->register_hook('TOOLBAR_DEFINE', 'AFTER', $this, 'siteexport_aggregate_button', array ());
     }
     
+    private function prefixStart($entry) {
+        return noNS($namespace) == $conf['start'] ? $namespace : $namespace . ':' . $conf['start'];
+    }
+    
     public function siteexport_aggregate(Doku_Event &$event)
     {
         global $ID, $INFO, $conf, $INPUT;
@@ -30,13 +34,16 @@ class action_plugin_siteexport_aggregate extends DokuWiki_Action_Plugin {
         // (1) this page really has an aggregator and we did submit a request to do so
         // (2) this page really has an aggregator and we export as PDF
         if ( !( (!empty($INFO['meta']['siteexport']) && $INFO['meta']['siteexport']['hasaggregator'] == true) && ( $INPUT->has( 'siteexport_aggregate' ) || $conf['renderer_xhtml'] == 'siteexport_pdf' ) ) ) { return true; }
-        
-        $exportBase = cleanID( $INPUT->str('baseID') );
-        $namespace = empty($exportBase) ? $INFO['meta']['siteexport']['baseID'] : getNs($exportBase);
+
+        $exportBase = $INPUT->str('baseID');
+        $namespaces = empty($exportBase) ? $INFO['meta']['siteexport']['baseID'] : getNs($exportBase);
+        $namespaces = explode('|', $namespaces);
+        $namespaces = array_map('cleanID', $namespaces);
+        $namespace = $exportBase = $namespaces[0];
         
         $functions = plugin_load('helper', 'siteexport');
-        $values = $functions->__getOrderedListOfPagesForID($namespace, $exportBase);
-        
+        $values = $functions->__getOrderedListOfPagesForID($namespaces, $exportBase);
+
         // If no base given, take the first one from the ordered list.        
         if ( empty($exportBase) ) {
             // Reset to latest element
@@ -46,8 +53,7 @@ class action_plugin_siteexport_aggregate extends DokuWiki_Action_Plugin {
         // If only the one file should be exported, strip it down.
         if ( $INPUT->bool('exportSelectedVersionOnly' ) ) {
             // Strip down values
-            $lookupNS = noNS($namespace) == $conf['start'] ? $namespace : $namespace . ':' . $conf['start'];
-            
+            $lookupNS = array_map(array($this, 'prefixStart'), $namespaces);
             if ( $INPUT->has( 'mergecompare_start' ) && $INPUT->has( 'mergecompare_end' ) ) {
                     $values = $functions->__getOrderedListOfPagesForStartEnd($lookupNS, $INPUT->int( 'mergecompare_start' ), $INPUT->int( 'mergecompare_end', PHP_INT_MAX ) );
             } else {
@@ -55,7 +61,7 @@ class action_plugin_siteexport_aggregate extends DokuWiki_Action_Plugin {
                 $values = array(end( $values )); // the list above has the $exportBase element at the very end
             }
         }
-        
+
         $includeSelected = $INPUT->str('includeSelectedVersion', 'true', true ) === 'true';
         if( !$includeSelected && count( $values ) > 1 ) {
             array_pop( $values ); // Remove last entry which is the selected version, but only if more than one entry exists

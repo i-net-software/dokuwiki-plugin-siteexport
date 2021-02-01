@@ -40,20 +40,24 @@ class syntax_plugin_siteexport_aggregate extends DokuWiki_Syntax_Plugin {
 
         // $isAggregator = (array_shift($data) == 'siteexportAGGREGATOR');
         $isAggregator = true;
-        $namespace = $ID;
+        $namespace = array();
         foreach( $data as $option ) {
             
             list($key, $value) = explode('=', $option);
             if ($key == "namespace") {
-                $namespace = $value;
+                $ns = $value;
                 if ( substr($value, -1) != ':' ) {
-                    $namespace .= ':';
+                    $ns .= ':';
                 }
 
                 // The following function wants an page but we only have an NS at this moment
-                $namespace .= 'index';
-                break;
+                $ns .= 'index';
+                $namespace[] = $ns;
             }
+        }
+        
+        if ( empty($namespace) ) {
+            $namespace[] = $ID;
         }
 
         if ($mode == 'xhtml'){
@@ -93,7 +97,18 @@ class syntax_plugin_siteexport_aggregate extends DokuWiki_Syntax_Plugin {
                 }
             }
             
-            $values = $functions->__getOrderedListOfPagesForID($namespace);
+            $values = array();
+            $allNamespaces = $functions->__getOrderedListOfPagesForID($namespace);
+            foreach( $allNamespaces as $ns ) {
+                if ( !array_key_exists('_'.$ns[2], $values) ) {
+                    $values['_'.$ns[2]] = $ns;
+                } else if ( !in_array($ns[0], $values['_'.$ns[2]][4]) ) {
+                    $values['_'.$ns[2]][0] .= '|' . $ns[0];
+                }
+                $values['_'.$ns[2]][4][] = $ns[0];
+            }
+            
+            $values = array_values($values);
             $renderer->doc .= '<div class="siteaggregator">';
 
             if ( empty($values) ) {
@@ -112,7 +127,7 @@ class syntax_plugin_siteexport_aggregate extends DokuWiki_Syntax_Plugin {
             return true;
         } else if ($mode == 'metadata') {
             $renderer->meta['siteexport']['hasaggregator'] = $isAggregator;
-            $renderer->meta['siteexport']['baseID'] = $namespace;
+            $renderer->meta['siteexport']['baseID'] = implode('|', $namespace);
         }
 
         return false;

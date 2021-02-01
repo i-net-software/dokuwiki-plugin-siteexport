@@ -90,22 +90,28 @@ class helper_plugin_siteexport extends DokuWiki_Plugin {
         return $a[2] > $b[2] ? -1 : 1;
     }
     
-    public function __getOrderedListOfPagesForID($ID, $start=null)
+    public function __getOrderedListOfPagesForID($IDs, $start=null)
     {
         global $conf;
         require_once(dirname(__FILE__)."/inc/functions.php");
         $functions = new siteexport_functions(false);
         
+        if ( !is_array($IDs) ) {
+            $IDs = array($IDs);
+        }
+
         $sites = $values = array();
         $page = null;
+        foreach( $IDs as $ID ) {
         search($sites, $conf['datadir'], 'search_allpages', array(), $functions->getNamespaceFromID($ID, $page));
-        foreach( $sites as $site ) {
-            
-            if ( $ID == $site['id'] ) {
-                continue;
+            foreach( $sites as $site ) {
+                
+                if ( $ID == $site['id'] ) {
+                    continue;
+                }
+                $sortIdentifier = intval(p_get_metadata($site['id'], 'mergecompare'));
+                array_push($values, array(':' . $site['id'], $functions->getSiteTitle($site['id']), $sortIdentifier));
             }
-            $sortIdentifier = intval(p_get_metadata($site['id'], 'mergecompare'));
-            array_push($values, array(':' . $site['id'], $functions->getSiteTitle($site['id']), $sortIdentifier));
         }
         
         if ( $start != null ) {
