@@ -105,6 +105,10 @@ class settings_plugin_siteexport_settings extends DokuWiki_Plugin
         // Strip params that should be forwarded
         $this->additionalParameters = $_REQUEST;
         $functions->removeWikiVariables($this->additionalParameters, true);
+        
+        if ( $INPUT->has( 'disableCache' ) ) {
+            $this->additionalParameters['nocache']=!;
+        }
 
         $this->excludePattern = $INPUT->str( 'exclude', $this->getConf('exclude'), true );
     }
