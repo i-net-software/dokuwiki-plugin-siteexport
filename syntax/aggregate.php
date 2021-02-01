@@ -35,6 +35,14 @@ class syntax_plugin_siteexport_aggregate extends DokuWiki_Syntax_Plugin {
         return $options;
     }
     
+    private function checkComplete( &$item, $key, $namespaces ) {
+        foreach( $namespaces as $namespace ) {
+            if ( !(strpos($item[0], getNS($namespace)) > 0 || strpos($item[0], '|:' . getNS($namespace)) > 0) ) {
+                $item[0] .= '|:' . $namespace;
+            }
+        }
+    }
+    
     public function render($mode, Doku_Renderer $renderer, $data) {
         global $ID, $conf;
 
@@ -107,8 +115,10 @@ class syntax_plugin_siteexport_aggregate extends DokuWiki_Syntax_Plugin {
                 }
                 $values['_'.$ns[2]][4][] = $ns[0];
             }
-            
+
+            array_walk( $values, array( $this, 'checkComplete'), $namespace);
             $values = array_values($values);
+            
             $renderer->doc .= '<div class="siteaggregator">';
 
             if ( empty($values) ) {
