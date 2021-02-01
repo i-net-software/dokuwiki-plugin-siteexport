@@ -107,7 +107,7 @@ class settings_plugin_siteexport_settings extends DokuWiki_Plugin
         $functions->removeWikiVariables($this->additionalParameters, true);
         
         if ( $INPUT->has( 'disableCache' ) ) {
-            $this->additionalParameters['nocache']=!;
+            $this->additionalParameters['nocache']=1;
         }
 
         $this->excludePattern = $INPUT->str( 'exclude', $this->getConf('exclude'), true );
