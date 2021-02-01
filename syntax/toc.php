@@ -231,12 +231,7 @@ class syntax_plugin_siteexport_toc extends DokuWiki_Syntax_Plugin {
                     }
 
                     if (!empty($instr)) {
-                        $this->_cleanAllInstructions($instr);
-
-                        // if the last element is a pagebreak, remove it.
-                        if ($instr[count($instr)-1][1][0] == 'siteexport_toctools' && $instr[count($instr)-1][1][1][0] == 'pagebreak' ) {
-                            $instr = array_slice($instr, 0, -1);
-                        }
+                        $this->_cleanAllInstructions($instr, true);
 
                         // print "<pre>"; print_r($instr); print "</pre>";
                         $this->_render_output($renderer, $mode, $instr);
@@ -566,10 +561,50 @@ class syntax_plugin_siteexport_toc extends DokuWiki_Syntax_Plugin {
         return $currentSlice > 0;
     }
 
-    private function _cleanAllInstructions(&$instr) {
+    private function _cleanAllInstructions(&$instr, $advanced=false) {
+        $this->_cleanInstructions($instr, '/p_(close|open)/');
         $this->_cleanInstructions($instr, '/section_(close|open)/');
         $this->_cleanInstructions($instr, '/listu_(close|open)/');
         $this->_cleanInstructions($instr, '/listo_(close|open)/');
+        
+        if ( !$advanced ) {
+            return;
+        }
+
+        // if the last element is a pagebreak or toctools entry, remove it.
+        if ($instr[count($instr)-1][1][0] == 'siteexport_toctools' || $instr[count($instr)-1][1][1][0] == 'pagebreak' ) {
+            $instr = array_slice($instr, 0, -1);
+        }
+
+        // check top down: no toctools directly after header
+        
+        $currentMergeHint = null;
+        $insideTocBlock = false;
+        for( $i=0; $i<count($instr); $i++ ) {
+            
+            $hasMoreEntries = count($instr)-1 > $i;
+
+            if ( $instr[$i][0] == 'header' ) {
+                if ( $hasMoreEntries && $instr[$i+1][1][0] == 'siteexport_toctools' ) {
+                    $currentMergeHint = $instr[$i+1];
+                    
+                    // THERE SHOULD BE NO MERGE_HINT DIRECTLY AFTER THE HEADER
+                    // print "<p>Removing Mergehint after header</p>";
+                    array_splice($instr, $i+1, 1);
+                    continue;
+                }
+            }
+            
+            if ( $instr[$i][1][0] == 'siteexport_toctools' ) {
+                if ( $currentMergeHint != null && $instr[$i][1][1][2] == $currentMergeHint[1][1][2] ) {
+                    // print "<p>Removing Mergehint in between  </p>";
+                    array_splice($instr, $i--, 1);
+                } else {
+                    // print "<p>Resetting Mergehint '" . $instr[$i][1][1][2] . "' == '" . $currentMergeHint[1][1][2] . "'</p>";
+                    $currentMergeHint = $instr[$i];
+                }
+            }
+        }
     }
 
     /**
