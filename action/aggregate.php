@@ -22,8 +22,9 @@ class action_plugin_siteexport_aggregate extends DokuWiki_Action_Plugin {
         $controller->register_hook('TOOLBAR_DEFINE', 'AFTER', $this, 'siteexport_aggregate_button', array ());
     }
     
-    private function prefixStart($entry) {
-        return noNS($namespace) == $conf['start'] ? $namespace : $namespace . ':' . $conf['start'];
+    private function prefixStart($namespace) {
+        global $conf;
+        return getNS($namespace) . ':' . $conf['start'];
     }
     
     public function siteexport_aggregate(Doku_Event &$event)
@@ -62,9 +63,9 @@ class action_plugin_siteexport_aggregate extends DokuWiki_Action_Plugin {
                     $values = $functions->__getOrderedListOfPagesForStartEnd($lookupNS, $INPUT->int( 'mergecompare_start' ), $INPUT->int( 'mergecompare_end', PHP_INT_MAX ) );
             } else {
                 $values = $functions->__getOrderedListOfPagesForID($lookupNS, $exportBase);
-                $values = array(end( $values )); // the list above has the $exportBase element at the very end
             }
         }
+
 
         $includeSelected = $INPUT->str('includeSelectedVersion', 'true', true ) === 'true';
         if( !$includeSelected && count( $values ) > 1 ) {
