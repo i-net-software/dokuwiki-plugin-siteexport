@@ -43,7 +43,11 @@ class action_plugin_siteexport_aggregate extends DokuWiki_Action_Plugin {
         
         $functions = plugin_load('helper', 'siteexport');
         $values = $functions->__getOrderedListOfPagesForID($namespaces, $exportBase);
-
+/*
+        print '<pre>' . print_r($namespaces, 1) . '</pre>';
+        print '<pre>' . print_r($values, 1) . '</pre>';
+        exit(0);
+//*/
         // If no base given, take the first one from the ordered list.        
         if ( empty($exportBase) ) {
             // Reset to latest element
