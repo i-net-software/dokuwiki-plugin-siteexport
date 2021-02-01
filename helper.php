@@ -101,21 +101,25 @@ class helper_plugin_siteexport extends DokuWiki_Plugin {
         }
 
         $sites = $values = array();
-        $page = null;
         foreach( $IDs as $ID ) {
-        search($sites, $conf['datadir'], 'search_allpages', array(), $functions->getNamespaceFromID($ID, $page));
+            $page = null;
+            search($sites, $conf['datadir'], 'search_allpages', array(), $functions->getNamespaceFromID($ID, $page));
             foreach( $sites as $site ) {
                 
                 if ( $ID == $site['id'] ) {
                     continue;
                 }
                 $sortIdentifier = intval(p_get_metadata($site['id'], 'mergecompare'));
-                array_push($values, array(':' . $site['id'], $functions->getSiteTitle($site['id']), $sortIdentifier));
+                $entry = array(':' . $site['id'], $functions->getSiteTitle($site['id']), $sortIdentifier);
+
+                if ( !in_array($entry[0], array_column($values, 0)) ) {
+                    array_push($values, $entry);
+                }
             }
         }
-        
+
+
         if ( $start != null ) {
-            
             // filter using the newerThanPage indicator
             $sortIdentifier = intval(p_get_metadata($start, 'mergecompare'));
             $values = array_filter($values, array(new helper_plugin_siteexport_page_remove($sortIdentifier), '_page_remove'));
