@@ -86,6 +86,7 @@ class syntax_plugin_siteexport_aggregate extends DokuWiki_Syntax_Plugin {
 
             $submitLabel = $this->getLang('AggregateSubmitLabel');
             $introduction = $this->getLang('AggragateExportPages');
+            $listAllNamespaces = false;
             foreach( $data as $option ) {
                 
                 list($key, $value) = explode('=', $option);
@@ -99,6 +100,8 @@ class syntax_plugin_siteexport_aggregate extends DokuWiki_Syntax_Plugin {
                     case "introduction":
                     $introduction = urldecode($value);
                     break;
+                    case "listAllNamespaces":
+                    $listAllNamespaces = boolval($value);
                     default:
                     $form->addHidden($key, $value);
                     break;
@@ -106,7 +109,8 @@ class syntax_plugin_siteexport_aggregate extends DokuWiki_Syntax_Plugin {
             }
             
             $values = array();
-            $allNamespaces = $functions->__getOrderedListOfPagesForID($namespace);
+            $allNamespaces = $functions->__getOrderedListOfPagesForID( $listAllNamespaces ? $namespace : $namespace[0] );
+
             foreach( $allNamespaces as $ns ) {
                 if ( !array_key_exists('_'.$ns[2], $values) ) {
                     $values['_'.$ns[2]] = $ns;
