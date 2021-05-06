@@ -102,6 +102,7 @@ class syntax_plugin_siteexport_aggregate extends DokuWiki_Syntax_Plugin {
                     break;
                     case "listAllNamespaces":
                     $listAllNamespaces = boolval($value);
+                    break;
                     default:
                     $form->addHidden($key, $value);
                     break;
