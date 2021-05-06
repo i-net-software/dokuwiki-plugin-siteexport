@@ -22,6 +22,7 @@ class syntax_plugin_siteexport_toc extends DokuWiki_Syntax_Plugin {
     private $mergedPages = array();
     private $includedPages = array();
     private $merghintIds = array();
+    private $mergeHints = array();
 
     public function getType() { return 'protected'; }
     public function getPType() { return 'block'; }
@@ -577,6 +578,7 @@ class syntax_plugin_siteexport_toc extends DokuWiki_Syntax_Plugin {
 
         $currentMergeHint = null;
         $listOfMergeHintNames= [];
+
         for( $i=0; $i<count($instr); $i++ ) {
             
             $hasMoreEntries = count($instr)-1 > $i;
@@ -588,7 +590,35 @@ class syntax_plugin_siteexport_toc extends DokuWiki_Syntax_Plugin {
             
             if ( $instr[$i][1][0] == 'siteexport_toctools' && $instr[$i][1][0][0] != 'pagebreak' ) {
                 if ( $currentMergeHint != null && $instr[$i][1][1][2] == $currentMergeHint[1][1][2] ) {
-                    // print "<p>Removing Mergehint in between  </p>";
+                    
+                    if ( $instr[$i][1][1][1] == 'end' ) {
+                        // look ahead, if the next hint is also the same ID, if so: remove this ending hint.
+                        $shouldSpliceAway = false;
+                        for( $ii=$i+1; $ii<count($instr); $ii++ ) {
+                            if ( $instr[$ii][0] == 'header' ) {
+                                // Jumping over a section now ... we have to leave the last entry
+                                break;
+                            } else if ( $instr[$ii][1][0] == 'siteexport_toctools' && $instr[$ii][1][0][0] != 'pagebreak' ) {
+                                if ( $instr[$ii][1][1][2] == $currentMergeHint[1][1][2] && $instr[$ii][1][1][1] == 'start' ) {
+                                    // Found another one, that is identicall - so this will be removed.
+                                    // also remove the current ending element
+                                    $shouldSpliceAway = true;
+                                }
+                                
+                                // Okay, this was a toctools whatever ... but maybe not a start of the same type.
+                                // we're done.
+                                break;
+                            }
+                        }
+                        
+                        if ( !$shouldSpliceAway ) {
+                            // print "<pre>NOT Splicing away ". print_r($instr[$i], true) . "</pre>";
+                            continue;
+                        }
+                        // print "<pre>Splicing away ". print_r($instr[$i], true) . "</pre>";
+                    }
+                    
+                    // print "<p>Removing 'mergehint' in between  </p>";
                     array_splice($instr, $i--, 1);
                 } else {
                     // print "<p>Resetting Mergehint '" . $instr[$i][1][1][2] . "' == '" . $currentMergeHint[1][1][2] . "'</p>";
@@ -597,6 +627,11 @@ class syntax_plugin_siteexport_toc extends DokuWiki_Syntax_Plugin {
                 }
             }
         }
+
+/*
+        print "<pre>" . print_r($instr, 1) . "</pre>";
+
+//*/
 
         // There is only ONE distinct mergehint -> remove all
         $listOfMergeHintNames = array_unique($listOfMergeHintNames);
@@ -696,8 +731,7 @@ class syntax_plugin_siteexport_toc extends DokuWiki_Syntax_Plugin {
         if ($instructions[0][0] != 'section_open') { return; }
 
         // save for later use
-        $mergeHints = array();
-        $mergeHintId = sectionid($mergeHint, $mergeHints);
+        $mergeHintId = sectionid($mergeHint, $this->mergeHints);
         $this->merghintIds[$mergeHintId] = $mergeHint;
 
         // Insert section information
@@ -726,10 +760,10 @@ class syntax_plugin_siteexport_toc extends DokuWiki_Syntax_Plugin {
             )
         ));
 
+        $instructions = array_merge($mergeHintPrepend, $instructions, $mergeHintPostpend);
 /*
         print "<pre>"; print_r($instructions); print "</pre>"; 
 //*/
-        $instructions = array_merge($mergeHintPrepend, $instructions, $mergeHintPostpend);
     }
     
     private function _toctoolPrepends( &$instructions ) {

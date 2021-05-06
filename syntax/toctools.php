@@ -71,7 +71,7 @@ class syntax_plugin_siteexport_toctools extends DokuWiki_Syntax_Plugin {
             case DOKU_LEXER_ENTER:
             case DOKU_LEXER_SPECIAL:
                 $data = trim(substr($match,strpos($match,' '),-1)," \t\n/");
-                $this->addInstructionstoHandler( $match, $state, $pos, $handler, array('mergehint', 'start', $data, sectionID( $data, $checkArray ) ) );
+                $this->addInstructionstoHandler( $match, $state, $pos, $handler, array('mergehint', 'start', $data, sectionID( $data, $this->checkArray ) ) );
                 break;
             case DOKU_LEXER_UNMATCHED:
                 $handler->_addCall('cdata', array($match), $pos);
