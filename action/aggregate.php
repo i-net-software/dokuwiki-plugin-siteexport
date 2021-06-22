@@ -112,7 +112,10 @@ class action_plugin_siteexport_aggregate extends DokuWiki_Action_Plugin {
         if (empty($TOC)) { return true; }
         $event->preventDefault();
 
-        $html = p_render('xhtml', p_get_instructions($TOC), $INFO);
+        $renderer = $INPUT->str('renderer', $conf['renderer_xhtml'], true);
+        $INPUT->set('do', 'export_' . $renderer);
+        
+        $html = p_render($renderer, p_get_instructions($TOC), $INFO);
         if ($INFO['prependTOC']) $html = tpl_toc(true) . $html;
 
         if (@unlink(metaFN($ID, '.meta')) === false) {
@@ -121,6 +124,7 @@ class action_plugin_siteexport_aggregate extends DokuWiki_Action_Plugin {
 
         $ID = (string) $originalID;
         echo $html;
+        
         return true;
     }
 
