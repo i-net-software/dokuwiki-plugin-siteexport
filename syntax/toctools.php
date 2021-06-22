@@ -87,8 +87,9 @@ class syntax_plugin_siteexport_toctools extends DokuWiki_Syntax_Plugin {
      * Create output
      */
     public function render($mode, Doku_Renderer $renderer, $data) {
+
+        list( $type, $pos, $title, $id ) = $data;
         if ($mode == 'xhtml') {
-            list( $type, $pos, $title, $id ) = $data;
             if ( $type == 'mergehint' ) {
                 if ( $pos == 'start' ) {
                     $renderer->doc .= '<!-- MergeHint Start for "' . $title . '" -->';
@@ -100,6 +101,9 @@ class syntax_plugin_siteexport_toctools extends DokuWiki_Syntax_Plugin {
             } else {
                 $renderer->doc .= "<br style=\"page-break-after:always;\" />";
             }
+            return true;
+        } else if ( $mode = 'markdown' && $type == 'mergehint' && $pos == 'start' ) {
+            $renderer->doc .= DOKU_LF . '##### ' . $title . DOKU_LF;
             return true;
         }
         return false;
