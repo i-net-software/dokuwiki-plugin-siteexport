@@ -122,7 +122,7 @@ class syntax_plugin_siteexport_toc extends DokuWiki_Syntax_Plugin {
 //        $SID = cleanID($SID); // hier kein cleanID, da sonst moeglicherweise der anker verloren geht
 
         //    Render XHTML and ODT
-        if ($mode == 'xhtml' || $mode == 'odt') {
+        if ($mode != 'metadata' ) {
 
             // TOC Title
             if (is_array($data) && $data['start'] == true) {
@@ -277,8 +277,6 @@ class syntax_plugin_siteexport_toc extends DokuWiki_Syntax_Plugin {
             } else if (!isset($data['start']) && !isset($data['pos'])) {
                 $this->savedToc[] = $this->__addTocItem($SID, $NAME, $DEPTH, $renderer);
             }
-        } else {
-            return false;
         }
 
         return true;
@@ -340,7 +338,7 @@ class syntax_plugin_siteexport_toc extends DokuWiki_Syntax_Plugin {
             // $renderer->doc .= "<a name='$addID' id='$addID'>";
             $renderer->doc .= $content;
             // $renderer->doc .= '</div>';
-        } else if ($mode == 'odt') {
+        } else {
 
             // Loop through the instructions
             foreach ($instr as $instruction) {
