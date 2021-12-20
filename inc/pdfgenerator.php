@@ -117,7 +117,7 @@ if (!empty($_REQUEST['pdfExport']) && intval($_REQUEST['pdfExport']) == 1 && fil
         }
 
         private function __pdfPreWhitespacesCallback($DATA) {
-            return $DATA[1] . "\n" . str_repeat("&nbsp;", strlen($DATA[2])-($DATA[2]{0} == "\n" ? 1 : 0)) . $DATA[3];
+            return $DATA[1] . "\n" . str_repeat("&nbsp;", strlen($DATA[2])-($DATA[2][0] == "\n" ? 1 : 0)) . $DATA[3];
         }
 
         private function __pdfHeaderCallback($DATA) {
