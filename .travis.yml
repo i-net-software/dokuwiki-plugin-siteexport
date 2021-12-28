@@ -1,5 +1,7 @@
 language: php
 php:
+  - "8.0"
+  - "7.4"
   - "7.1"
   - "7.0"
   - "5.6"
@@ -15,5 +17,5 @@ install:
   - "mv req-travis.txt requirements.txt"
   - "sh travis.sh"
 script:
-  - "cd _test && php phpunit.phar --stderr --group plugin_siteexport"
+  - "cd _test && php fetchphpunit.php && php phpunit.phar --stderr --group plugin_siteexport"
 #  - "cd ../lib/plugins/siteexport/_test && sh phantomjs/runPhantomJs.sh"
