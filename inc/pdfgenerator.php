@@ -162,7 +162,7 @@ if (!empty($_REQUEST['pdfExport']) && intval($_REQUEST['pdfExport']) == 1 && fil
                     $encode = '';
                     $len = strlen($email);
                     for ($x = 0; $x < $len; $x += 6) {
-                        $encode .= chr((int)hexdec($email{$x+3} . $email{($x+4)}));
+                        $encode .= chr((int)hexdec($email[$x+3] . $email[$x+4]));
                     }
                     return $encode;
 
