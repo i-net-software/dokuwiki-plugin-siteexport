@@ -118,7 +118,8 @@ class syntax_plugin_siteexport_toc extends DokuWiki_Syntax_Plugin {
 
         list($SID, $NAME, $DEPTH) = $data;
 
-        resolve_pageid(getNS($ID), $SID, $exists = null);
+        $exists = null;
+        resolve_pageid(getNS($ID), $SID, $exists);
 //        $SID = cleanID($SID); // hier kein cleanID, da sonst moeglicherweise der anker verloren geht
 
         //    Render XHTML and ODT
