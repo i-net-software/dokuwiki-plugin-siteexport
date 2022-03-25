@@ -92,11 +92,11 @@ class syntax_plugin_siteexport_toctools extends DokuWiki_Syntax_Plugin {
         if ($mode == 'xhtml') {
             if ( $type == 'mergehint' ) {
                 
-                $startHint = '<!-- MergeHint Start for "' . $title . '" -->';
+                $startHint = '<!-- MergeHint Start for "';
                 $lastDiv = '<div class="mergehintcontent">';
 
                 if ( $pos == 'start' ) {
-                    $renderer->doc .= $startHint;
+                    $renderer->doc .= $startHint . $title . '" -->';
                     $renderer->doc .= '<div id="' . $id . '" class="siteexport mergehintwrapper"><aside class="mergehint">' . $title . '</aside>' . $lastDiv;
                 } else {
                     
@@ -112,11 +112,12 @@ class syntax_plugin_siteexport_toctools extends DokuWiki_Syntax_Plugin {
                             // empty
                             $lastPos = strrpos($renderer->doc, $startHint);
                             $renderer->doc = substr($renderer->doc, 0, $lastPos);
-                        } else {
-                            $renderer->doc .= '</div></div>';
-                            $renderer->doc .= '<!-- MergeHint End for "' . $title . '" -->';
+                            return true;
                         }
                     }
+
+                    $renderer->doc .= '</div></div>';
+                    $renderer->doc .= '<!-- MergeHint End for "' . $title . '" -->';
                 }
             } else {
                 $renderer->doc .= "<br style=\"page-break-after:always;\" />";
