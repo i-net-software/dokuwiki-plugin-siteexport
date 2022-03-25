@@ -42,8 +42,8 @@ class syntax_plugin_siteexport_toctools extends DokuWiki_Syntax_Plugin {
     
     private function findPreviousSectionOpen( Doku_Handler $handler ) {
         foreach( array_reverse( $handler->calls ) as $call ) {
-            if ( $call[0] == 'section_open' ) {
-                return $call[1][0];
+            if ( $calls[0] == 'section_open' ) {
+                return $calls[1][0];
             }
         }
         return 1;
@@ -91,12 +91,32 @@ class syntax_plugin_siteexport_toctools extends DokuWiki_Syntax_Plugin {
         list( $type, $pos, $title, $id ) = $data;
         if ($mode == 'xhtml') {
             if ( $type == 'mergehint' ) {
+                
+                $startHint = '<!-- MergeHint Start for "' . $title . '" -->';
+                $lastDiv = '<div class="mergehintcontent">';
+
                 if ( $pos == 'start' ) {
-                    $renderer->doc .= '<!-- MergeHint Start for "' . $title . '" -->';
-                    $renderer->doc .= '<div id="' . $id . '" class="siteexport mergehintwrapper"><aside class="mergehint">' . $title . '</aside><div class="mergehintcontent">';
+                    $renderer->doc .= $startHint;
+                    $renderer->doc .= '<div id="' . $id . '" class="siteexport mergehintwrapper"><aside class="mergehint">' . $title . '</aside>' . $lastDiv;
                 } else {
-                    $renderer->doc .= '</div></div>';
-                    $renderer->doc .= '<!-- MergeHint End for "' . $title . '" -->';
+                    
+                    // check if anything was inserted. We have to strip all tags,
+                    // we're just looking for real content here
+                    $lastPos = strrpos($renderer->doc, $lastDiv);
+                    if ( $lastPos !== false ) {
+                        
+                        $remaining = substr( $renderer->doc, $lastPos + strlen($lastDiv) );
+                        $remaining = strip_tags( $remaining );
+                        $remaining = trim($remaining);
+                        if ( strlen( $remaining ) == 0 ) {
+                            // empty
+                            $lastPos = strrpos($renderer->doc, $startHint);
+                            $renderer->doc = substr($renderer->doc, 0, $lastPos);
+                        } else {
+                            $renderer->doc .= '</div></div>';
+                            $renderer->doc .= '<!-- MergeHint End for "' . $title . '" -->';
+                        }
+                    }
                 }
             } else {
                 $renderer->doc .= "<br style=\"page-break-after:always;\" />";
