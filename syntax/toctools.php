@@ -41,7 +41,7 @@ class syntax_plugin_siteexport_toctools extends DokuWiki_Syntax_Plugin {
     }
     
     private function findPreviousSectionOpen( Doku_Handler $handler ) {
-        foreach( array_reverse( $handler->calls ) as $call ) {
+        foreach( array_reverse( $handler->calls ) as $calls ) {
             if ( $calls[0] == 'section_open' ) {
                 return $calls[1][0];
             }
