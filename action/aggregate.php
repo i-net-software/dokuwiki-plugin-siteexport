@@ -68,10 +68,15 @@ class action_plugin_siteexport_aggregate extends DokuWiki_Action_Plugin {
 
         $includeSelected = $INPUT->str('includeSelectedVersion', 'true', true ) === 'true';
         if( !$includeSelected ) {
-
             // Remove entries that are  from the selectes version, but only if more than these entries exists
-            $baseVersion = intval(p_get_metadata($exportBase, 'mergecompare')) +1;
-            $checkValues = array_filter($values, array(new helper_plugin_siteexport_page_remove($baseVersion), '_page_remove'));
+            $baseVersion = intval(p_get_metadata($exportBase, 'mergecompare'));
+            if ( $baseVersion == 0 ) {
+                // Not set?!
+                // print_r($values);
+                $baseVersion = $values[count($values)-1][2];
+            } 
+            
+            $checkValues = array_filter($values, array(new helper_plugin_siteexport_page_remove($baseVersion +1), '_page_remove'));
             if ( count($checkValues) > 0 ) {
                 $values = $checkValues;
             }
