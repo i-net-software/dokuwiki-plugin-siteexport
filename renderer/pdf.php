@@ -85,7 +85,7 @@ class renderer_plugin_siteexport_pdf extends Doku_Renderer_xhtml {
         $this->doc = preg_replace('#<p( class=".*?")?>\s*</p>#', '', $this->doc);
     }
 
-    public function header($text, $level, $pos) {
+    public function header($text, $level, $pos, $returnonly = false) {
         global $conf;
         global $ID;
         global $INFO;
