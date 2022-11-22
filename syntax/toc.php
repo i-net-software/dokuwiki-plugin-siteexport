@@ -76,7 +76,7 @@ class syntax_plugin_siteexport_toc extends DokuWiki_Syntax_Plugin {
 
                         // Get current depth from call stack
                         $depth = 1;
-                        if ($handler->CallWriter instanceof Doku_Handler_List) {
+                        if ( isset( $handler->CallWriter ) && $handler->CallWriter instanceof Doku_Handler_List ) {
 
                             $calls = array_reverse($handler->CallWriter->calls);
                             $call = $calls[0];
