@@ -395,7 +395,7 @@ class siteexport_functions extends DokuWiki_Plugin
      */
     public function prepare_POSTData($data)
     {
-        $NS = !empty($data['ns']) ? $data['ns'] : $data['id'];
+        $NS = array_key_exists( 'ns', $data ) ? $data['ns'] : ( array_key_exists( 'id', $data ) ? $data['id'] : ':' );
 
         $this->removeWikiVariables($data);
         $data['do'] = 'siteexport';
@@ -514,13 +514,13 @@ class siteexport_functions extends DokuWiki_Plugin
         $removeKeys[] = 'siteexport';
         $removeKeys[] = 'DokuWiki';
 
-        if ($removeArray['renderer'] == 'xhtml') {
+        if ( array_key_exists( 'renderer', $removeArray ) && $removeArray['renderer'] == 'xhtml') {
             $removeArray['do'] = 'export_' . $removeArray['renderer'];
             $removeKeys[] = 'renderer';
         }
         
         // Keep custom options
-        if (is_array($removeArray['customoptionname']) && is_array($removeArray['customoptionvalue']) && count($removeArray['customoptionname']) == count($removeArray['customoptionvalue']))
+        if ( array_key_exists( 'customoptionname', $removeArray ) &&  is_array($removeArray['customoptionname']) && is_array($removeArray['customoptionvalue']) && count($removeArray['customoptionname']) == count($removeArray['customoptionvalue']))
         {
             for ($index = count($removeArray['customoptionname']); $index >= 0; $index--)
             {
@@ -531,7 +531,7 @@ class siteexport_functions extends DokuWiki_Plugin
         }
 
         if ($advanced) {
-            if ($removeArray['renderer'] != 'xhtml' && !empty($removeArray['renderer'])) {
+            if ( array_key_exists( 'renderer', $removeArray ) && $removeArray['renderer'] != 'xhtml' && !empty($removeArray['renderer'])) {
                 $removeArray['do'] = 'export_' . $removeArray['renderer'];
             }
 
