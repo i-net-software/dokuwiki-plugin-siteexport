@@ -5,7 +5,8 @@
  * @group plugins
  */
 class SiteexportMoveTest extends DokuWikiTest {
-    public function setup() {
+
+  public function setUp() : void {
         $this->pluginsEnabled[] = 'siteexport';
         $this->pluginsEnabled[] = 'move';
         parent::setup();
