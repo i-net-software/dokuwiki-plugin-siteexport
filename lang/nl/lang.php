@@ -2,7 +2,8 @@
 
 /**
  * @license    GPL 2 (http://www.gnu.org/licenses/gpl.html)
- * 
+ *
+ * @author Gerrit <klapinklapin@gmail.com>
  * @author Rene <wllywlnt@yahoo.com>
  * @author hugo smet <hugo.smet@scarlet.be>
  */
@@ -48,9 +49,11 @@ $lang['search']                = 'Zoeken';
 $lang['toc']                   = 'Inhouds opgave ';
 $lang['AggregateSubmitLabel']  = 'Download';
 $lang['AggragateExportPages']  = 'Startpagina voor samenvoegen:';
+$lang['SiteSubmitLabel']       = 'Download als PDF';
 $lang['toolbarButton']         = 'Voeg Siteexporter toe';
 $lang['useOptionsInEditor']    = 'Gebruik deze opties en voeg het {{siteAggregator}}element toe';
 $lang['NoEntriesFoundHint']    = 'Er werden geen pagina\'s gevonden voor samenvoeging.';
+$lang['siteexport_button']     = 'Exporteer Pagina naar HTML/PDF';
 $lang['js']['loadingpage']     = 'Laden';
 $lang['js']['startdownload']   = 'Begin Download';
 $lang['js']['downloadfinished'] = 'Beëindigde Download';
