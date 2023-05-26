@@ -1,2 +1,5 @@
 _test/phantomjs/*.js
 phantom*.js
+
+# IDE/Editor temp files
+.idea/
