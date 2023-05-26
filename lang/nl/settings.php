@@ -2,7 +2,7 @@
 
 /**
  * @license    GPL 2 (http://www.gnu.org/licenses/gpl.html)
- * 
+ *
  * @author Rene <wllywlnt@yahoo.com>
  * @author Mijndert <mijndert@mijndertstuij.nl>
  * @author hugo smet <hugo.smet@scarlet.be>
