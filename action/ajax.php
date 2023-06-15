@@ -770,11 +770,11 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
         $this->functions->debug->message("Resolving ID: '$ID'", null, 2);
         if ($ISMEDIA !== false) {
             $ID = (new MediaResolver('root'))->resolveId($ID);
-            $IDexists = media_exists($mediaid);
+            $IDexists = media_exists($ID);
             $this->functions->debug->message("Current mediaID to filename: '" . mediaFN($ID) . "'", null, 2);
         } else {
             $ID = (new PageResolver('root'))->resolveId($ID);
-            $IDexists = page_exists($id);
+            $IDexists = page_exists($ID);
             $this->functions->debug->message("Current ID to filename: '" . wikiFN($ID) . "'", null, 2);
         }
 
