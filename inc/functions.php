@@ -443,7 +443,7 @@ class siteexport_functions extends DokuWiki_Plugin
 
             $outputArray = array();
             foreach( explode("&", $intermediate) as $param ) {
-                list($key, $value) = explode("=", $param, 2);
+                list($key, $value) = array_pad( explode("=", $param, 2), 2, null );
 
                 // This is needed if we do want to calculate $_REQUEST for a non HTTP-Request
                 if ( $decode)
