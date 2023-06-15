@@ -181,7 +181,7 @@ class preload_plugin_siteexport_controller extends _preload_plugin_siteexport_co
         $disabledPlugins = array();
 
         // support of old syntax
-        if (is_array($_REQUEST['diPlu'])) {
+        if (is_array($_REQUEST['diPlu'] ?? null)) {
             $disabledPlugins = $_REQUEST['diPlu'];
         }
 

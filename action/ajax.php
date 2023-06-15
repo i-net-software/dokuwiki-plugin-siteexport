@@ -482,13 +482,13 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
         // say, what to export and Build URL
         // http://documentation:81/helpdesk/de/hds/getting-started?depthType=0&do=siteexport&ens=helpdesk%3Ade%3Ahds%3Agetting-started&pdfExport=1&renderer=siteexport_siteexportpdf&template=helpdesk
         
-        $do = (intval($_REQUEST['exportbody']) == 1 ? (empty($_REQUEST['renderer']) ? $conf['renderer_xhtml'] : $_REQUEST['renderer']) : '');
+        $do = (intval($_REQUEST['exportbody'] ?? 0) == 1 ? (empty($_REQUEST['renderer'] ?? '') ? $conf['renderer_xhtml'] : $_REQUEST['renderer']) : '');
         
         if ($do == 'pdf' && $this->filewriter->canDoPDF())
         {
             $do = 'export_siteexport_pdf';
             $_REQUEST['origRenderer'] = (empty($_REQUEST['renderer']) ? $conf['renderer_xhtml'] : $_REQUEST['renderer']);
-        } else if ($_REQUEST['renderer'] == 'dw2pdf') {
+        } else if ($_REQUEST['renderer'] ?? '' == 'dw2pdf') {
             $do = 'pdf';
         }
         
@@ -630,7 +630,7 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
             unset($extension);
         }
         
-        return array($tmpFile, preg_replace("/.*?filename=\"?(.*?)\"?;?$/", "$1", $http->resp_headers['content-disposition']), $extension);
+        return array($tmpFile, preg_replace("/.*?filename=\"?(.*?)\"?;?$/", "$1", $http->resp_headers['content-disposition'] ?? ''), $extension ?? '');
     }
 
     /**

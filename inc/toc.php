@@ -183,7 +183,7 @@ class siteexport_toc
     {
         $this->debug("creating toc item");
         $this->debug($item);
-        $targetID = $item['mapID'][0];
+        $targetID = $item['mapID'][0] ?? '';
         if (empty($targetID)) {
             $targetID = $this->functions->cleanID($item['name']);
             $this->debug("no map ID, using: " . $targetID);
