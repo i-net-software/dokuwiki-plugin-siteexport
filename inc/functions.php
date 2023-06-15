@@ -4,6 +4,8 @@ if (!defined('DOKU_PLUGIN')) die('meh');
 require_once(DOKU_PLUGIN . 'siteexport/inc/settings.php');
 require_once(DOKU_PLUGIN . 'siteexport/inc/debug.php');
 
+use dokuwiki\File\PageResolver;
+
 class siteexport_functions extends DokuWiki_Plugin
 {
     public $debug = null;
@@ -67,12 +69,11 @@ class siteexport_functions extends DokuWiki_Plugin
     public function getNamespaceFromID($NS, &$PAGE) {
         global $conf;
         // Check current page - if its an NS add the startpage
-        $clean = true;
-        resolve_pageid(getNS($NS), $NS, $clean);
+        $NS = (new PageResolver($NS))->resolveId($NS);
         $NSa = explode(':', $NS);
         if (!page_exists($NS) && array_pop($NSa) != strtolower($conf['start'])) { // Compare to lowercase since clean lowers it.
             $NS .= ':' . $conf['start'];
-            resolve_pageid(getNS($NS), $NS, $clean);
+            $NS = (new PageResolver($NS))->resolveId($NS);
         }
 
         $PAGE = noNS($NS);

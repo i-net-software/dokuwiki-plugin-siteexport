@@ -24,6 +24,9 @@ require_once(DOKU_PLUGIN . 'siteexport/inc/filewriter.php');
 require_once(DOKU_PLUGIN . 'siteexport/inc/toc.php');
 require_once(DOKU_PLUGIN . 'siteexport/inc/javahelp.php');
 
+use dokuwiki\File\PageResolver;
+use dokuwiki\File\MediaResolver;
+
 class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
 {
     /**
@@ -356,8 +359,8 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
         switch ($INPUT->int('depthType')) {
             case 0:
                 $query = $this->functions->cleanID(str_replace(":", "/", $NS . ':' . $PAGE));
-                $exists = false;
-                resolve_pageid($NS, $PAGE, $exists);
+                $NS = (new PageResolver($NS))->resolveId($PAGE);
+                $exists = page_exists($NS);
 
                 if ($exists) {
                     $data = array(array('id' => $PAGE));
@@ -766,10 +769,12 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
 
         $this->functions->debug->message("Resolving ID: '$ID'", null, 2);
         if ($ISMEDIA !== false) {
-            resolve_mediaid(null, $ID, $IDexists);
+            $ID = (new MediaResolver('root'))->resolveId($ID);
+            $IDexists = media_exists($mediaid);
             $this->functions->debug->message("Current mediaID to filename: '" . mediaFN($ID) . "'", null, 2);
         } else {
-            resolve_pageid(null, $ID, $IDexists);
+            $ID = (new PageResolver('root'))->resolveId($ID);
+            $IDexists = page_exists($id);
             $this->functions->debug->message("Current ID to filename: '" . wikiFN($ID) . "'", null, 2);
         }
 
@@ -908,7 +913,8 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
 
                 $DATA[2] = str_replace('/', ':', $DATA[2]);
                 $ID = $this->functions->cleanID($DATA[2], null, strstr($DATA[2], 'media'));
-                resolve_mediaid(null, $ID, $IDexists);
+                $ID = (new MediaResolver('root'))->resolveId($ID);
+                $IDexists = media_exists($ID);
 
                 $DATA[2] = $this->functions->wl($ID, null, null, null, $IDexists, true);
                 $this->__rebuildDataForNormalFiles($DATA, $PARAMS);
