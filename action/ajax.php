@@ -524,6 +524,8 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
         if ( $tmpFile === false ) {
             $this->functions->debug->runtimeException("Creating temporary download file failed for '$url'. See log for more information.");
             return false;
+        } else {
+            $this->functions->debug->message( "Tempfile is:", $tmpFile );
         }
 
         $dirname = dirname($fileName);
@@ -583,13 +585,10 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
         
         if( $getData === false ) { // || ($http->status != 200 && !$this->functions->settings->ignoreNon200) ) {
         
-            if ( $http->status != 200 && $this->functions->settings->ignoreNon200 ) {
-                $this->functions->debug->message("HTTP status was '{$http->status}' - but I was told to ignore it by the settings.", $URL, 3);
-                return true;
+            if ( $http->status != 200 && !$this->functions->settings->ignoreNon200 ) {
+                $this->functions->debug->message("Sending request failed with error, HTTP status was '{$http->status}'.", $URL, 4);
+                return false;
             }
-        
-            $this->functions->debug->message("Sending request failed with error, HTTP status was '{$http->status}'.", $URL, 4);
-            return false;
         } 
 
         if( empty($getData) ) {

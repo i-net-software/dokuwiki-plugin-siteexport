@@ -1,5 +1,7 @@
 <?php
 
+use dokuwiki\Logger;
+
 class siteexport_debug
 {
     private $firstRE = true;
@@ -9,6 +11,15 @@ class siteexport_debug
     public  $isAJAX = false;
     
     public $runtimeErrors = '';
+
+    private $logger;
+
+    /**
+     * constructor for the debug class
+     */
+    public function __construct() {
+       $this->logger = Logger::getInstance('siteexport');
+    }
 
     /**
      * Debug Level
@@ -69,6 +80,14 @@ class siteexport_debug
         $ajaxCanLog = $this->isAJAX && $level == 4;
         $fh = false;
 
+        switch($level) {
+            case 4: $this->logger->error( $info, $var ); break;
+            case 3: $this->logger->log( $info, $var ); break;
+            case 2: $this->logger->log( $info, $var ); break;
+            case 1: $this->logger->debug( $info, $var ); break;
+            default: $TYPE = " NONE"; break;
+        }
+        
         if( $this->debugLevel > $level && !$ajaxCanLog  ) return; // only log certain Debug Levels
         
         if ( empty($this->debugFile) ) {
