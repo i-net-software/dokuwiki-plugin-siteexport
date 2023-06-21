@@ -491,13 +491,13 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
         {
             $do = 'export_siteexport_pdf';
             $_REQUEST['origRenderer'] = (empty($_REQUEST['renderer']) ? $conf['renderer_xhtml'] : $_REQUEST['renderer']);
-        } else if ($_REQUEST['renderer'] ?? '' == 'dw2pdf') {
+        } else if ( ($_REQUEST['renderer'] ?? '') == 'dw2pdf') {
             $do = 'pdf';
         }
         
         $do = ($do == $conf['renderer_xhtml'] && intval($_REQUEST['exportbody']) != 1) ? '' : 'export_' . $do;
 
-        if ($do != 'export_' && !empty($do))
+        if ($do != 'export_' && !empty($do) )
         {
             $request['do'] = $do;
         }
@@ -524,8 +524,6 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
         if ( $tmpFile === false ) {
             $this->functions->debug->runtimeException("Creating temporary download file failed for '$url'. See log for more information.");
             return false;
-        } else {
-            $this->functions->debug->message( "Tempfile is:", $tmpFile );
         }
 
         $dirname = dirname($fileName);
@@ -585,10 +583,13 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
         
         if( $getData === false ) { // || ($http->status != 200 && !$this->functions->settings->ignoreNon200) ) {
         
-            if ( $http->status != 200 && !$this->functions->settings->ignoreNon200 ) {
-                $this->functions->debug->message("Sending request failed with error, HTTP status was '{$http->status}'.", $URL, 4);
-                return false;
+            if ( $http->status != 200 && $this->functions->settings->ignoreNon200 ) {
+                $this->functions->debug->message("HTTP status was '{$http->status}' - but I was told to ignore it by the settings.", $URL, 3);
+                return true;
             }
+        
+            $this->functions->debug->message("Sending request failed with error, HTTP status was '{$http->status}'.", $URL, 4);
+            return false;
         } 
 
         if( empty($getData) ) {
