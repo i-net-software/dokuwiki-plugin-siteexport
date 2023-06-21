@@ -79,6 +79,8 @@ class siteexport_debug
 
         $ajaxCanLog = $this->isAJAX && $level == 4;
         $fh = false;
+        
+        if( $this->debugLevel > $level && !$ajaxCanLog  ) return; // only log certain Debug Levels
 
         switch($level) {
             case 4: $this->logger->error( $info, $var ); break;
@@ -87,8 +89,6 @@ class siteexport_debug
             case 1: $this->logger->debug( $info, $var ); break;
             default: $TYPE = " NONE"; break;
         }
-        
-        if( $this->debugLevel > $level && !$ajaxCanLog  ) return; // only log certain Debug Levels
         
         if ( empty($this->debugFile) ) {
             $this->runtimeException("DebugFile not properly configured. Make sure, it is set, readable and writable. We suggest to use a file in the DokuWiki's media directory.", true);
