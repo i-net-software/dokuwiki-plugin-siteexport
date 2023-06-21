@@ -2,6 +2,8 @@
 
 if (!defined('DOKU_PLUGIN')) die('meh');
 
+use dokuwiki\File\PageResolver;
+
 class siteexport_toc
 {
     private $emptyNSToc = true;
@@ -92,7 +94,7 @@ class siteexport_toc
             if ( in_array($elem['url'], $CHECKDATA) ) { continue; }
 
             if ( !isset($elem['exists']) ) {
-                resolve_pageid(getNS($elem['id']),$elem['id'],$elem['exists']);
+                $elem['exists'] = page_exists( (new PageResolver(getNS($elem['id'])))->resolveId($elem['id']) );
                 $this->functions->debug->message("EXISTS previously not set.", $elem, 1);
             }
 

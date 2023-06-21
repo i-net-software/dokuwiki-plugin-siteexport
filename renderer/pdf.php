@@ -11,6 +11,10 @@ if (!defined('DOKU_PLUGIN')) define('DOKU_PLUGIN', DOKU_INC . 'lib/plugins/');
 
 require_once DOKU_INC . 'inc/parser/xhtml.php';
 
+
+use dokuwiki\File\PageResolver;
+use dokuwiki\File\MediaResolver;
+
 /**
  * The Renderer
  */
@@ -227,7 +231,8 @@ class renderer_plugin_siteexport_pdf extends Doku_Renderer_xhtml {
     public function internalmedia($src, $title = NULL, $align = NULL, $width = NULL, $height = NULL, $cache = NULL, $linking = NULL, $return = false) {
         global $ID;
         list($src,$hash) = explode('#',$src,2);
-        resolve_mediaid(getNS($ID),$src, $exists);
+        $src = (new MediaResolver(getNS($ID)))->resolveId($src);
+        $exists = media_exists( $src );
 
         $noLink = false;
         $render = ($linking == 'linkonly') ? false : true;
@@ -279,7 +284,8 @@ class renderer_plugin_siteexport_pdf extends Doku_Renderer_xhtml {
         $default = $this->_simpleTitle($id);
 
         // now first resolve and clean up the $id
-        resolve_pageid(getNS($ID), $id, $exists);
+        $id = (new PageResolver(getNS($ID)))->resolveId($id);
+        $exists = media_exists( $id );
         $name = $this->_getLinkTitle($name, $default, $isImage, $id, $linktype);
         if (!$isImage) {
             if ($exists) {
