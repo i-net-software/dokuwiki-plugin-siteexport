@@ -11,7 +11,7 @@
 if (!defined('DOKU_INC')) die();
 if (!defined('DOKU_PLUGIN')) define('DOKU_PLUGIN', DOKU_INC . 'lib/plugins/');
 
-require_once(DOKU_PLUGIN . 'syntax.php');
+use dokuwiki\File\PageResolver;
 
 class syntax_plugin_siteexport_toc extends DokuWiki_Syntax_Plugin {
 
@@ -102,7 +102,7 @@ class syntax_plugin_siteexport_toc extends DokuWiki_Syntax_Plugin {
                 return false;
             case DOKU_LEXER_UNMATCHED:
 
-                $handler->_addCall('cdata', array($match), $pos);
+                $handler->addCall('cdata', array($match), $pos);
 
                 return false;
             case DOKU_LEXER_EXIT:
@@ -118,8 +118,8 @@ class syntax_plugin_siteexport_toc extends DokuWiki_Syntax_Plugin {
 
         list($SID, $NAME, $DEPTH) = $data;
 
-        $exists = null;
-        resolve_pageid(getNS($ID), $SID, $exists);
+        $exists = page_exists( (new PageResolver(getNS($ID)))->resolveId($SID) );
+
 //        $SID = cleanID($SID); // hier kein cleanID, da sonst moeglicherweise der anker verloren geht
 
         //    Render XHTML and ODT
@@ -254,7 +254,8 @@ class syntax_plugin_siteexport_toc extends DokuWiki_Syntax_Plugin {
             // Add ID to flags['mergeDoc']
             if ($renderer->meta['sitetoc']['mergeDoc'] === true) { // || (count($renderer->meta['sitetoc']['siteexportTOC']) > 0 && $renderer->meta['sitetoc']['siteexportMergeDoc'] === true) ) {
                 $this->mergedPages[] = array($SID, $DEPTH);
-                resolve_pageid(getNS($ID), $SID, $exists);
+                $SID = (new PageResolver(getNS($ID)))->resolveId($SID);
+                $exists = page_exists( $SID );
             } else {
                 // // print normal internal link (XHTML odt)
                 $renderer->internallink($LNID, $NAME, null);
@@ -293,7 +294,7 @@ class syntax_plugin_siteexport_toc extends DokuWiki_Syntax_Plugin {
         // Render Title
         $default = $renderer->_simpleTitle($id);
         $exists = false; $isImage = false; $linktype = null;
-        resolve_pageid(getNS($ID), $id, $exists);
+        $id = (new PageResolver(getNS($ID)))->resolveId($Sid);
         $name = $renderer->_getLinkTitle($name, $default, $isImage, $id, $linktype);
 
         //keep hash anchor
@@ -390,7 +391,7 @@ class syntax_plugin_siteexport_toc extends DokuWiki_Syntax_Plugin {
 
         $exists = false;
 
-        resolve_pageid(getNS($id), $instr[1][0], $exists);
+        $instr[1][0] = (new PageResolver(getNS($id)))->resolveId($instr[1][0]);
         list($pageID, $pageReference) = explode("#", $instr[1][0], 2);
 
         if (in_array($pageID, $this->includedPages)) {
