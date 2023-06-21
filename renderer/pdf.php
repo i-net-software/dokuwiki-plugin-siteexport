@@ -284,7 +284,7 @@ class renderer_plugin_siteexport_pdf extends Doku_Renderer_xhtml {
         $default = $this->_simpleTitle($id);
 
         // now first resolve and clean up the $id
-        $id = (new PageResolver(getNS($ID)))->resolveId($id);
+        $id = (new PageResolver( $ID ))->resolveId($id);
         $exists = media_exists( $id );
         $name = $this->_getLinkTitle($name, $default, $isImage, $id, $linktype);
         if (!$isImage) {

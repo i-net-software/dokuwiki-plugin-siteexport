@@ -118,7 +118,7 @@ class syntax_plugin_siteexport_toc extends DokuWiki_Syntax_Plugin {
 
         list($SID, $NAME, $DEPTH) = $data;
 
-        $exists = page_exists( (new PageResolver(getNS($ID)))->resolveId($SID) );
+        $exists = page_exists( (new PageResolver( $ID ))->resolveId($SID) );
 
 //        $SID = cleanID($SID); // hier kein cleanID, da sonst moeglicherweise der anker verloren geht
 
@@ -254,7 +254,7 @@ class syntax_plugin_siteexport_toc extends DokuWiki_Syntax_Plugin {
             // Add ID to flags['mergeDoc']
             if ($renderer->meta['sitetoc']['mergeDoc'] === true) { // || (count($renderer->meta['sitetoc']['siteexportTOC']) > 0 && $renderer->meta['sitetoc']['siteexportMergeDoc'] === true) ) {
                 $this->mergedPages[] = array($SID, $DEPTH);
-                $SID = (new PageResolver(getNS($ID)))->resolveId($SID);
+                $SID = (new PageResolver( $ID ))->resolveId($SID);
                 $exists = page_exists( $SID );
             } else {
                 // // print normal internal link (XHTML odt)
@@ -291,11 +291,13 @@ class syntax_plugin_siteexport_toc extends DokuWiki_Syntax_Plugin {
         global $conf;
         global $ID;
 
+        $exists = false; $isImage = false; $linktype = null;
+        $id = (new PageResolver( $ID ) )->resolveId($id);
+        $exists = page_exists( $id );
+        $name = $renderer->_getLinkTitle($name, $default, $isImage, $id, $linktype);
+
         // Render Title
         $default = $renderer->_simpleTitle($id);
-        $exists = false; $isImage = false; $linktype = null;
-        $id = (new PageResolver(getNS($ID)))->resolveId($Sid);
-        $name = $renderer->_getLinkTitle($name, $default, $isImage, $id, $linktype);
 
         //keep hash anchor
         list($id, $hash) = explode('#', $id, 2);
@@ -391,7 +393,7 @@ class syntax_plugin_siteexport_toc extends DokuWiki_Syntax_Plugin {
 
         $exists = false;
 
-        $instr[1][0] = (new PageResolver(getNS($id)))->resolveId($instr[1][0]);
+        resolve_pageid(getNS($id), $instr[1][0], $exists);
         list($pageID, $pageReference) = explode("#", $instr[1][0], 2);
 
         if (in_array($pageID, $this->includedPages)) {
