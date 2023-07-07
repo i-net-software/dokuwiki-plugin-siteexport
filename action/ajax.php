@@ -350,7 +350,7 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
 
         $PAGE = "";
         $NS = $this->namespace = $this->functions->getNamespaceFromID($NS, $PAGE);
-        $this->functions->debug->message("ROOT Namespace to export from: '{$NS}' / {$this->namespace}", null, 1);
+        $this->functions->debug->message("ROOT Namespace to export from: '{$NS}' / {$this->namespace}", null, 2);
 
         $depth = $this->getConf('depth');
         $query = '';
@@ -358,7 +358,7 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
 
         switch ($INPUT->int('depthType')) {
             case 0:
-                $query = $this->functions->cleanID(str_replace(":", "/", $NS . ':' . $PAGE));
+                $PAGE = $this->functions->cleanID(str_replace(":", "/", $NS . ':' . $PAGE));
                 $NS = (new PageResolver($NS))->resolveId($PAGE);
                 $exists = page_exists($NS);
 
@@ -370,7 +370,8 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
                     {
                         return array();
                     }
-                    
+
+                    $this->functions->debug->message("Exporting the following sites: ", $data, 2);
                     return $data;
                 } else {
                     // Does not exist, try next case
