@@ -3,6 +3,7 @@
 /**
  * @license    GPL 2 (http://www.gnu.org/licenses/gpl.html)
  *
+ * @author take <take@ruu.kr>
  * @author Myeongjin <aranet100@gmail.com>
  */
 $lang['encoding']              = 'utf-8';
@@ -47,9 +48,11 @@ $lang['search']                = '검색';
 $lang['toc']                   = '목차';
 $lang['AggregateSubmitLabel']  = '다운로드';
 $lang['AggragateExportPages']  = '병합을 위한 시작하는 문서:';
+$lang['SiteSubmitLabel']       = 'PDF로 다운로드';
 $lang['toolbarButton']         = 'Siteexporter 넣기';
 $lang['useOptionsInEditor']    = '이러한 옵션을 사용하고 {{siteAggregator}} 요소 넣기';
 $lang['NoEntriesFoundHint']    = '집계를 위한 문서를 찾을 수 없습니다.';
+$lang['siteexport_button']     = '페이지를 HTML/PDF로 내보내기';
 $lang['js']['loadingpage']     = '불러오는 중';
 $lang['js']['startdownload']   = '다운로드 시작 중';
 $lang['js']['downloadfinished'] = '다운로드 마침';
