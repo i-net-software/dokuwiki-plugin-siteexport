@@ -176,13 +176,15 @@ class preload_plugin_siteexport_controller extends _preload_plugin_siteexport_co
      * Setup disabling
      */
     public function __construct() {
+        global $INPUT;
+
         parent::__construct();
 
         $disabledPlugins = array();
 
         // support of old syntax
-        if (is_array($_REQUEST['diPlu'] ?? null)) {
-            $disabledPlugins = $_REQUEST['diPlu'];
+        if (is_array($INPUT->arr('diPlu'))) {
+            $disabledPlugins = $INPUT->arr('diPlu');
         }
 
         if (!empty($_REQUEST['diInv']))
@@ -193,11 +195,11 @@ class preload_plugin_siteexport_controller extends _preload_plugin_siteexport_co
                 if ($enabled == 1 && !file_exists(DOKU_PLUGIN . "$plugin/script.js") && !file_exists(DOKU_PLUGIN . "$plugin/style.css") && !file_exists(DOKU_PLUGIN . "$plugin/print.css")) { continue; }
                 $allPlugins[] = $plugin;
             }
-            $disabledPlugins = empty($_REQUEST['diPlu']) ? $allPlugins : array_diff($allPlugins, $_REQUEST['diPlu']);
+            $disabledPlugins = empty($INPUT->arr('diPlu')) ? $allPlugins : array_diff($allPlugins, $INPUT->arr('diPlu'));
         }
 
         // if this is defined, it overrides the settings made above. obviously.
-        $disabledPlugins = empty($_REQUEST['disableplugin']) ? $disabledPlugins : $_REQUEST['disableplugin'];
+        $disabledPlugins = $INPUT->arr('disableplugin', $disabledPlugins, true);
 
         foreach ($disabledPlugins as $plugin) {
             $this->disable($plugin);

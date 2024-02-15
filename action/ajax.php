@@ -470,7 +470,7 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
      * Add page with ID to the package
      **/
     private function __siteexport_add_site($ID) {
-        global $conf, $CURRENT_ID, $CURRENT_PARENT;
+        global $conf, $CURRENT_ID, $CURRENT_PARENT, $INPUT;
 
         // Which is the current ID?
         $CURRENT_ID = $ID;
@@ -486,17 +486,17 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
         // say, what to export and Build URL
         // http://documentation:81/helpdesk/de/hds/getting-started?depthType=0&do=siteexport&ens=helpdesk%3Ade%3Ahds%3Agetting-started&pdfExport=1&renderer=siteexport_siteexportpdf&template=helpdesk
         
-        $do = (intval($_REQUEST['exportbody'] ?? 0) == 1 ? (empty($_REQUEST['renderer'] ?? '') ? $conf['renderer_xhtml'] : $_REQUEST['renderer']) : '');
+        $do = $INPUT->int('exportbody', 0, true) == 1 ? $INPUT->str('renderer', $conf['renderer_xhtml'], true) : '';
         
         if ($do == 'pdf' && $this->filewriter->canDoPDF())
         {
             $do = 'export_siteexport_pdf';
-            $_REQUEST['origRenderer'] = (empty($_REQUEST['renderer']) ? $conf['renderer_xhtml'] : $_REQUEST['renderer']);
-        } else if ( ($_REQUEST['renderer'] ?? '') == 'dw2pdf') {
+            $INPUT->set('origRenderer', $INPUT->str('renderer', $conf['renderer_xhtml'], true));
+        } else if ($INPUT->str('renderer') == 'dw2pdf') {
             $do = 'pdf';
         }
         
-        $do = ($do == $conf['renderer_xhtml'] && intval($_REQUEST['exportbody']) != 1) ? '' : 'export_' . $do;
+        $do = ($do == $conf['renderer_xhtml'] && $INPUT->int('exportbody', 0, true) != 1) ? '' : 'export_' . $do;
 
         if ($do != 'export_' && !empty($do) )
         {
@@ -504,8 +504,8 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
         }
 
         // set Template
-        if (!empty($_REQUEST['template'])) {
-            $request['template'] = $_REQUEST['template'];
+        if (!empty($INPUT->str('template'))) {
+            $request['template'] = $INPUT->str('template');
         }
 
         $this->functions->debug->message("REQUEST for add_site:", $request, 2);
@@ -1040,6 +1040,8 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
             $this->functions->debug->message("Final Link after empty file from '$url'", null, 2);
 
             return $link;
+        } elseif ($tmpFile === true) {
+            return "file_not_found_and_ignored.html";
         }
 
         $this->functions->debug->message("The fetched file looks good.", $tmpFile, 2);
@@ -1233,13 +1235,16 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
      **/
     private function __getParamsAndDataRewritten(&$DATA, &$PARAMS, $IDKEY = 'id') {
 
+        if (empty($PARAMS))
+            return array();
+
         $PARRAY = explode('&', str_replace('&amp;', '&', $PARAMS));
         $PARAMS = array();
 
         foreach ($PARRAY as $item) {
-            list($key, $value) = explode('=', $item, 2);
+            list($key, $value) = array_pad( explode('=', $item, 2), 2, null );
             if (empty($key) || empty($value))
-            continue;
+                continue;
 
             if (strtolower(trim($key)) == $IDKEY) {
                 $DATA[2] = preg_replace("%^" . preg_quote(DOKU_BASE, '%') . "%", "", str_replace(':', '/', $value));

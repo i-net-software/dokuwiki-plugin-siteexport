@@ -98,7 +98,7 @@ class settings_plugin_siteexport_settings extends DokuWiki_Plugin
         $ens = $INPUT->str( 'ens' );
         $this->exportNamespace = !empty($ens) && preg_match("%^" . preg_quote($functions->getNamespaceFromID($ens, $pg), '%') . "%", $this->namespace) ? $functions->getNamespaceFromID($ens, $pg) : $this->namespace;
 
-        $this->TOCMapWithoutTranslation = intval($_REQUEST['TOCMapWithoutTranslation'] ?? 0) == 1 ? true : false;
+        $this->TOCMapWithoutTranslation = ($INPUT->int('TOCMapWithoutTranslation', 0, true) == 1);
 
         $this->defaultLang = $INPUT->str( 'defaultLang', $conf['lang'], true );
 

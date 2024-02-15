@@ -143,7 +143,7 @@ class helper_plugin_siteexport extends DokuWiki_Plugin {
 
     public function __siteexport_addpage() {
         
-        global $ID, $conf;
+        global $ID, $conf, $INPUT;
 
         $templateSwitching = false;
         $pdfExport = false;
@@ -177,10 +177,10 @@ class helper_plugin_siteexport extends DokuWiki_Plugin {
         $form->addElement(form_makeTextField('ens', $ID, $this->getLang('ens') . ':', 'ens'));
 
         $form->addElement(form_makeTag('br'));
-        $form->addElement(form_makeListboxField('depthType', array("0.0" => $this->getLang('depth.pageOnly'), "1.0" => $this->getLang('depth.allSubNameSpaces'), "2.0" => $this->getLang('depth.specifiedDepth')), (empty($_REQUEST['depthType']) ? $this->getLang('depth.allSubNameSpaces') : $_REQUEST['depthType']), $this->getLang('depthType') . ':', 'depthType', null, array_merge(array('class' => 'edit'))));
+        $form->addElement(form_makeListboxField('depthType', array("0.0" => $this->getLang('depth.pageOnly'), "1.0" => $this->getLang('depth.allSubNameSpaces'), "2.0" => $this->getLang('depth.specifiedDepth')), $INPUT->str('depthType', $this->getLang('depth.allSubNameSpaces'), true), $this->getLang('depthType') . ':', 'depthType', null, array_merge(array('class' => 'edit'))));
 
         $form->addElement(form_makeTag('br'));
-        $form->addElement(form_makeOpenTag("div", array('style' => 'display:' . ($_REQUEST['depthType'] == "2" ? "block" : "none") . ';', 'id' => 'depthContainer')));
+        $form->addElement(form_makeOpenTag("div", array('style' => 'display:' . ($INPUT->str('depthType') == "2" ? "block" : "none") . ';', 'id' => 'depthContainer')));
         $form->addElement(form_makeTextField('depth', $this->getConf('depth'), $this->getLang('depth') . ':', 'depth'));
         $form->addElement(form_makeCloseTag("div"));
 

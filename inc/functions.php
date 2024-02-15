@@ -440,6 +440,9 @@ class siteexport_functions extends DokuWiki_Plugin
         $outputArray = $inputArray;
         if ( !is_array($inputArray) )
         {
+            if (empty($inputArray))
+                return array();
+
             $intermediate = str_replace("&amp;", "&", $inputArray);
 
             $outputArray = array();
@@ -677,7 +680,9 @@ class siteexport_functions extends DokuWiki_Plugin
         $isExternalPage = count($baseParts) == $originalBasePartsCount;
 
         // the new page is in the same plugin, with a different subcontext and same language
-        $isExternalPage = $isExternalPage || ($didKickSomeParts == 1 && $baseParts[0] != $replaceParts[0] && $baseParts[1] == $replaceParts[1] );
+        $parts0equal = (isset($baseParts[0]) && isset($replaceParts[0]) && $baseParts[0] == $replaceParts[0]);
+        $parts1equal = (isset($baseParts[1]) && isset($replaceParts[1]) && $baseParts[1] == $replaceParts[1]);
+        $isExternalPage = $isExternalPage || ($didKickSomeParts == 1 && !$parts0equal && $parts1equal);
 
         // find out if this is outside of our own export context, beyond the baseURL
         $offsiteTemplate = $this->getConf("offSiteLinkTemplate");
