@@ -35,7 +35,7 @@ class HTTPProxy extends _HTTPProxy {
      * @param siteexport_functions $functions
      */
     public function __construct($functions) {
-        global $conf;
+        global $conf, $INPUT;
 
         // The proxy should only be used if configured.
         // Usually the proxy will allow connections away from the current server.
@@ -74,9 +74,9 @@ class HTTPProxy extends _HTTPProxy {
 
         $this->headers['X-Real-Ip'] = clientIP(true);
         $this->headers['X-Site-Exporter'] = $functions->getSecurityToken();
-        $this->headers['Accept-Encoding'] = $_SERVER['HTTP_ACCEPT_ENCODING'] ?? '';
-        $this->headers['Accept-Charset'] = $_SERVER['HTTP_ACCEPT_CHARSET'] ?? '';
-        $this->agent = $_SERVER['HTTP_USER_AGENT'] . ' DokuWiki/SiteExport';
+        $this->headers['Accept-Encoding'] = $INPUT->server->str('HTTP_ACCEPT_ENCODING');
+        $this->headers['Accept-Charset'] = $INPUT->server->str('HTTP_ACCEPT_CHARSET');
+        $this->agent = $INPUT->server->str('HTTP_USER_AGENT') . ' DokuWiki/SiteExport';
     }
 
     /**
