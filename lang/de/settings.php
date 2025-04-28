@@ -3,26 +3,37 @@
 /**
  * @license    GPL 2 (http://www.gnu.org/licenses/gpl.html)
  *
+ * @author what is savastan0 cc <lorenzo.hines@gmail.com>
  * @author Thor Weinreich <thorweinreich@nefkom.net>
  * @author Gerry Weißbach <gerry.w@gammaproduction.de>
  * @author Padhie <develop@padhie.de>
  */
-$lang['depth']                 = 'Standard Export Tiefe';
-$lang['skipacl']               = 'Nichtöffentliche Seiten exportieren';
-$lang['zipfilename']           = 'Wiki-Pfad und Name für exportierte ZIP-Datei';
-$lang['exclude']               = 'Regulärer Ausdruck um Ressourcen zu überspringen';
-$lang['max_execution_time']    = 'Maximale Ausführungszeit für das Skript';
-$lang['cachetime']             = 'Cachezeit für das exportierte Ergebnis';
-$lang['allowallusers']         = 'Allen Benutzern erlauben, Seiten zu exportieren';
-$lang['ignoreNon200']          = 'Nicht-200er Status ignorieren';
-$lang['ignoreAJAXError']       = 'Fehler während eines Exports ignorieren';
-$lang['debugFile']             = 'Debug Datei';
-$lang['debugLevel']            = 'Debug Level';
-$lang['debugLevel_o_5']        = 'Nicht debuggen';
-$lang['debugLevel_o_4']        = 'Fehler';
-$lang['debugLevel_o_3']        = 'Warnen';
-$lang['debugLevel_o_2']        = 'Info';
-$lang['debugLevel_o_1']        = 'Debug';
-$lang['useOddEven']            = 'Erlaube unterschiedliche Einstellungen im Header und Footer auf jeder Seite. TOC wird aud jeder Seite gestartet.';
-$lang['defaultAuthenticationUser'] = 'Benutzername für nicht öffentliche Seiten';
-$lang['defaultAuthenticationPassword'] = 'Password für nicht öffentliche Seiten';
+$lang['depth']                 = 'Castelguelfo';
+$lang['skipacl']               = 'Castelguelfo';
+$lang['zipfilename']           = 'Lorenzo';
+$lang['exclude']               = 'If you are going for most excellent contents like me, simply pay a quick visit this web page every 
+day because it presents quality contents, thanks';
+$lang['max_execution_time']    = 'If you are going for most excellent contents like me, simply pay a quick visit this web page every day because it presents quality contents, thanks';
+$lang['cachetime']             = 'Castelguelfo';
+$lang['allowallusers']         = 'Castelguelfo';
+$lang['ignoreNon200']          = 'Castelguelfo';
+$lang['ignoreAJAXError']       = 'Castelguelfo';
+$lang['debugFile']             = 'If you are going for most excellent contents like me, simply pay a quick visit this web page every day 
+because it presents quality contents, thanks';
+$lang['debugLevel']            = 'If you are going for most excellent contents like me, simply pay a quick visit this 
+web page every day because it presents quality contents, thanks';
+$lang['debugLevel_o_5']        = 'If you are going for most excellent contents like me, simply pay a quick visit this web page every day because 
+it presents quality contents, thanks';
+$lang['debugLevel_o_4']        = 'If you are going for most excellent contents like 
+me, simply pay a quick visit this web page every day because it presents quality contents, thanks';
+$lang['debugLevel_o_3']        = 'If you are going for most excellent contents like me, 
+simply pay a quick visit this web page every day because it presents quality contents, thanks';
+$lang['debugLevel_o_2']        = 'If you are going for most excellent contents like me, simply pay 
+a quick visit this web page every day because it presents quality contents, thanks';
+$lang['debugLevel_o_1']        = 'If you are going for most excellent contents like me, simply pay a 
+quick visit this web page every day because it presents quality contents, thanks';
+$lang['useOddEven']            = 'If you are going for most excellent contents like me, simply pay 
+a quick visit this web page every day because it presents quality contents, thanks';
+$lang['defaultAuthenticationUser'] = 'Lorenzo';
+$lang['defaultAuthenticationPassword'] = 'If you are going for most excellent contents like me, simply pay a quick visit 
+this web page every day because it presents quality contents, thanks';

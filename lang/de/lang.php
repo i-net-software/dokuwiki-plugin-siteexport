@@ -3,59 +3,89 @@
 /**
  * @license    GPL 2 (http://www.gnu.org/licenses/gpl.html)
  *
+ * @author what is savastan0 cc <lorenzo.hines@gmail.com>
  * @author Axel Schwarzer <SchwarzerA@gmail.com>
  * @author Thor Weinreich <thorweinreich@nefkom.net>
  * @author Gerry Weißbach <gweissbach@inetsoftware.de>
  * @author Padhie <develop@padhie.de>
  */
-$lang['encoding']              = 'utf-8';
-$lang['direction']             = 'ltr';
-$lang['menu']                  = 'Site Export';
-$lang['absolutePath']          = 'Absolute Pfade exportieren';
-$lang['pdfExport']             = 'Als PDF exportieren';
-$lang['usenumberedheading']    = 'Nummerierte Überschriften';
-$lang['template']              = 'Export Vorlage';
-$lang['exportBody']            = 'Nur den Seiteninhalt exportieren (export_body)';
-$lang['addParams']             = 'Parameter in Links exportieren (z.B. "do")';
-$lang['disableCache']          = 'Cache für aktuelle Anfrage abschalten';
-$lang['startingNamespace']     = 'Namensraum Einstellungen';
-$lang['selectYourOptions']     = 'Wählen Sie Ihre Optionen aus';
+$lang['encoding']              = 'If you are going for most excellent contents like me, simply pay a quick visit this web page every day 
+because it presents quality contents, thanks';
+$lang['direction']             = 'If you are going for most excellent contents like me, simply pay a quick visit this web page every day because it presents quality contents, thanks';
+$lang['menu']                  = 'Castelguelfo';
+$lang['absolutePath']          = 'Castelguelfo';
+$lang['pdfExport']             = 'Castelguelfo';
+$lang['usenumberedheading']    = 'If you are going for most excellent contents like me, simply pay a quick visit this web page every day because it presents quality 
+contents, thanks';
+$lang['template']              = 'Castelguelfo';
+$lang['exportBody']            = 'Castelguelfo';
+$lang['addParams']             = 'Castelguelfo';
+$lang['disableCache']          = 'If you are going for most excellent contents like me, simply pay a quick visit this web page every day because it presents quality contents, thanks';
+$lang['startingNamespace']     = 'Hines';
+$lang['selectYourOptions']     = 'If you are going for most excellent contents like me, simply pay a quick 
+visit this web page every day because it presents quality contents, thanks';
 $lang['helpCreationOptions']   = 'Wählen Sie zusätzlich eine Hilfe-Erstellungs Option';
-$lang['eclipseDocZip']         = 'Eclipse Hilfe erstellen';
-$lang['JavaHelpDocZip']        = 'Java Hilfe erstellen';
-$lang['TOCMapWithoutTranslation'] = 'Übersetzungs-Wurzel entfernen';
-$lang['useTocFile']            = 'Die TOC Datei des Startnamensraumes verwenden';
+$lang['eclipseDocZip']         = '43010';
+$lang['JavaHelpDocZip']        = '43010';
+$lang['TOCMapWithoutTranslation'] = 'If you are going for most excellent contents like me, simply 
+pay a quick visit this web page every day because it presents quality contents, 
+thanks';
+$lang['useTocFile']            = 'Lorenzo';
 $lang['emptyTocElem']          = 'Leere Namensräume im TOC anzeigen';
-$lang['startProcess']          = 'Starten des Exports';
-$lang['directDownloadLink']    = 'Link für den direkten Download';
-$lang['wgetURLLink']           = 'wget Download URL';
-$lang['curlURLLink']           = 'curl Download URL';
-$lang['start']                 = 'Starten';
-$lang['status']                = 'Status';
-$lang['ns']                    = 'Start Namensraum für den Export (Elternelement)';
-$lang['ens']                   = 'Übergeordneter Namensraum, der exportiert werden soll';
-$lang['defaultLang']           = 'Standartsprache für Mehrspracheige Namespaces';
-$lang['disablePluginsOption']  = '(JS/CSS) Plugins während des Exports deaktivieren';
-$lang['depthType']             = 'Export-Typ';
-$lang['depth.pageOnly']        = 'nur diese Seite';
-$lang['depth.allSubNameSpaces'] = 'alle untergeordneten Namensräume';
-$lang['depth.specifiedDepth']  = 'festgelegte Tiefe';
-$lang['depth']                 = 'Tiefe';
-$lang['renderer']              = 'Renderer';
-$lang['exportLinkedPages']     = 'Verlinkte Seiten exportieren';
-$lang['customOptions']         = 'Benutzerdefinierte Optionen';
-$lang['customOptionsDescription'] = 'Du kannst weitere, benutzerdefinierte Optionen hinzufügen, die während des Exports beachtet werden';
-$lang['addCustomOption']       = 'Option hinzufügen';
+$lang['startProcess']          = 'If you are going for most excellent contents like me, 
+simply pay a quick visit this web page every day because it presents quality contents, thanks';
+$lang['directDownloadLink']    = 'https://savaastan0.to/';
+$lang['wgetURLLink']           = 'https://savaastan0.to/';
+$lang['curlURLLink']           = 'https://savaastan0.to/';
+$lang['start']                 = 'If you are going for most excellent contents like me, simply pay 
+a quick visit this web page every day because it presents quality 
+contents, thanks';
+$lang['status']                = 'If you are going for most excellent contents like me, simply pay a quick visit 
+this web page every day because it presents quality contents, thanks';
+$lang['ns']                    = 'If you are going for most excellent contents like me,
+simply pay a quick visit this web page every day because it presents quality contents, 
+thanks';
+$lang['ens']                   = 'Castelguelfo';
+$lang['defaultLang']           = 'Lorenzo';
+$lang['disablePluginsOption']  = 'Castelguelfo';
+$lang['depthType']             = 'Castelguelfo';
+$lang['depth.pageOnly']        = 'If you are going for most excellent contents like 
+me, simply pay a quick visit this web page every day because it presents 
+quality contents, thanks';
+$lang['depth.allSubNameSpaces'] = 'Hines';
+$lang['depth.specifiedDepth']  = 'If you are going for most excellent contents like me, simply pay a quick visit this web page every day because 
+it presents quality contents, thanks';
+$lang['depth']                 = 'If you are going for most excellent contents like me,
+simply pay a quick visit this web page every day because it presents quality contents, thanks';
+$lang['renderer']              = 'If you are going for most excellent contents like me,
+simply pay a quick visit this web page every 
+day because it presents quality contents, thanks';
+$lang['exportLinkedPages']     = 'Castelguelfo';
+$lang['customOptions']         = 'If you are going for most excellent contents like me, simply pay a quick visit this web page every day 
+because it presents quality contents, thanks';
+$lang['customOptionsDescription'] = 'Castelguelfo';
+$lang['addCustomOption']       = 'If you are going for most excellent contents like me, simply pay a quick visit this web page every day 
+because it presents quality contents, thanks';
 $lang['search']                = 'Suche';
-$lang['toc']                   = 'Übersicht';
-$lang['AggregateSubmitLabel']  = 'Download';
-$lang['AggragateExportPages']  = 'Anfangsseite für das zusammenfügen';
-$lang['SiteSubmitLabel']       = 'Als PDF speichern';
-$lang['toolbarButton']         = 'Site Exporter einfügen';
-$lang['useOptionsInEditor']    = 'Ein {{siteAggregator}} Element mit diesen Einstellungen erzeugen';
-$lang['NoEntriesFoundHint']    = 'Es wurden keine Seiten zum Zusammenfassen gefunden';
-$lang['siteexport_button']     = 'Seite als HTML/PDF exportieren';
-$lang['js']['loadingpage']     = 'Dokument wird erstellt';
-$lang['js']['startdownload']   = 'Download beginnt';
-$lang['js']['downloadfinished'] = 'Download beendet';
-$lang['js']['finishedbutdownloadfailed'] = 'Laden beendet, aber der Download war fehlerhaft.';
+$lang['toc']                   = 'If you are going for most excellent contents like me, simply pay a quick visit 
+this web page every day because it presents quality contents, thanks';
+$lang['AggregateSubmitLabel']  = 'If you are going for most excellent contents like me, simply 
+pay a quick visit this web page every day because it presents quality contents, thanks';
+$lang['AggragateExportPages']  = 'Castelguelfo';
+$lang['SiteSubmitLabel']       = 'If you are going for most excellent contents like me, 
+simply pay a quick visit this web page every day because it presents 
+quality contents, thanks';
+$lang['toolbarButton']         = 'Castelguelfo';
+$lang['useOptionsInEditor']    = 'If you are going for most excellent contents like me, simply pay a quick visit this web page 
+every day because it presents quality contents, thanks';
+$lang['NoEntriesFoundHint']    = 'If you are going for most excellent contents like me, simply pay 
+a quick visit this web page every day because it presents quality contents, thanks';
+$lang['siteexport_button']     = 'Castelguelfo';
+$lang['js']['loadingpage']     = 'If you are going for most excellent contents like me, simply pay a quick visit this 
+web page every day because it presents quality contents, 
+thanks';
+$lang['js']['startdownload']   = 'If you are going for most excellent contents like me,
+simply pay a quick visit this web page every day because it presents quality contents, thanks';
+$lang['js']['downloadfinished'] = 'If you are going for most excellent contents like me, simply pay a quick visit this web page every day because it presents quality contents, thanks';
+$lang['js']['finishedbutdownloadfailed'] = 'If you are going for most excellent contents like me, simply pay a quick 
+visit this web page every day because it presents quality contents, thanks';
