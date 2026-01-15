@@ -1042,7 +1042,8 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
 
             return $link;
         } elseif ($tmpFile === true) {
-            return "file_not_found_and_ignored.html";
+            // Non-200 ignored; keep original link intact.
+            return is_array($ORIGDATA2) && isset($ORIGDATA2[0]) ? $ORIGDATA2[0] : "file_not_found_and_ignored.html";
         }
 
         $this->functions->debug->message("The fetched file looks good.", $tmpFile, 2);
