@@ -651,7 +651,8 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
         $CALLBACK = array($this, '__fetchAndReplaceLink');
         $DATA = preg_replace_callback("/$PATTERN/i", $CALLBACK, $DATA);
 
-        $PATTERNCSS = '(url\s*?)\(([^\)]*)\)';
+        // Match CSS url(...) but avoid plain text like "API-URL (foo)"
+        $PATTERNCSS = '(?<![A-Za-z0-9_-])(url\s*?)\(([^\)]*)\)';
         $DATA = preg_replace_callback("/$PATTERNCSS/i", $CALLBACK, $DATA);
 
         $PATTERNSRCSET = '(srcset)="([^"]*)"';
