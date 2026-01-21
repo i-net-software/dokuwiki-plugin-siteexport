@@ -5,7 +5,6 @@ if(!defined('DOKU_INC')) {
 if(!defined('DOKU_PLUGIN')) {
     define('DOKU_PLUGIN',DOKU_INC.'lib/plugins/');
 }
-require_once(DOKU_PLUGIN.'admin.php');
 
 /**
  * All DokuWiki plugins to extend the admin function
