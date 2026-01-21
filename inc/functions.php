@@ -5,6 +5,7 @@ require_once(DOKU_PLUGIN . 'siteexport/inc/settings.php');
 require_once(DOKU_PLUGIN . 'siteexport/inc/debug.php');
 
 use dokuwiki\File\PageResolver;
+use dokuwiki\PassHash;
 
 class siteexport_functions extends DokuWiki_Plugin
 {
