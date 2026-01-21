@@ -95,18 +95,18 @@ class siteexport_zipfilewriter
     private function __writeFileToZip($FILE, $NAME, $ZIPFILE) {
         if (empty($ZIPFILE)) $ZIPFILE = $this->functions->settings->zipFile;
 
-        if (!class_exists('ZipArchive')) {
+        if (!class_exists('\ZipArchive')) {
             $this->functions->debug->runtimeException("PHP class 'ZipArchive' does not exist. Please make sure that you have the ziplib extension for PHP installed.");
             return false;
         }
 
-        $zip = new ZipArchive();
+        $zip = new \ZipArchive();
         if (!$zip) {
             $this->functions->debug->runtimeException("Can't create new instance of 'ZipArchive'. Please make sure that you have the ziplib extension for PHP installed.");
             return false;
         }
 
-        $code = $zip->open($ZIPFILE, ZipArchive::CREATE);
+        $code = $zip->open($ZIPFILE, \ZipArchive::CREATE);
         if ($code === TRUE) {
 
             $this->functions->debug->message("Adding file '{$NAME}' to ZIP {$ZIPFILE}", null, 2);
@@ -131,8 +131,8 @@ class siteexport_zipfilewriter
      */
     public function fileExistsInZip($NAME)
     {
-        $zip = new ZipArchive();
-        $code = $zip->open($this->functions->settings->zipFile, ZipArchive::CREATE);
+        $zip = new \ZipArchive();
+        $code = $zip->open($this->functions->settings->zipFile, \ZipArchive::CREATE);
         if ($code === TRUE) {
             $exists = !($zip->statName($NAME) === FALSE);
             $zip->close();
@@ -203,7 +203,7 @@ class siteexport_zipfilewriter
 
         if (is_null($data['file'])) $data['file'] = $this->functions->settings->zipFile;
         
-        $zip = new ZipArchive();
+        $zip = new \ZipArchive();
         $code = $zip->open($data['file']);
         if ($code !== TRUE) {
             $this->functions->debug->message("Can't open the zip-file.", $data['file'], 2);
