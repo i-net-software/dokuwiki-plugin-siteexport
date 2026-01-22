@@ -47,10 +47,10 @@ class preload_plugin_siteexport {
         if (empty($newTemplate) || basename($newTemplate) != $newTemplate) { return; }
         $tplDir = DOKU_INC . 'lib/tpl/' . $newTemplate;
         // check if the directory is valid, has no more "../" in it and is equal to what we expect. DOKU_INC itself is absolute. see #48
-        if ($tplDir != realpath($tplDir)) { return; }
-
-        // Use fileexists, because realpath is not always right.
-        if (!file_exists($tplDir)) { return; }
+        // here we will have issues using farmer plugin or docker container, since the path is very different.
+        // the tpldir can be different when the realpath is looked up, but should still exist.
+        $tplDir = realpath($tplDir);
+        if ($tplDir === false || !is_dir($tplDir)) { return; }
 
         // Set hint for Dokuwiki_Started event
         if (!defined('SITEEXPORT_TPL'))        define('SITEEXPORT_TPL', $tempREQUEST['template']);
