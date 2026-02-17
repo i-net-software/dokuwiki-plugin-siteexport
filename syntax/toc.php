@@ -294,10 +294,11 @@ class syntax_plugin_siteexport_toc extends DokuWiki_Syntax_Plugin {
         $exists = false; $isImage = false; $linktype = null;
         $id = (new PageResolver( $ID ) )->resolveId($id);
         $exists = page_exists( $id );
-        $name = $renderer->_getLinkTitle($name, $default, $isImage, $id, $linktype);
-
-        // Render Title
+        // Keep explicit link title (e.g. [[.:configuration|configuration]]) so tocitem target stays lowercased
         $default = $renderer->_simpleTitle($id);
+        if ($name === null || $name === '') {
+            $name = $renderer->_getLinkTitle($name, $default, $isImage, $id, $linktype);
+        }
 
         //keep hash anchor
         list($id, $hash) = explode('#', $id, 2);
