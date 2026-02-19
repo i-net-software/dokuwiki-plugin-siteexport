@@ -294,6 +294,8 @@ class syntax_plugin_siteexport_toc extends DokuWiki_Syntax_Plugin {
         $exists = false; $isImage = false; $linktype = null;
         $id = (new PageResolver( $ID ) )->resolveId($id);
         $exists = page_exists( $id );
+        // Record whether user provided an explicit link title (e.g. [[.:foo|Bar]])
+        $hasExplicitTitle = ($name !== null && $name !== '');
         // Keep explicit link title (e.g. [[.:configuration|configuration]]) so tocitem target stays lowercased
         $default = $renderer->_simpleTitle($id);
         if ($name === null || $name === '') {
@@ -311,6 +313,7 @@ class syntax_plugin_siteexport_toc extends DokuWiki_Syntax_Plugin {
         $item['anchor'] = $hash;
         $item['depth'] = $depth;
         $item['exists'] = $exists;
+        $item['explicitTitle'] = $hasExplicitTitle;
         if (!$conf['skipacl'] && auth_quickaclcheck($item['id']) < AUTH_READ) {
             return false;
         }

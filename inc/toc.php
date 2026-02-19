@@ -114,10 +114,10 @@ class siteexport_toc
                 $startPageID = $elem['mapID'][0];
             }
             
-            // Only overwrite name when none was provided (e.g. link without title).
+            // Use page title when no explicit link title was provided (empty name or no explicitTitle flag).
             // When the toc link has an explicit title (e.g. [[.:configuration|configuration]]), keep it
             // so the tocitem target stays lowercased and matches map.xml convention.
-            if ( empty( $elem['name'] ) ) {
+            if ( empty( $elem['name'] ) || empty( $elem['explicitTitle'] ) ) {
                 $elem['name'] = $this->functions->getSiteTitle($elem['id']);
                 
                 if ( is_array($elem['mapID']) && empty( $elem['mapID'] ) ) {
