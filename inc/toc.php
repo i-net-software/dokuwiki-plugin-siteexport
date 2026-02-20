@@ -193,7 +193,7 @@ class siteexport_toc
             $targetID = $this->functions->cleanID($item['name']);
             $this->debug("no map ID, using: " . $targetID);
         }
-        return "\n" . str_repeat("\t", max($depth, 0)+1) . "<tocitem target=\"" . $targetID . "\"" . (intval($item['exists']) == 1 ? " text=\"" . $item['name'] . "\"" : "") . ( array_key_exists('tags', $item) && !empty($item['tags']) ? " tags=\"" . implode(' ', $item['tags']) . "\"": "")  . ($selfClosed ? '/' : '') . ">";
+        return "\n" . str_repeat("    ", max($depth, 0)+1) . "<tocitem target=\"" . $targetID . "\"" . (intval($item['exists']) == 1 ? " text=\"" . $item['name'] . "\"" : "") . ( array_key_exists('tags', $item) && !empty($item['tags']) ? " tags=\"" . implode(' ', $item['tags']) . "\"": "")  . ($selfClosed ? '/' : '') . ">";
     }
     
     /**
@@ -201,7 +201,7 @@ class siteexport_toc
      **/
     private function __TOCItemClose($depth)
     {
-        return "\n" . str_repeat("\t", max($depth, 0)+1) . "</tocitem>";
+        return "\n" . str_repeat("    ", max($depth, 0)+1) . "</tocitem>";
     }
 
     /**
@@ -331,7 +331,7 @@ class siteexport_toc
     private function __addXMLTopic($DATA, $ITEM = 'topic', $LEVEL = 0, $NODENAME = '') {
         global $conf;
 
-        $DEPTH = str_repeat("\t", $LEVEL);
+        $DEPTH = str_repeat("    ", $LEVEL);
 
         if (!is_array($DATA)) {
             return $DEPTH . '<' . $ITEM . ' label="' . $this->functions->getSiteTitle($DATA) . '" ' . ($ITEM != 'topic' ? 'topic' : 'href') . '="' . $this->functions->getSiteName($DATA) . "\" />\n";
