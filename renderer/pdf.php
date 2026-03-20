@@ -314,7 +314,13 @@ class renderer_plugin_siteexport_pdf extends Doku_Renderer_xhtml {
         }
         $link['more']   = '';
         $link['class']  = $class;
-        $link['url']    = wl($id);
+        // Core wl() follows rewrite/fancy-URL context; use siteexport's override path (colon→slash, no .pdf suffix).
+        static $siteexportWl = null;
+        if ($siteexportWl === null) {
+            require_once DOKU_PLUGIN . 'siteexport/inc/functions.php';
+            $siteexportWl = new siteexport_functions(true, false);
+        }
+        $link['url']    = $siteexportWl->wl($id, '', false, '&amp;', true, true);
         $link['name']   = $name;
         $link['title']  = $this->_getLinkTitle(null, $default, $isImage, $id, $linktype);
 

@@ -2,7 +2,21 @@
 
 if (!defined('DOKU_PLUGIN')) die('meh');
 
-if (!empty($_REQUEST['pdfExport']) && intval($_REQUEST['pdfExport']) == 1 && file_exists(DOKU_PLUGIN . 'dw2pdf/mpdf/mpdf.php')) {
+if (!function_exists('siteexport_dw2pdf_has_mpdf_engine')) {
+    /**
+     * True if dw2pdf ships an mPDF we can use (legacy bundled mpdf/ or Composer vendor/ + DokuPDF).
+     */
+    function siteexport_dw2pdf_has_mpdf_engine()
+    {
+        if (file_exists(DOKU_PLUGIN . 'dw2pdf/mpdf/mpdf.php')) {
+            return true;
+        }
+        return file_exists(DOKU_PLUGIN . 'dw2pdf/vendor/autoload.php')
+            && file_exists(DOKU_PLUGIN . 'dw2pdf/DokuPDF.class.php');
+    }
+}
+
+if (!empty($_REQUEST['pdfExport']) && intval($_REQUEST['pdfExport']) == 1 && siteexport_dw2pdf_has_mpdf_engine()) {
 
     require_once(DOKU_PLUGIN . 'siteexport/inc/mpdf.php');
     class siteexport_pdfgenerator
@@ -45,10 +59,15 @@ if (!empty($_REQUEST['pdfExport']) && intval($_REQUEST['pdfExport']) == 1 && fil
             $mpdf->debug = false;
             $mpdf->list_indent_first_level = 1; // Indents the first level of lists.
 
-            $mpdf->usepre = false;
+            // Legacy mPDF only; omitted with mPDF 8 / DokuPDF
+            if (property_exists($mpdf, 'usepre')) {
+                $mpdf->usepre = false;
+            }
             $mpdf->margin_bottom_collapse = true;
             $mpdf->SetDisplayMode('fullpage');
-            $mpdf->restoreBlockPageBreaks = true;
+            if (property_exists($mpdf, 'restoreBlockPageBreaks')) {
+                $mpdf->restoreBlockPageBreaks = true;
+            }
 
             $mpdf->dpi = $INPUT->int('dpi', 96, true);
             $mpdf->img_dpi = $INPUT->int('dpi', 96, true);

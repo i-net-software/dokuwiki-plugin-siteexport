@@ -831,11 +831,15 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
             $this->functions->addAdditionalParametersToURL($url, $newAdditionalParameters);
             $DATA[2] = $url;
             unset($DATA['PARAMS']);
-            $url = $this->__rebuildLink($DATA, '');
+            $rebuilt = $this->__rebuildLink($DATA, '');
+            // __rebuildLink returns a full href|src|action="…" fragment; log the inner URL for readability.
+            if (preg_match('/^\\w+\\s*=\\s*"([^"]*)"/', $rebuilt, $m)) {
+                $this->functions->debug->message("Creating PDF: fetching '{$m[1]}' (replacement {$rebuilt})", null, 2);
+            } else {
+                $this->functions->debug->message("Creating PDF with replacement '$rebuilt'", null, 2);
+            }
 
-            $this->functions->debug->message("Creating PDF with URL '$url'", null, 2);
-
-            return $url;
+            return $rebuilt;
         }
 
         // Finalize
@@ -1271,6 +1275,12 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
         }
 
         $internalParams = $PARAMS = preg_replace("/(=|\?|&amp;)/", ".", $PARAMS);
+
+        // Do not map *.php → export fileType for real PHP endpoints (doku.php, lib/exe/*, …).
+        // Otherwise PDF export turns form actions into e.g. /doku.pdf and breaks crawled HTML.
+        $trimPath = ltrim($DATA[2], '/');
+        $skipPhpRemap = (strpos($trimPath, 'lib/exe/') === 0)
+            || (bool) preg_match('#(^|/)(doku|index)\.php$#', $trimPath);
         
         // add anyways - if on overridde
         if (!$this->functions->settings->addParams && !empty($PARAMS) && $addHash) {
@@ -1279,7 +1289,8 @@ class action_plugin_siteexport_ajax extends DokuWiki_Action_Plugin
             $internalParams = null;
         }
         
-        $DATA[2] = implode('.', $PARTS) . (empty($internalParams) ? '' : '.' . $this->functions->cleanID($internalParams)) . ($EXT == '.php' ? '.' . $this->functions->settings->fileType : $EXT);
+        $tailExt = ($EXT == '.php' && !$skipPhpRemap) ? '.' . $this->functions->settings->fileType : $EXT;
+        $DATA[2] = implode('.', $PARTS) . (empty($internalParams) ? '' : '.' . $this->functions->cleanID($internalParams)) . $tailExt;
         $DATA[2] = preg_replace("/\.+/", ".", $DATA[2]);
         $this->functions->debug->message("Rebuilding Data for normal file.", $DATA[2], 1);
     }

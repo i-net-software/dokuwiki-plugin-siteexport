@@ -157,9 +157,11 @@ class helper_plugin_siteexport extends DokuWiki_Plugin {
         }
 
         $dw2pdf = plugin_load('action', 'dw2pdf');
-        if ($dw2pdf) {
-            $pdfExport = true;
+        if (!function_exists('siteexport_dw2pdf_has_mpdf_engine')) {
+            require_once DOKU_PLUGIN . 'siteexport/inc/pdfgenerator.php';
         }
+        // mPDF may live in legacy dw2pdf/mpdf/ or current dw2pdf/vendor/ (+ DokuPDF)
+        $pdfExport = siteexport_dw2pdf_has_mpdf_engine();
 
         $translation = plugin_load('helper', 'autotranslation');
         if ($translation) {

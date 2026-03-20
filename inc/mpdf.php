@@ -147,4 +147,90 @@ if (file_exists(DOKU_PLUGIN . 'dw2pdf/mpdf/mpdf.php')) {
 //*/
     }
 
+} elseif (file_exists(DOKU_PLUGIN . 'dw2pdf/vendor/autoload.php') && file_exists(DOKU_PLUGIN . 'dw2pdf/DokuPDF.class.php')) {
+
+    /**
+     * dw2pdf ≥ ~2017: mPDF via Composer; {@see DokuPDF}
+     */
+    require_once DOKU_PLUGIN . 'dw2pdf/vendor/autoload.php';
+    require_once DOKU_PLUGIN . 'dw2pdf/DokuPDF.class.php';
+
+    class siteexportPDF extends DokuPDF
+    {
+        private $debugObj = null;
+
+        public function __construct($debug)
+        {
+            global $INPUT;
+            global $conf;
+
+            $dw2pdf = plugin_load('action', 'dw2pdf');
+            $pagesize = $INPUT->str('pagesize', $dw2pdf ? $dw2pdf->getConf('pagesize') : 'A4', true);
+            $orientation = $INPUT->str('orientation', $dw2pdf ? $dw2pdf->getConf('orientation') : 'portrait', true);
+            $fontsize = (int)($dw2pdf ? $dw2pdf->getConf('font-size') : 11);
+
+            parent::__construct($pagesize, $orientation, $fontsize, $conf['lang']);
+
+            $this->debugObj = $debug;
+            if (property_exists($this, 'debug')) {
+                $this->debug = $debug !== false;
+            }
+            $this->shrink_tables_to_fit = 1;
+            $this->use_kwt = true;
+            $this->useSubstitutions = true;
+        }
+
+        public function message($msg, $vars = null, $lvl = 1)
+        {
+            if ($this->debugObj !== null) {
+                $this->debugObj->message($msg, $vars, $lvl);
+            }
+        }
+
+        public function Error($msg)
+        {
+            if ($this->debugObj !== null && method_exists($this->debugObj, 'runtimeException')) {
+                $this->debugObj->runtimeException($msg);
+            } else {
+                throw new \Mpdf\MpdfException($msg);
+            }
+        }
+
+        public function GetFullPath(&$path, $basepath = '')
+        {
+            $path = str_replace("\\", "/", $path);
+            $path = preg_replace('/^\/\//', 'http://', $path);
+            $regexp = '|^./|';
+            $path = preg_replace($regexp, '', $path);
+
+            if (preg_match("/^.+\/\.\.\//", $path)) {
+                $newpath = array();
+                $oldpath = explode('/', $path);
+
+                foreach ($oldpath as $slice) {
+                    if ($slice == ".." && count($newpath) > 0) {
+                        array_pop($newpath);
+                        continue;
+                    }
+
+                    $newpath[] = $slice;
+                }
+
+                $path = implode('/', $newpath);
+            }
+
+            parent::GetFullPath($path, $basepath);
+
+            $regex = "/^(" . preg_quote(DOKU_BASE, '/') . ".+)\\1/";
+            if (preg_match($regex, $path, $matches)) {
+                $path = preg_replace($regex, "\\1", $path);
+            }
+        }
+
+        public function MovePages($target_page, $start_page, $end_page = -1)
+        {
+            parent::MovePages($target_page, $start_page, $end_page);
+        }
+    }
+
 }
