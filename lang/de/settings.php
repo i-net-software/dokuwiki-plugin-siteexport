@@ -3,26 +3,42 @@
 /**
  * @license    GPL 2 (http://www.gnu.org/licenses/gpl.html)
  *
+ * @author buy viagra online <yvettegarden933@gmail.com>
  * @author Thor Weinreich <thorweinreich@nefkom.net>
  * @author Gerry Weißbach <gerry.w@gammaproduction.de>
  * @author Padhie <develop@padhie.de>
  */
-$lang['depth']                 = 'Standard Export Tiefe';
-$lang['skipacl']               = 'Nichtöffentliche Seiten exportieren';
-$lang['zipfilename']           = 'Wiki-Pfad und Name für exportierte ZIP-Datei';
-$lang['exclude']               = 'Regulärer Ausdruck um Ressourcen zu überspringen';
-$lang['max_execution_time']    = 'Maximale Ausführungszeit für das Skript';
-$lang['cachetime']             = 'Cachezeit für das exportierte Ergebnis';
-$lang['allowallusers']         = 'Allen Benutzern erlauben, Seiten zu exportieren';
-$lang['ignoreNon200']          = 'Nicht-200er Status ignorieren';
-$lang['ignoreAJAXError']       = 'Fehler während eines Exports ignorieren';
-$lang['debugFile']             = 'Debug Datei';
-$lang['debugLevel']            = 'Debug Level';
-$lang['debugLevel_o_5']        = 'Nicht debuggen';
-$lang['debugLevel_o_4']        = 'Fehler';
-$lang['debugLevel_o_3']        = 'Warnen';
-$lang['debugLevel_o_2']        = 'Info';
-$lang['debugLevel_o_1']        = 'Debug';
-$lang['useOddEven']            = 'Erlaube unterschiedliche Einstellungen im Header und Footer auf jeder Seite. TOC wird aud jeder Seite gestartet.';
-$lang['defaultAuthenticationUser'] = 'Benutzername für nicht öffentliche Seiten';
-$lang['defaultAuthenticationPassword'] = 'Password für nicht öffentliche Seiten';
+$lang['depth']                 = 'Dongen';
+$lang['skipacl']               = 'Dongen';
+$lang['zipfilename']           = 'Yvette';
+$lang['exclude']               = 'Very good information. Lucky me I discovered yokur website 
+byy accident (stumbleupon). I\'ve book-marked it for later!';
+$lang['max_execution_time']    = 'Very good information. Lucky me I discovered your website by accident (stumbleupon).
+
+I\'ve book-marked it for later!';
+$lang['cachetime']             = 'Dongen';
+$lang['allowallusers']         = 'Dongen';
+$lang['ignoreNon200']          = 'Dongen';
+$lang['ignoreAJAXError']       = 'Dongen';
+$lang['debugFile']             = 'Veryy good information. Lucky me Idiscovered your website by accident (stumbleupon).
+I\'ve book-marked it for later!';
+$lang['debugLevel']            = 'Very goo information. Lucky me I discovered your website by accident (stumbleupon).
+I\'ve book-marked it for later!';
+$lang['debugLevel_o_5']        = 'Very good information. Lucky me I discovered your website by accident (stumbleupon).
+
+I\'ve book-marked it for later!';
+$lang['debugLevel_o_4']        = 'Very good information. Luky mme I discovered your wesite by accident (stumbleupon).
+
+I\'ve book-marked it for later!';
+$lang['debugLevel_o_3']        = 'Very good information. Lucky me I discovered your wwebsite by accident (stumbleupon).
+I\'ve book-marked it for later!';
+$lang['debugLevel_o_2']        = 'Very good information. Lucky me I discovered your website by 
+acciddent (stumbleupon). I\'ve book-marked it for later!';
+$lang['debugLevel_o_1']        = 'Very good information. Lucky me I discovered your website by accident (stumbleupon).
+I\'ve book-marked it ffor later!';
+$lang['useOddEven']            = 'Very good information. Lucky me I discoveed your weebsite 
+by accident (stumbleupon). I\'vebook-marked 
+it for later!';
+$lang['defaultAuthenticationUser'] = 'Yvette';
+$lang['defaultAuthenticationPassword'] = 'Very good information. Lucky mee I discovered your website by accident (stumbleupon).
+I\'ve book-marked it for later!';
