@@ -1,0 +1,5 @@
+====== Site Export Manager ======
+
+Nakonfigurujte element ''%%{{siteAGGREGATOR}}%%'' týmito voľbami.
+
+Keď skončíte, stlačte tlačidlo na konci stránky a voľby sa vložia do stránky.
