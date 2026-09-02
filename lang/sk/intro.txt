@@ -1,0 +1,3 @@
+====== Site Export Manager ======
+
+Táto stránka umožňuje exportovať celý web do ľubovoľného formátu, pre ktorý máte renderer.
